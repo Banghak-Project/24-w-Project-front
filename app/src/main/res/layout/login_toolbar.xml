@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:id="@+id/login_toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="?attr/actionBarSize">
+    <!--    <ImageView-->
+    <!--    android:id="@+id/button_back"-->
+    <!--        android:layout_width=""-->
+    <!--        android:layout_height=""-->
+    <!--        android:layout_marginRight=""-->
+    <!--        android:src="@drawable/"/>-->
+    <TextView
+        android:id="@+id/button_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="&lt;"
+        android:textSize="20dp"/>
+</androidx.appcompat.widget.Toolbar>

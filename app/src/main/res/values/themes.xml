@@ -1,0 +1,16 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.MoneyChanger" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/white</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="buttonStyle">@style/CameraButtonStyle</item>
+    </style>
+
+    <style name="CameraButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/round_button</item>
+        <item name="android:backgroundTint">@null</item>
+    </style>
+
+    <style name="Theme.MoneyChanger" parent="Base.Theme.MoneyChanger" />
+</resources>
