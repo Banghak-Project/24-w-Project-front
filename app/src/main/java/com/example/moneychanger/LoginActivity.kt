@@ -1,5 +1,6 @@
 package com.example.moneychanger
 
+import android.content.Intent
 import android.graphics.Paint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -35,6 +36,8 @@ class LoginActivity : AppCompatActivity() {
         binding.buttonSignUp.paintFlags = binding.buttonSignUp.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         binding.buttonSignUp.setOnClickListener {
             // 회원가입 페이지로 연결
+            val intent = Intent(this, PolicyActivity::class.java)
+            startActivity(intent)
         }
 
     }
