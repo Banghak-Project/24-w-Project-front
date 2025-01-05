@@ -35,7 +35,6 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="9"
                     android:hint="이메일을 입력해주세요"/>
             </LinearLayout>
         </LinearLayout>

@@ -40,17 +40,24 @@
                     <Button
                         android:id="@+id/button_male"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
                         android:text="남성"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:layout_marginRight="20dp"
+                        app:strokeColor="@color/gray2"
+                        app:strokeWidth="2dp"
+                        app:cornerRadius="10dp"/>
                     <Button
                         android:id="@+id/button_female"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:layout_weight="1"
                         android:text="여성"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        app:strokeColor="@color/gray2"
+                        app:strokeWidth="2dp"
+                        app:cornerRadius="10dp"/>
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
@@ -62,11 +69,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:text="생년월일"/>
-                <EditText
+                <FrameLayout
+                    android:id="@+id/input_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:hint="YY/MM/DD"/>
+                    android:clickable="false">
+                    <EditText
+                        android:id="@+id/date_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="YY/MM/DD"
+                        android:focusable="false"
+                        android:clickable="true"/>
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/ic_right_arrow"
+                        android:layout_gravity="end|center_vertical"
+                        android:clickable="false"
+                        android:focusable="false"/>
+                </FrameLayout>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -80,7 +102,6 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="9"
                     android:hint="이름"/>
             </LinearLayout>
             <LinearLayout
@@ -92,10 +113,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:text="아이디"/>
-                <EditText
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="9"
+                    android:layout_height="48dp"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/round_background"
+                    android:padding="10dp"
                     android:text="----@mju.ac.kr"/>
             </LinearLayout>
             <LinearLayout
