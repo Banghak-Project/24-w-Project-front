@@ -38,6 +38,11 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, LoginSelectActivity::class.java)
             startActivity(intent)
         }
+        binding.b2.setOnClickListener{
+            // 로그인 선택 페이지로 연결
+            val intent = Intent(this, SampleActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

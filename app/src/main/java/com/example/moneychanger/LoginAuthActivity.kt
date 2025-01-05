@@ -24,10 +24,11 @@ class LoginAuthActivity : AppCompatActivity() {
         }
 
         binding.buttonNext.setOnClickListener {
-            // 이메일 인증 페이지2로 연결..? 혹은 재사용 할지도
-            // 임시로 개인정보 입력 페이지로 연결
-            val intent = Intent(this, PersonalInfoActivity::class.java)
+            // 이메일 인증 페이지2로 연결
+            val intent = Intent(this, LoginAuthActivity2::class.java)
             startActivity(intent)
+
+            // 인증 메일 보내는 코드도 추가
         }
     }
 }
