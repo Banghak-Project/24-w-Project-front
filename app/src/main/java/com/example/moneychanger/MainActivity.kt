@@ -8,11 +8,14 @@ import android.util.AttributeSet
 import android.view.Menu
 import android.view.View
 import com.example.moneychanger.databinding.ActivityMainBinding
+import com.example.moneychanger.model.User
+import com.example.moneychanger.retrofit.RetrofitService
+import com.example.moneychanger.retrofit.UserAPI
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: MyAdapter
-
+    @Override
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -38,6 +41,14 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, LoginSelectActivity::class.java)
             startActivity(intent)
         }
+        initializeComponents();
+    }
+
+    private void initializeComponents() {
+        RetrofitService retrofitService = new RetrofitService();
+        UserAPI userAPI = retrofitService.getRetrofit().create(UserAPI.class);
+
+        buttonSave.
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
