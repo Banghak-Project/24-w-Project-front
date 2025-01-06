@@ -13,21 +13,21 @@
         android:contentDescription="가름선"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black"></LinearLayout>
+        android:background="@color/black"/>
 
     <LinearLayout
         android:id="@+id/main_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
         android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="6"
             android:background="@color/gray"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:padding="20dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -39,27 +39,13 @@
                     android:layout_height="match_parent"
                     android:layout_weight="9"
                     android:text="가게 별 소비 리스트" />
-
-                <TextView
-                    android:id="@+id/button_list"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text=">" />
-                <!--    <ImageView-->
-                <!--        android:id="@+id/button_list"-->
-                <!--        android:layout_width=""-->
-                <!--        android:layout_height=""-->
-                <!--        android:layout_marginRight=""-->
-                <!--        android:src="@drawable/"/>-->
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
             <Button
                 android:id="@+id/b1"
@@ -75,51 +61,24 @@
                 android:text="달력 화면으로 이동" />
 
         </LinearLayout>
-
+    </LinearLayout>
+    <LinearLayout
+        android:contentDescription="버튼 부분"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center">
         <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:background="@color/gray2">
-            <LinearLayout
-                android:contentDescription="배경 부분"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:background="@color/gray"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:background="@color/gray2">
-                </LinearLayout>
-            </LinearLayout>
-            <LinearLayout
-                android:contentDescription="버튼 부분"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center">
-                <FrameLayout
-                    android:id="@+id/button_camera"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:background="@drawable/round_button"
-                    android:gravity="center">
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:src="@drawable/ic_camera"
-                        android:layout_gravity="center" />
-                </FrameLayout>
-            </LinearLayout>
+            android:id="@+id/button_camera"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/round_button"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_camera"
+                android:layout_gravity="center" />
         </FrameLayout>
     </LinearLayout>
 </LinearLayout>
