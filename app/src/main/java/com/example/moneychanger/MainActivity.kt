@@ -22,11 +22,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
 
-        // 리스트 버튼 클릭 이벤트 설정
-        binding.buttonList.setOnClickListener{
-            // 리스트 모아보기
-        }
-
         // 카메라 버튼 클릭 이벤트 설정
         binding.buttonCamera.setOnClickListener{
             // 카메라 api와 연결하여 동작할 내용
@@ -40,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         }
         binding.b2.setOnClickListener{
             // 로그인 선택 페이지로 연결
-            val intent = Intent(this, SampleActivity::class.java)
+            val intent = Intent(this, SettingActivity::class.java)
             startActivity(intent)
         }
     }

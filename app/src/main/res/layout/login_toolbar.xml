@@ -7,16 +7,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?attr/actionBarSize">
-    <!--    <ImageView-->
-    <!--    android:id="@+id/button_back"-->
-    <!--        android:layout_width=""-->
-    <!--        android:layout_height=""-->
-    <!--        android:layout_marginRight=""-->
-    <!--        android:src="@drawable/"/>-->
-    <TextView
+        <ImageView
         android:id="@+id/button_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="&lt;"
-        android:textSize="20dp"/>
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/ic_right_arrow"
+            android:rotation="180"/>
+        <TextView
+            android:id="@+id/page_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="20dp"/>
 </androidx.appcompat.widget.Toolbar>
