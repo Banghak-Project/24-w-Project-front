@@ -34,8 +34,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         binding.b2.setOnClickListener{
-            // 로그인 선택 페이지로 연결
-            val intent = Intent(this, SettingActivity::class.java)
+            val intent = Intent(this, ListActivity::class.java)
             startActivity(intent)
         }
     }
