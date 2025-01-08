@@ -3,98 +3,140 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/round_background"
     android:orientation="vertical"
-    android:padding="20dp">
+    android:background="@color/white"
+    android:padding="24dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="5dp">
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:gravity="center"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/ic_camera"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="국가 주소" />
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-        <ImageView
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_right_arrow"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:gravity="center">
+        android:layout_marginBottom="20dp">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="10dp"
-            android:background="@drawable/round_background"
-            android:backgroundTint="@color/gray">
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_camera"
-                android:layout_marginRight="30dp"/>
+            android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="금액"
-                android:layout_marginEnd="10sp"/>
-            <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="$"/>
+                android:text="쇼핑 장소"
+                style="@style/TextHeadingXXXL"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:text="도시/국가"
+                    style="@style/TextBodyS"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:text="•"
+                    style="@style/TextBodyS"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00"
+                    style="@style/TextBodyS"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="분 전"
+                    style="@style/TextBodyS"/>
+            </LinearLayout>
         </LinearLayout>
         <Space
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1"/>
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:text="환율계산액" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="₩" />
+            android:background="@drawable/round_background"
+            android:backgroundTint="@color/gray"
+            android:padding="3dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0000.00.00"
+                style="@style/TextBodyXS"/>
+        </LinearLayout>
     </LinearLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="총 상품 갯수"/>
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-        <TextView
-            android:layout_width="wrap_content"
+            android:text="총 합계"
+            style="@style/TextBodyXS"/>
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:text="N"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="개"/>
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:layout_gravity="center"
+                android:gravity="right"
+                android:background="@drawable/round_background"
+                android:backgroundTint="@color/gray">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="금액"
+                    android:layout_marginEnd="10dp"
+                    style="@style/TextBodyM_bold"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$"
+                    style="@style/TextBodyS"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_right_arrow"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:layout_gravity="center"
+                android:gravity="right"
+                android:background="@drawable/round_background"
+                android:backgroundTint="@color/gray">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="환율계산액"
+                    style="@style/TextBodyXXL" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₩"
+                    style="@style/TextBodyXL"/>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
-
 </LinearLayout>

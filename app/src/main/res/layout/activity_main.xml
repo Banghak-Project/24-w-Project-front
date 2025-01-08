@@ -19,27 +19,31 @@
         android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="9"
+        android:layout_weight="1"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="6"
             android:background="@color/gray"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
+                android:padding="24dp">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="9"
-                    android:text="가게 별 소비 리스트" />
+                    android:text="가게 별 소비 리스트"
+                    style="@style/TextHeadingXL"/>
             </LinearLayout>
+
+            <include
+                android:contentDescription="레이아웃 확인용 임시"
+                layout="@layout/list_place"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
@@ -59,24 +63,22 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="임시버튼"
                 android:text="달력 화면으로 이동" />
-
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:contentDescription="버튼 부분"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="56dp"
         android:gravity="center">
         <FrameLayout
             android:id="@+id/button_camera"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="@drawable/round_button"
             android:gravity="center">
             <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/ic_camera"
                 android:layout_gravity="center" />
         </FrameLayout>
