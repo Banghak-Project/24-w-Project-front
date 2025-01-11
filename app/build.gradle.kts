@@ -40,6 +40,10 @@ android {
 }
 
 dependencies {
+    implementation("androidx.camera.viewfinder:viewfinder-core:1.4.0-alpha11")
+    implementation("androidx.databinding:library:3.2.0-alpha11")
+    implementation("androidx.databinding:databinding-runtime:8.8.0")
+    val camerax_version = "1.4.1"
 
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
@@ -48,4 +52,12 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+
+        // Camerax
+    implementation("androidx.camera:camera-lifecycle:${camerax_version}")
+    implementation("androidx.camera:camera-view:${camerax_version}")
+    implementation("androidx.camera:camera-extensions:${camerax_version}")
+
+    // ML Kit
+    implementation("com.google.mlkit:text-recognition-korean:16.0.1")
 }
