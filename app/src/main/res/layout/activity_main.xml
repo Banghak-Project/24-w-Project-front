@@ -1,86 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <include
-        android:id="@+id/main_toolbar"
-        layout="@layout/main_toolbar"/>
-
-    <LinearLayout
-        android:contentDescription="가름선"
+    android:layout_height="match_parent">
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/black"/>
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/main_content"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
-        <LinearLayout
+<!--    CameraX 미리보기용-->
+        <androidx.camera.view.PreviewView
+            android:id="@+id/previewView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="6"
-            android:background="@color/gray"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            app:scaleType="fillCenter"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="hi"/>
+    </FrameLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="24dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="9"
-                    android:text="가게 별 소비 리스트"
-                    style="@style/TextHeadingXL"/>
-            </LinearLayout>
-
-            <include
-                android:contentDescription="레이아웃 확인용 임시"
-                layout="@layout/list_place"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-
-            <Button
-                android:id="@+id/b1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="임시버튼"
-                android:text="로그인 선택 화면으로 이동" />
-            <Button
-                android:id="@+id/b2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="임시버튼"
-                android:text="달력 화면으로 이동" />
-        </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:contentDescription="버튼 부분"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:gravity="center">
-        <FrameLayout
-            android:id="@+id/button_camera"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/round_button"
-            android:gravity="center">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_camera"
-                android:layout_gravity="center" />
-        </FrameLayout>
-    </LinearLayout>
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
