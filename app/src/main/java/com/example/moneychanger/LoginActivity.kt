@@ -27,6 +27,13 @@ class LoginActivity : AppCompatActivity() {
             finish()
         }
 
+        //로그인 (임시 - 홈 화면으로 연결)
+        binding.buttonSignIn.setOnClickListener {
+            // 회원가입 페이지로 연결
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
+
         //아이디 패스워드 찾기
         binding.buttonFindIdPw.paintFlags = binding.buttonFindIdPw.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         binding.buttonFindIdPw.setOnClickListener {

@@ -22,17 +22,27 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="회원 정보를 \n입력해주세요."
-                android:layout_marginBottom="20dp" />
+                android:text="회원 정보를"
+                style="@style/TextHeadingXL"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="입력해주세요."
+                style="@style/TextHeadingXL"/>
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="20dp" >
+                android:layout_marginBottom="8dp" >
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
-                    android:text="성별"/>
+                    android:layout_marginBottom="4dp"
+                    android:text="성별"
+                    style="@style/TextBodyS"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -64,11 +74,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="20dp" >
+                android:layout_marginBottom="8dp" >
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
-                    android:text="생년월일"/>
+                    android:layout_marginBottom="4dp"
+                    android:text="생년월일"
+                    style="@style/TextBodyS"/>
                 <FrameLayout
                     android:id="@+id/input_date"
                     android:layout_width="match_parent"
@@ -77,10 +89,13 @@
                     <EditText
                         android:id="@+id/date_text"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
+                        android:paddingHorizontal="24dp"
                         android:hint="YY/MM/DD"
+                        android:background="@drawable/round_background"
+                        style="@style/TextBodyL"
                         android:focusable="false"
-                        android:clickable="true"/>
+                        android:clickable="true" />
                     <ImageView
                         android:layout_width="15dp"
                         android:layout_height="15dp"
@@ -94,30 +109,38 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="20dp" >
+                android:layout_marginBottom="8dp" >
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
-                    android:text="이름"/>
+                    android:layout_marginBottom="4dp"
+                    android:text="이름"
+                    style="@style/TextBodyS"/>
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="이름"/>
+                    android:layout_height="48dp"
+                    android:paddingHorizontal="24dp"
+                    android:hint="이름"
+                    android:background="@drawable/round_background"
+                    style="@style/TextBodyL"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="20dp" >
+                android:layout_marginBottom="8dp" >
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
-                    android:text="아이디"/>
+                    android:layout_marginBottom="4dp"
+                    android:text="아이디"
+                    style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:gravity="center_vertical"
                     android:background="@drawable/round_background"
+                    android:backgroundTint="@color/gray"
                     android:padding="10dp"
                     android:text="----@mju.ac.kr"/>
             </LinearLayout>
@@ -125,16 +148,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="20dp" >
+                android:layout_marginBottom="8dp" >
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
-                    android:text="비밀번호"/>
+                    android:layout_marginBottom="4dp"
+                    android:text="비밀번호"
+                    style="@style/TextBodyS"/>
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:hint="PW"/>
+                    android:layout_height="48dp"
+                    android:paddingHorizontal="24dp"
+                    android:hint="PW"
+                    android:background="@drawable/round_background"
+                    style="@style/TextBodyL"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -143,12 +170,26 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <Button
+        <LinearLayout
             android:id="@+id/button_next"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="다음"
-            android:gravity="center"
-            android:backgroundTint="@color/gray2" />
+            android:layout_width="312dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/round_background"
+            android:backgroundTint="@color/gray2">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="다음"
+                    android:layout_marginRight="16dp"
+                    style="@style/TextLabelL"/>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

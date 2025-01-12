@@ -13,6 +13,8 @@
             android:id="@+id/login_toolbar"
             layout="@layout/login_toolbar"/>
         <ImageView
+            android:contentDescription="쓰레기통 이미지로 바꿔야함"
+            android:id="@+id/button_moveToDelete"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="end|center_vertical"
@@ -29,67 +31,77 @@
         android:background="@color/gray">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="168dp"
+            android:layout_height="wrap_content"
             android:background="@color/white"
             android:orientation="vertical"
             android:paddingHorizontal="24dp"
             android:paddingVertical="12dp">
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="8dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="쇼핑 장소"
-                    style="@style/TextHeadingXXXL"/>
+                android:layout_height="wrap_content">
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical"
+                    android:layout_marginBottom="4dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:text="도시/국가"
-                        style="@style/TextBodyS"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:text="•"
-                        style="@style/TextBodyS"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="00"
-                        style="@style/TextBodyS"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="분 전"
-                        android:layout_marginEnd="16dp"
-                        style="@style/TextBodyS"/>
+                        android:text="쇼핑 장소"
+                        style="@style/TextHeadingXXXL"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/round_background"
-                        android:backgroundTint="@color/gray"
-                        android:padding="3dp">
+                        android:orientation="horizontal">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0000.00.00"
-                            style="@style/TextBodyXS"/>
+                            android:layout_marginEnd="5dp"
+                            android:text="도시/국가"
+                            style="@style/TextBodyS"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:text="•"
+                            style="@style/TextBodyS"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00"
+                            style="@style/TextBodyS"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="분 전"
+                            android:layout_marginEnd="16dp"
+                            style="@style/TextBodyS"/>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/round_background"
+                            android:backgroundTint="@color/gray"
+                            android:padding="3dp">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0000.00.00"
+                                style="@style/TextBodyXS"/>
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+                <ImageView
+                    android:contentDescription="연필 아이콘으로 변경"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_camera"
+                    android:layout_gravity="end"/>
+            </FrameLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="4dp">
                 <LinearLayout
                     android:layout_width="120dp"
                     android:layout_height="32dp"
@@ -125,8 +137,8 @@
                     android:layout_gravity="center"
                     android:orientation="horizontal">
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:src="@drawable/ic_right_arrow"/>
@@ -162,7 +174,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="4dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -194,29 +207,59 @@
                     android:layout_marginEnd="16dp"
                     style="@style/TextBodyS"/>
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:orientation="horizontal"
+                android:paddingHorizontal="12dp"
+                android:background="@drawable/round_background"
+                android:backgroundTint="@color/gray">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="총계"
+                    android:gravity="center"
+                    style="@style/TextBodyXS"/>
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_marginRight="8dp"
+                    android:text="N00,000,000"
+                    style="@style/TextLabelL"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="₩"
+                    style="@style/TextBodyXS"/>
+            </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:paddingHorizontal="24dp">
+            android:orientation="vertical">
             <LinearLayout
                 android:id="@+id/spinnerContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:orientation="horizontal"
-                android:layout_marginHorizontal="4dp">
+                android:layout_marginVertical="4dp">
                 <Spinner
-                    android:id="@+id/spinner"
+                    android:id="@+id/sortSpinner"
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"
                     android:background="@null"
                     android:dropDownWidth="72dp"
                     android:visibility="invisible"/>
                 <TextView
-                    android:id="@+id/spinnerText"
+                    android:id="@+id/sortSpinnerText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -224,22 +267,47 @@
                     android:paddingRight="8dp"
                     style="@style/TextBodyM_bold"/>
                 <ImageView
-                    android:id="@+id/spinnerArrow"
+                    android:id="@+id/sortSpinnerArrow"
                     android:layout_width="10dp"
                     android:layout_height="10dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_dropdown"/>
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="@color/white"/>
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            <LinearLayout
+                android:id="@+id/button_add"
+                android:layout_width="312dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:background="@drawable/round_background"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center">
+                    <ImageView
+                        android:contentDescription="+ 아이콘으로 바꾸기"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_camera"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="직접 추가하기"
+                        android:layout_marginLeft="16dp"
+                        style="@style/TextLabelL"/>
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
