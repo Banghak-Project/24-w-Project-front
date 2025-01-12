@@ -43,7 +43,10 @@
 
             <include
                 android:contentDescription="레이아웃 확인용 임시"
-                layout="@layout/list_place"/>
+                android:id="@+id/list_place"
+                layout="@layout/list_place"
+                android:clickable="true"
+                android:focusable="true"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"

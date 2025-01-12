@@ -24,7 +24,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="로그인"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginBottom="32dp"
+                style="@style/TextHeadingXXXL"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -34,16 +35,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:hint="   ID"
-                    android:layout_marginBottom="20dp"
+                    android:paddingHorizontal="16dp"
+                    android:hint="ID"
+                    android:layout_marginBottom="18dp"
                     android:background="@drawable/round_background"
                     android:backgroundTint="@color/gray"/>
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:hint="   PW"
-                    android:layout_marginBottom="20dp"
+                    android:paddingHorizontal="16dp"
+                    android:hint="PW"
+                    android:layout_marginBottom="18dp"
                     android:background="@drawable/round_background"
                     android:backgroundTint="@color/gray"/>
                 <TextView
@@ -60,12 +63,28 @@
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center">
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="SIGN IN"
-                android:layout_marginBottom="20dp"
-                android:backgroundTint="@color/gray2"/>
+            <LinearLayout
+                android:id="@+id/button_sign_in"
+                android:layout_width="312dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center|bottom"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/round_background"
+                android:backgroundTint="@color/black">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SIGN IN"
+                        android:textColor="@color/white"
+                        android:layout_marginRight="16dp"
+                        style="@style/TextLabelL"/>
+                </LinearLayout>
+            </LinearLayout>
             <TextView
                 android:id="@+id/button_sign_up"
                 android:layout_width="wrap_content"

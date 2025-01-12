@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="24dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,34 +22,47 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="본인확인을 위해 사용하실 \n이메일을 입력해주세요."
-                android:layout_marginBottom="20dp" />
+                android:text="본인확인을 위해 사용하실"
+                style="@style/TextHeadingXL"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="이메일을 입력해주세요."
+                style="@style/TextHeadingXL"/>
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="20dp" >
+                android:layout_marginBottom="8dp">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
-                    android:text="로그인"/>
+                    android:text="이메일"
+                    android:layout_marginBottom="4dp"
+                    style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
+                    android:paddingHorizontal="24dp"
+                    android:text="---@mju.ac.kr"
                     android:gravity="center_vertical"
                     android:background="@drawable/round_background"
-                    android:padding="10dp"
-                    android:text="---@mju.ac.kr"/>
+                    android:backgroundTint="@color/gray"
+                    style="@style/TextBodyL"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="20dp" >
+                android:layout_marginBottom="24dp" >
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
-                    android:text="인증번호 입력"/>
+                    android:text="인증번호 입력"
+                    style="@style/TextBodyS"/>
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -57,14 +70,15 @@
                     <EditText
                         android:id="@+id/input_field"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="9"
-                        android:hint="이메일을 입력해주세요"/>
+                        android:layout_height="48dp"
+                        android:hint="4자리 숫자 입력"
+                        style="@style/TextBodyM_medium"/>
                     <TextView
                         android:id="@+id/timerText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end|center_vertical"
+                        android:layout_marginRight="8dp"
                         android:text="03:00"/>
                 </FrameLayout>
             </LinearLayout>
@@ -86,16 +100,30 @@
         </LinearLayout>
 
         <Space
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <Button
+        <LinearLayout
             android:id="@+id/button_next"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="다음"
-            android:gravity="center"
-            android:backgroundTint="@color/gray2" />
+            android:layout_width="312dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/round_background"
+            android:backgroundTint="@color/gray2">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="다음"
+                    android:layout_marginRight="16dp"
+                    style="@style/TextLabelL"/>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="24dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,92 +22,114 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="서비스 이용약관에 \n동의해주세요."
-                android:layout_marginBottom="20dp" />
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:layout_weight="1" />
-            <LinearLayout
+                android:text="서비스 이용약관에"
+                style="@style/TextHeadingXL"/>
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="동의해주세요."
+                style="@style/TextHeadingXL"/>
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
                 android:orientation="horizontal"
                 android:background="@drawable/round_background">
                 <CheckBox
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_margin="24dp"
+                    android:layout_gravity="center"/>
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:text="네, 모두 동의합니다"/>
+                    android:text="네, 모두 동의합니다"
+                    android:layout_gravity="center"
+                    style="@style/TextBodyM_bold"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp">
+                android:orientation="vertical">
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_height="40dp"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="24dp">
                     <CheckBox
-                        android:layout_width="0dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginRight="24dp"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="[필수] -"
+                        android:layout_gravity="center"
+                        style="@style/TextBodyM_medium"/>
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                        android:text="[필수] -"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="right"
-                        android:text=">"/>
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/ic_right_arrow"
+                        android:layout_gravity="center"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_height="40dp"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="24dp">
                     <CheckBox
-                        android:layout_width="0dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginRight="24dp"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="[필수] -"
+                        android:layout_gravity="center"
+                        style="@style/TextBodyM_medium"/>
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                        android:text="[필수] -"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="right"
-                        android:text=">"/>
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/ic_right_arrow"
+                        android:layout_gravity="center"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_height="40dp"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="24dp">
                     <CheckBox
-                        android:layout_width="0dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginRight="24dp"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="[선택] -"
+                        android:layout_gravity="center"
+                        style="@style/TextBodyM_medium"/>
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                        android:text="[선택] -"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="right"
-                        android:text=">"/>
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/ic_right_arrow"
+                        android:layout_gravity="center"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -117,12 +139,26 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <Button
+        <LinearLayout
             android:id="@+id/button_next"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="다음"
-            android:gravity="center"
-            android:backgroundTint="@color/gray2" />
+            android:layout_width="312dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/round_background"
+            android:backgroundTint="@color/gray2">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="다음"
+                    android:layout_marginRight="16dp"
+                    style="@style/TextLabelL"/>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
