@@ -33,7 +33,7 @@ class CameraManager(
     private var imageAnalyzer: ImageAnalysis? = null
 
     // default barcode scanner
-    private var analyzerVisionType: VisionType = VisionType.Barcode
+    private var analyzerVisionType: VisionType = VisionType.OCR
 
     lateinit var cameraExecutor: ExecutorService
     lateinit var imageCapture: ImageCapture
@@ -68,7 +68,7 @@ class CameraManager(
                 imageAnalyzer
             )
             preview?.setSurfaceProvider(
-                finderView.createSurfaceProvider()
+                finderView.surfaceProvider
             )
         } catch (e: Exception) {
             Log.e(TAG, "Use case binding failed", e)

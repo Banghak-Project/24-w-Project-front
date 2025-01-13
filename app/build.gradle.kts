@@ -69,5 +69,4 @@ dependencies {
 
     // ML Kit
     implementation("com.google.mlkit:text-recognition:16.0.1")
-    implementation("github.hongbeomi:macgyver:1.0.0")
 }
