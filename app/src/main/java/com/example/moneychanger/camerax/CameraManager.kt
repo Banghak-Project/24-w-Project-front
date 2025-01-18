@@ -1,6 +1,5 @@
-package github.hongbeomi.macgyver.camerax
+package com.example.moneychanger.camerax
 
-import com.example.moneychanger.camerax.GraphicOverlay
 import com.example.moneychanger.mlkitOCR.TextRecognitionProcessor
 
 import android.content.Context
@@ -9,6 +8,8 @@ import android.util.Log
 import android.util.Size
 import android.view.ScaleGestureDetector
 import androidx.camera.core.*
+import androidx.camera.core.resolutionselector.AspectRatioStrategy
+import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
@@ -16,9 +17,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.example.moneychanger.mlkitOCR.VisionType
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 
 class CameraManager(
     private val context: Context,
@@ -75,23 +73,23 @@ class CameraManager(
         }
     }
 
-    private fun setUpPinchToZoom() {
-        val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-            override fun onScale(detector: ScaleGestureDetector): Boolean {
-                val currentZoomRatio: Float = camera?.cameraInfo?.zoomState?.value?.zoomRatio ?: 1F
-                val delta = detector.scaleFactor
-                camera?.cameraControl?.setZoomRatio(currentZoomRatio * delta)
-                return true
-            }
-        }
-        val scaleGestureDetector = ScaleGestureDetector(context, listener)
-        finderView.setOnTouchListener { _, event ->
-            finderView.post {
-                scaleGestureDetector.onTouchEvent(event)
-            }
-            return@setOnTouchListener true
-        }
-    }
+//    private fun setUpPinchToZoom() {
+//        val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+//            override fun onScale(detector: ScaleGestureDetector): Boolean {
+//                val currentZoomRatio: Float = camera?.cameraInfo?.zoomState?.value?.zoomRatio ?: 1F
+//                val delta = detector.scaleFactor
+//                camera?.cameraControl?.setZoomRatio(currentZoomRatio * delta)
+//                return true
+//            }
+//        }
+//        val scaleGestureDetector = ScaleGestureDetector(context, listener)
+//        finderView.setOnTouchListener { _, event ->
+//            finderView.post {
+//                scaleGestureDetector.onTouchEvent(event)
+//            }
+//            return@setOnTouchListener true
+//        }
+//    }
 
     fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
@@ -113,42 +111,45 @@ class CameraManager(
 
                 metrics =  DisplayMetrics().also { finderView.display.getRealMetrics(it) }
 
-                imageCapture =
-                    ImageCapture.Builder()
-                        .setTargetResolution(Size(metrics.widthPixels, metrics.heightPixels))
-                        .build()
+                val resolutionSelector =
+                    ResolutionSelector.Builder().setAspectRatioStrategy(
+                        AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY).build()
+                imageCapture = ImageCapture.Builder()
+                    .setResolutionSelector(resolutionSelector)
+                    .build()
 
-                setUpPinchToZoom()
+
+//                setUpPinchToZoom()
                 setCameraConfig(cameraProvider, cameraSelector)
 
             }, ContextCompat.getMainExecutor(context)
         )
     }
 
-    fun changeCameraSelector() {
-        cameraProvider?.unbindAll()
-        cameraSelectorOption =
-            if (cameraSelectorOption == CameraSelector.LENS_FACING_BACK) CameraSelector.LENS_FACING_FRONT
-            else CameraSelector.LENS_FACING_BACK
-        graphicOverlay.toggleSelector()
-        startCamera()
-    }
+//    fun changeCameraSelector() {
+//        cameraProvider?.unbindAll()
+//        cameraSelectorOption =
+//            if (cameraSelectorOption == CameraSelector.LENS_FACING_BACK) CameraSelector.LENS_FACING_FRONT
+//            else CameraSelector.LENS_FACING_BACK
+////        graphicOverlay.toggleSelector()
+//        startCamera()
+//    }
 
-    fun changeAnalyzer(visionType: VisionType) {
-        if (analyzerVisionType != visionType) {
-            cameraProvider?.unbindAll()
-            analyzerVisionType = visionType
-            startCamera()
-        }
-    }
+//    fun changeAnalyzer(visionType: VisionType) {
+//        if (analyzerVisionType != visionType) {
+//            cameraProvider?.unbindAll()
+//            analyzerVisionType = visionType
+//            startCamera()
+//        }
+//    }
 
-    fun isHorizontalMode() : Boolean {
-        return rotation == 90f || rotation == 270f
-    }
+//    fun isHorizontalMode() : Boolean {
+//        return rotation == 90f || rotation == 270f
+//    }
 
-    fun isFrontMode() : Boolean {
-        return cameraSelectorOption == CameraSelector.LENS_FACING_FRONT
-    }
+//    fun isFrontMode() : Boolean {
+//        return cameraSelectorOption == CameraSelector.LENS_FACING_FRONT
+//    }
 
     companion object {
         private const val RATIO_4_3_VALUE = 4.0 / 3.0

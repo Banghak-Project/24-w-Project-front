@@ -2,6 +2,8 @@ package com.example.moneychanger.camerax
 
 import android.annotation.SuppressLint
 import android.graphics.*
+import androidx.annotation.OptIn
+import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.android.gms.tasks.Task
@@ -11,18 +13,13 @@ abstract class BaseImageAnalyzer<T> : ImageAnalysis.Analyzer {
 
     abstract val graphicOverlay: GraphicOverlay
 
+    @OptIn(ExperimentalGetImage::class)
     @SuppressLint("UnsafeExperimentalUsageError")
     override fun analyze(imageProxy: ImageProxy) {
         val mediaImage = imageProxy.image
         mediaImage?.let {
             detectInImage(InputImage.fromMediaImage(it, imageProxy.imageInfo.rotationDegrees))
-                .addOnSuccessListener { results ->
-                    onSuccess(
-                        results,
-                        graphicOverlay,
-                        it.cropRect
-                    )
-                }
+                .addOnSuccessListener { results -> onSuccess(results, graphicOverlay, it.cropRect) }
                 .addOnFailureListener {
                     graphicOverlay.clear()
                     graphicOverlay.postInvalidate()

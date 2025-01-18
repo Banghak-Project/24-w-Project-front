@@ -1,8 +1,6 @@
 package com.example.moneychanger.camerax
 
-
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Rect
@@ -30,34 +28,14 @@ open class GraphicOverlay(context: Context?, attrs: AttributeSet?) :
 
         fun calculateRect(height: Float, width: Float, boundingBoxT: Rect): RectF {
 
-            // for land scape
-            fun isLandScapeMode(): Boolean {
-                return overlay.context.resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
-            }
-
-            fun whenLandScapeModeWidth(): Float {
-                return when (isLandScapeMode()) {
-                    true -> width
-                    false -> height
-                }
-            }
-
-            fun whenLandScapeModeHeight(): Float {
-                return when (isLandScapeMode()) {
-                    true -> height
-                    false -> width
-                }
-            }
-
-            val scaleX = overlay.width.toFloat() / whenLandScapeModeWidth()
-            val scaleY = overlay.height.toFloat() / whenLandScapeModeHeight()
+            val scaleX = overlay.width.toFloat()/height
+            val scaleY = overlay.height.toFloat()/width
             val scale = scaleX.coerceAtLeast(scaleY)
             overlay.mScale = scale
 
-            // Calculate offset (we need to center the overlay on the target)
-            val offsetX = (overlay.width.toFloat() - ceil(whenLandScapeModeWidth() * scale)) / 2.0f
-            val offsetY =
-                (overlay.height.toFloat() - ceil(whenLandScapeModeHeight() * scale)) / 2.0f
+            // 화면에 이미지가 정중앙에 오도록 좌표 시작점 계산
+            val offsetX = (overlay.width.toFloat() - ceil(height * scale)) / 2.0f
+            val offsetY = (overlay.height.toFloat() - ceil(width * scale)) / 2.0f
 
             overlay.mOffsetX = offsetX
             overlay.mOffsetY = offsetY
@@ -69,23 +47,12 @@ open class GraphicOverlay(context: Context?, attrs: AttributeSet?) :
                 bottom = boundingBoxT.bottom * scale + offsetY
             }
 
-            // for front mode
-            if (overlay.isFrontMode()) {
-                val centerX = overlay.width.toFloat() / 2
-                mappedBox.apply {
-                    left = centerX + (centerX - left)
-                    right = centerX - (right - centerX)
-                }
-            }
             return mappedBox
         }
 
         fun translateX(horizontal: Float): Float {
-            return if (overlay.mScale != null && overlay.mOffsetX != null && !overlay.isFrontMode()) {
+            return if (overlay.mScale != null && overlay.mOffsetX != null) {
                 (horizontal * overlay.mScale!!) + overlay.mOffsetX!!
-            } else if (overlay.mScale != null && overlay.mOffsetX != null && overlay.isFrontMode()) {
-                val centerX = overlay.width.toFloat() / 2
-                centerX - ((horizontal * overlay.mScale!!) + overlay.mOffsetX!! - centerX)
             } else {
                 horizontal
             }
@@ -99,14 +66,6 @@ open class GraphicOverlay(context: Context?, attrs: AttributeSet?) :
             }
         }
 
-    }
-
-    fun isFrontMode() = cameraSelector == CameraSelector.LENS_FACING_FRONT
-
-    fun toggleSelector() {
-        cameraSelector =
-            if (cameraSelector == CameraSelector.LENS_FACING_BACK) CameraSelector.LENS_FACING_FRONT
-            else CameraSelector.LENS_FACING_BACK
     }
 
     fun clear() {
