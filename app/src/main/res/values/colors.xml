@@ -5,4 +5,30 @@
     <color name="gray">#F1F3F5</color>
     <color name="gray2">#adb5bd</color>
     <color name="red">#F36C6C</color>
+
+    <color name="main">#01178f</color>
+    <color name="sub">#e1e3ed</color>
+    <color name="point">#F76466</color>
+
+    <color name="blue_10">#001066</color>
+    <color name="blue_08">#142db8</color>
+    <color name="blue_07">#2f4be1</color>
+    <color name="blue_06">#506bff</color>
+    <color name="blue_05">#6f85ff</color>
+    <color name="blue_04">#8fa0ff</color>
+    <color name="blue_03">#aebbff</color>
+    <color name="blue_02">#ced5ff</color>
+    <color name="blue_01">#edf0ff</color>
+    <color name="blue_00">#f8f9ff</color>
+
+    <color name="gray_10">#333333</color>
+    <color name="gray_09">#3d3d3d</color>
+    <color name="gray_08">#555</color>
+    <color name="gray_07">#6f6f6f</color>
+    <color name="gray_06">#8b8b8b</color>
+    <color name="gray_05">#c1c1c1</color>
+    <color name="gray_04">#dfdfdf</color>
+    <color name="gray_03">#ececec</color>
+    <color name="gray_02">#efefef</color>
+    <color name="gray_01">#f5f4f3</color>
 </resources>
