@@ -1,3 +1,40 @@
 <resources>
-    <string name="app_name">Money Lens</string>
+    <string name="app_name" translatable="false">Money Lens</string>
+
+    <string name="confirm" >확인</string>
+    <string name="next" >다음</string>
+
+    <!--온보딩_01-->
+    <string name="access_title" >접근권한 안내</string>
+    <string name="access_title1" >위치, GPS 사용 권한</string>
+    <string name="access_title2" >사진, 카메라 사용 권한</string>
+    <string name="access_body1" >리스트 생성 시 위치값 확인</string>
+    <string name="access_body2" >환율 확인 시 사진 촬영 및 저장 관리</string>
+
+    <!--온보딩_02-->
+    <string name="app_explain1">카메라를 비추기만 하면</string>
+    <string name="app_explain2">가격과 환율을 한눈에</string>
+    <string name="app_explain3">MONEY LENS로</string>
+    <string name="app_explain4">손쉽게 확인해보세요</string>
+    <string name="kakao_login">카카오 로그인</string>
+    <string name="email_login">이메일 로그인</string>
+
+    <!--온보딩_02-->
+    <string name="login">로그인</string>
+    <string name="id">ID</string>
+    <string name="pw">PW</string>
+    <string name="find_idpw">아이디, 비밀번호 찾기</string>
+    <string name="signin">SIGN IN</string>
+    <string name="join_merbership">처음이신가요?</string>
+
+    <!--온보딩_03-->
+    <string name="policy_title1">서비스 이용약관에</string>
+    <string name="policy_title2">동의해주세요.</string>
+    <string name="accept_all">네, 모두 동의합니다</string>
+    <string name="essential">[필수]</string>
+    <string name="optional">[선택]</string>
+    <string name="policy_content1">-</string>
+    <string name="policy_content2">-</string>
+    <string name="policy_content3">-</string>
+
 </resources>

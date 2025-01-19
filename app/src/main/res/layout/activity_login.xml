@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/gray_01">
 
     <include
     android:id="@+id/login_toolbar"
@@ -15,98 +16,61 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="20dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login"
+            android:layout_marginBottom="32dp"
+            style="@style/TextHeadingXXXL"/>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="312dp"
             android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="로그인"
-                android:layout_marginBottom="32dp"
-                style="@style/TextHeadingXXXL"/>
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="48dp"
                     android:paddingHorizontal="16dp"
-                    android:hint="ID"
+                    android:hint="@string/id"
                     android:layout_marginBottom="18dp"
                     android:background="@drawable/round_background"
-                    android:backgroundTint="@color/gray"/>
+                    style="@style/TextHeadingXL"/>
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="48dp"
                     android:paddingHorizontal="16dp"
-                    android:hint="PW"
+                    android:hint="@string/pw"
                     android:layout_marginBottom="18dp"
                     android:background="@drawable/round_background"
-                    android:backgroundTint="@color/gray"/>
+                    style="@style/TextHeadingXL"/>
                 <TextView
                     android:id="@+id/button_find_id_pw"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="아이디, 비밀번호 찾기"/>
+                    android:text="@string/find_idpw"
+                    style="@style/TextBodyS_deco"
+                    android:textColor="@color/gray_05"/>
             </LinearLayout>
-        </LinearLayout>
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="64dp"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
-            <LinearLayout
+            <Button
                 android:id="@+id/button_sign_in"
-                android:layout_width="312dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center|bottom"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/round_background"
-                android:backgroundTint="@color/black">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="SIGN IN"
-                        android:textColor="@color/white"
-                        android:layout_marginRight="16dp"
-                        style="@style/TextLabelL"/>
-                </LinearLayout>
-            </LinearLayout>
+                android:text="@string/signin"
+                style="@style/NextButtonStyle" />
+
             <TextView
                 android:id="@+id/button_sign_up"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="처음이신가요?"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SNS 로 쉽고 빠르게"
-                android:paddingBottom="10dp"/>
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_camera"/>
+                android:layout_gravity="center"
+                android:text="@string/join_merbership"
+                style="@style/TextBodyS_deco"
+                android:textColor="@color/gray_05"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
