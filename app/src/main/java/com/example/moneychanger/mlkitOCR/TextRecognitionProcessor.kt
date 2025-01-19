@@ -7,15 +7,18 @@ import com.example.moneychanger.camerax.GraphicOverlay
 import com.google.android.gms.tasks.Task
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
-import com.google.mlkit.vision.text.TextRecognition
 import java.io.IOException
 
-class TextRecognitionProcessor(private val view:GraphicOverlay) : BaseImageAnalyzer<Text>() {
+class TextRecognitionProcessor(
+    private val view:GraphicOverlay,
+    private val onTextDetected: (String)-> Unit
+) : BaseImageAnalyzer<Text>() {
 
     private val recognizer = TextRecognitionWrapper.getClient()
     override val graphicOverlay: GraphicOverlay
         get() = view
 
+    //MLKit TextRecognition API를 이용해 입력 이미지를 처리
     override fun detectInImage(image: InputImage): Task<Text> {
         return recognizer.process(image)
     }
@@ -34,11 +37,21 @@ class TextRecognitionProcessor(private val view:GraphicOverlay) : BaseImageAnaly
         rect: Rect
     ) {
         graphicOverlay.clear()
+        val imageWidth = rect.width()
+        val imageHeight = rect.height()
+        graphicOverlay.setCameraInfo(
+            imageWidth = imageWidth,
+            imageHeight = imageHeight,
+            isImageFlipped = false
+        )
+        val allText = StringBuilder()
         results.textBlocks.forEach {
+            allText.append(it.text).append("\n")
             val textGraphic = TextRecognitionGraphic(graphicOverlay, it, rect)
             graphicOverlay.add(textGraphic)
         }
         graphicOverlay.postInvalidate()
+        onTextDetected(allText.toString()) // 텍스트 전달
     }
 
     override fun onFailure(e: Exception) {

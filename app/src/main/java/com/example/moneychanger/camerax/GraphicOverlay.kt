@@ -97,5 +97,32 @@ open class GraphicOverlay(context: Context?, attrs: AttributeSet?) :
             }
         }
     }
+    fun setCameraInfo(imageWidth: Int, imageHeight: Int, isImageFlipped: Boolean) {
+        synchronized(lock) {
+            val viewAspectRatio = width.toFloat() / height
+            val imageAspectRatio = imageWidth.toFloat() / imageHeight
+
+            // 이미지 회전 및 비율에 따라 스케일 계산
+            mScale = if (imageAspectRatio > viewAspectRatio) {
+                width.toFloat() / imageWidth
+            } else {
+                height.toFloat() / imageHeight
+            }
+
+            // 좌표 중심 정렬
+            mOffsetX = (width - mScale!! * imageWidth) / 2
+            mOffsetY = (height - mScale!! * imageHeight) / 2
+
+            // 카메라 플립 처리
+            cameraSelector = if (isImageFlipped) {
+                CameraSelector.LENS_FACING_FRONT
+            } else {
+                CameraSelector.LENS_FACING_BACK
+            }
+
+            postInvalidate() // 변경된 설정 적용
+        }
+    }
+
 }
 

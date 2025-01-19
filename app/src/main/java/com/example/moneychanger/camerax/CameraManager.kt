@@ -17,7 +17,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.example.moneychanger.mlkitOCR.VisionType
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-
 class CameraManager(
     private val context: Context,
     private val finderView: PreviewView,
@@ -29,68 +28,43 @@ class CameraManager(
     private var camera: Camera? = null
     private var cameraProvider: ProcessCameraProvider? = null
     private var imageAnalyzer: ImageAnalysis? = null
+    private var cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
 
-    // default barcode scanner
     private var analyzerVisionType: VisionType = VisionType.OCR
-
-    lateinit var cameraExecutor: ExecutorService
-    lateinit var imageCapture: ImageCapture
-    lateinit var metrics: DisplayMetrics
-
-    var rotation: Float = 0f
-    var cameraSelectorOption = CameraSelector.LENS_FACING_BACK
+    private var cameraSelectorOption = CameraSelector.LENS_FACING_BACK
 
     init {
-        createNewExecutor()
-    }
-
-    private fun createNewExecutor() {
+        // Executor 생성 (스레드 풀)
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
     private fun selectAnalyzer(): TextRecognitionProcessor {
-        return TextRecognitionProcessor(graphicOverlay)
+        return TextRecognitionProcessor(
+            graphicOverlay, // GraphicOverlay 전달
+            onTextDetected = { detectedText ->
+                // 텍스트가 감지되었을 때 처리할 내용
+                Log.d("DetectedText", detectedText) // 로그에 감지된 텍스트 출력
+            }
+        )
     }
 
-    private fun setCameraConfig(
-        cameraProvider: ProcessCameraProvider?,
-        cameraSelector: CameraSelector
-    ) {
+    // 카메라 설정
+    private fun setCameraConfig(cameraProvider: ProcessCameraProvider?, cameraSelector: CameraSelector) {
         try {
             cameraProvider?.unbindAll()
             camera = cameraProvider?.bindToLifecycle(
                 lifecycleOwner,
                 cameraSelector,
                 preview,
-                imageCapture,
                 imageAnalyzer
             )
-            preview?.setSurfaceProvider(
-                finderView.surfaceProvider
-            )
+            preview?.setSurfaceProvider(finderView.surfaceProvider)  // 화면 표시
         } catch (e: Exception) {
             Log.e(TAG, "Use case binding failed", e)
         }
     }
 
-//    private fun setUpPinchToZoom() {
-//        val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-//            override fun onScale(detector: ScaleGestureDetector): Boolean {
-//                val currentZoomRatio: Float = camera?.cameraInfo?.zoomState?.value?.zoomRatio ?: 1F
-//                val delta = detector.scaleFactor
-//                camera?.cameraControl?.setZoomRatio(currentZoomRatio * delta)
-//                return true
-//            }
-//        }
-//        val scaleGestureDetector = ScaleGestureDetector(context, listener)
-//        finderView.setOnTouchListener { _, event ->
-//            finderView.post {
-//                scaleGestureDetector.onTouchEvent(event)
-//            }
-//            return@setOnTouchListener true
-//        }
-//    }
-
+    // 카메라 실행
     fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
         cameraProviderFuture.addListener(
@@ -99,62 +73,32 @@ class CameraManager(
                 preview = Preview.Builder().build()
 
                 imageAnalyzer = ImageAnalysis.Builder()
-                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST) // 최신 프레임만 사용
                     .build()
                     .also {
-                        it.setAnalyzer(cameraExecutor, selectAnalyzer())
+                        it.setAnalyzer(cameraExecutor, selectAnalyzer())  // 텍스트 분석기 설정
                     }
 
+                // 카메라 설정
                 val cameraSelector = CameraSelector.Builder()
                     .requireLensFacing(cameraSelectorOption)
                     .build()
 
-                metrics =  DisplayMetrics().also { finderView.display.getRealMetrics(it) }
+                val resolutionSelector = ResolutionSelector.Builder()
+                    .setAspectRatioStrategy(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY)
+                    .build()
 
-                val resolutionSelector =
-                    ResolutionSelector.Builder().setAspectRatioStrategy(
-                        AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY).build()
-                imageCapture = ImageCapture.Builder()
+                val imageCapture = ImageCapture.Builder()
                     .setResolutionSelector(resolutionSelector)
                     .build()
 
-
-//                setUpPinchToZoom()
-                setCameraConfig(cameraProvider, cameraSelector)
+                setCameraConfig(cameraProvider, cameraSelector)  // 카메라 구성
 
             }, ContextCompat.getMainExecutor(context)
         )
     }
 
-//    fun changeCameraSelector() {
-//        cameraProvider?.unbindAll()
-//        cameraSelectorOption =
-//            if (cameraSelectorOption == CameraSelector.LENS_FACING_BACK) CameraSelector.LENS_FACING_FRONT
-//            else CameraSelector.LENS_FACING_BACK
-////        graphicOverlay.toggleSelector()
-//        startCamera()
-//    }
-
-//    fun changeAnalyzer(visionType: VisionType) {
-//        if (analyzerVisionType != visionType) {
-//            cameraProvider?.unbindAll()
-//            analyzerVisionType = visionType
-//            startCamera()
-//        }
-//    }
-
-//    fun isHorizontalMode() : Boolean {
-//        return rotation == 90f || rotation == 270f
-//    }
-
-//    fun isFrontMode() : Boolean {
-//        return cameraSelectorOption == CameraSelector.LENS_FACING_FRONT
-//    }
-
     companion object {
-        private const val RATIO_4_3_VALUE = 4.0 / 3.0
-        private const val RATIO_16_9_VALUE = 16.0 / 9.0
-        private const val TAG = "CameraXBasic"
+        private const val TAG = "CameraManager"
     }
-
 }
