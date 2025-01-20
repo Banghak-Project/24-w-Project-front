@@ -33,6 +33,17 @@
         <item name="android:textSize">@dimen/M</item>
     </style>
 
+    <style name="SexButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="android:layout_width">148dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_gravity">center|bottom</item>
+        <item name="android:background">@drawable/round_button2</item>
+        <item name="android:backgroundTint">@color/main</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/gray_01</item>
+        <item name="android:textSize">@dimen/M</item>
+    </style>
+
 
     <!--텍스트 스타일 정의-->
     <!--heading-->

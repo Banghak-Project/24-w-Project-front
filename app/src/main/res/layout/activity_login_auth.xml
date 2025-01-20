@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/gray_01">
 
     <include
         android:id="@+id/login_toolbar"
@@ -22,12 +23,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="본인확인을 위해 사용하실"
+                android:text="@string/login_auth_title1"
                 style="@style/TextHeadingXL"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="이메일을 입력해주세요."
+                android:text="@string/login_auth_title2"
                 style="@style/TextHeadingXL"/>
             <Space
                 android:layout_width="wrap_content"
@@ -39,14 +40,14 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
-                    android:text="이메일"
+                    android:text="@string/email"
                     android:layout_marginBottom="4dp"
                     style="@style/TextBodyS"/>
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:paddingHorizontal="24dp"
-                    android:hint="이메일을 입력해주세요"
+                    android:hint="@string/input_email"
                     android:background="@drawable/round_background"
                     style="@style/TextBodyL"/>
             </LinearLayout>
@@ -57,26 +58,11 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <LinearLayout
+        <Button
             android:id="@+id/button_next"
-            android:layout_width="312dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center|bottom"
             android:layout_marginBottom="24dp"
-            android:background="@drawable/round_background"
-            android:backgroundTint="@color/gray2">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="다음"
-                    android:layout_marginRight="16dp"
-                    style="@style/TextLabelL"/>
-            </LinearLayout>
-        </LinearLayout>
+            android:text="@string/next"
+            style="@style/NextButtonStyle" />
+
     </LinearLayout>
 </LinearLayout>

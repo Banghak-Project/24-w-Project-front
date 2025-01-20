@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- 체크된 상태 -->
     <item
-        android:state_checked="true"
-        android:width="24dp"
-        android:height="24dp"
-        android:drawable="@drawable/checkbox_checked" />
+        android:state_checked="true">
+        <layer-list>
+            <item
+                android:width="24dp"
+                android:height="24dp"
+                android:drawable="@drawable/checkbox_checked" />
+        </layer-list>
+    </item>
     <!-- 체크되지 않은 상태 -->
-    <item
-        android:drawable="@drawable/checkbox_unchecked"
-        android:width="24dp"
-        android:height="24dp" />
-</layer-list>
+    <item>
+        <layer-list>
+            <item
+                android:width="24dp"
+                android:height="24dp"
+                android:drawable="@drawable/checkbox_unchecked" />
+        </layer-list>
+    </item>
+</selector>

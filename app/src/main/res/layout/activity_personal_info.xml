@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/gray_01">
 
     <include
         android:id="@+id/login_toolbar"
@@ -22,12 +23,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="회원 정보를"
+                android:text="@string/personal_info_title1"
                 style="@style/TextHeadingXL"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="입력해주세요."
+                android:text="@string/personal_info_title2"
                 style="@style/TextHeadingXL"/>
             <Space
                 android:layout_width="wrap_content"
@@ -41,7 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:layout_marginBottom="4dp"
-                    android:text="성별"
+                    android:text="@string/sex"
                     style="@style/TextBodyS"/>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -49,25 +50,16 @@
                     android:orientation="horizontal">
                     <Button
                         android:id="@+id/button_male"
+                        android:text="@string/male"
+                        style="@style/SexButtonStyle"/>
+                    <Space
                         android:layout_width="0dp"
-                        android:layout_height="48dp"
-                        android:layout_weight="1"
-                        android:text="남성"
-                        android:gravity="center"
-                        android:layout_marginRight="20dp"
-                        app:strokeColor="@color/gray2"
-                        app:strokeWidth="2dp"
-                        app:cornerRadius="10dp"/>
+                        android:layout_height="40dp"
+                        android:layout_weight="1"/>
                     <Button
                         android:id="@+id/button_female"
-                        android:layout_width="0dp"
-                        android:layout_height="48dp"
-                        android:layout_weight="1"
-                        android:text="여성"
-                        android:gravity="center"
-                        app:strokeColor="@color/gray2"
-                        app:strokeWidth="2dp"
-                        app:cornerRadius="10dp"/>
+                        android:text="@string/female"
+                        style="@style/SexButtonStyle"/>
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
@@ -79,31 +71,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:layout_marginBottom="4dp"
-                    android:text="생년월일"
+                    android:text="@string/birth_kor"
                     style="@style/TextBodyS"/>
-                <FrameLayout
-                    android:id="@+id/input_date"
+                <EditText
+                    android:id="@+id/date_text"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="false">
-                    <EditText
-                        android:id="@+id/date_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:paddingHorizontal="24dp"
-                        android:hint="YY/MM/DD"
-                        android:background="@drawable/round_background"
-                        style="@style/TextBodyL"
-                        android:focusable="false"
-                        android:clickable="true" />
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:src="@drawable/ic_right_arrow"
-                        android:layout_gravity="end|center_vertical"
-                        android:clickable="false"
-                        android:focusable="false"/>
-                </FrameLayout>
+                    android:layout_height="48dp"
+                    android:paddingHorizontal="24dp"
+                    android:hint="@string/birth_eng"
+                    android:background="@drawable/round_background"
+                    style="@style/TextBodyL"
+                    android:focusable="false"
+                    android:clickable="true" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -114,13 +93,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:layout_marginBottom="4dp"
-                    android:text="이름"
+                    android:text="@string/name"
                     style="@style/TextBodyS"/>
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:paddingHorizontal="24dp"
-                    android:hint="이름"
+                    android:hint="@string/name"
                     android:background="@drawable/round_background"
                     style="@style/TextBodyL"/>
             </LinearLayout>
@@ -133,16 +112,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:layout_marginBottom="4dp"
-                    android:text="아이디"
+                    android:text="@string/id_kor"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:gravity="center_vertical"
                     android:background="@drawable/round_background"
-                    android:backgroundTint="@color/gray"
+                    android:backgroundTint="@color/gray_02"
+                    android:textColor="@color/gray_04"
                     android:padding="10dp"
-                    android:text="----@mju.ac.kr"/>
+                    android:text="@string/ex_email"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -153,13 +133,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:layout_marginBottom="4dp"
-                    android:text="비밀번호"
+                    android:text="@string/pw_kor"
                     style="@style/TextBodyS"/>
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:paddingHorizontal="24dp"
-                    android:hint="PW"
+                    android:hint="@string/pw_eng"
                     android:background="@drawable/round_background"
                     style="@style/TextBodyL"/>
             </LinearLayout>
@@ -170,26 +150,10 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <LinearLayout
+        <Button
             android:id="@+id/button_next"
-            android:layout_width="312dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center|bottom"
             android:layout_marginBottom="24dp"
-            android:background="@drawable/round_background"
-            android:backgroundTint="@color/gray2">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="다음"
-                    android:layout_marginRight="16dp"
-                    style="@style/TextLabelL"/>
-            </LinearLayout>
-        </LinearLayout>
+            android:text="@string/next"
+            style="@style/NextButtonStyle" />
     </LinearLayout>
 </LinearLayout>

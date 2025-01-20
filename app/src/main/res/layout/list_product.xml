@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="312dp"
-    android:layout_height="wrap_content"
+    android:layout_height="104dp"
     android:orientation="vertical"
     android:background="@drawable/round_background"
     android:backgroundTint="@color/white"
-    android:padding="24dp"
+    android:padding="16dp"
     android:layout_marginBottom="8dp">
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,16 +26,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1"
+                    android:textColor="@color/blue_05"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=" / "
+                    android:textColor="@color/blue_05"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="5"
+                    android:textColor="@color/blue_05"
                     style="@style/TextBodyS"/>
             </LinearLayout>
             <Space
@@ -64,11 +67,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="00"
+                    android:textColor="@color/gray_05"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="분 전"
+                    android:text="@string/before"
+                    android:textColor="@color/gray_05"
                     style="@style/TextBodyS"/>
             </LinearLayout>
         </LinearLayout>
@@ -85,11 +90,10 @@
                 android:layout_height="24dp"
                 android:orientation="horizontal">
                 <ImageView
-                    android:contentDescription="아이콘 바꿔야함"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_camera"/>
+                    android:src="@drawable/icon_change"/>
                 <Space
                     android:layout_width="0dp"
                     android:layout_height="0dp"
@@ -101,7 +105,7 @@
                     android:gravity="right"
                     android:paddingHorizontal="8dp"
                     android:background="@drawable/round_background"
-                    android:backgroundTint="@color/gray">
+                    android:backgroundTint="@color/blue_00">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -114,6 +118,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="$"
+                        android:textColor="@color/gray_05"
                         style="@style/TextBodyS"/>
                 </LinearLayout>
             </LinearLayout>
@@ -127,19 +132,23 @@
                 android:orientation="horizontal"
                 android:gravity="end"
                 android:paddingHorizontal="16dp"
-                android:background="@drawable/round_background">
+                android:background="@drawable/round_background2">
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="70dp"
+                    android:layout_height="20dp"
                     android:layout_marginRight="10dp"
                     android:layout_gravity="center"
-                    android:text="환율계산액"
+                    android:gravity="end"
+                    android:text="0000.00"
+                    android:textColor="@color/main"
                     style="@style/TextBodyXXL" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:gravity="end"
                     android:text="₩"
+                    android:textColor="@color/gray_05"
                     style="@style/TextBodyXL"/>
             </LinearLayout>
         </LinearLayout>

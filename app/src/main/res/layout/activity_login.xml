@@ -34,7 +34,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:paddingHorizontal="16dp"
-                    android:hint="@string/id"
+                    android:hint="@string/id_eng"
                     android:layout_marginBottom="18dp"
                     android:background="@drawable/round_background"
                     style="@style/TextHeadingXL"/>
@@ -42,7 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:paddingHorizontal="16dp"
-                    android:hint="@string/pw"
+                    android:hint="@string/pw_eng"
                     android:layout_marginBottom="18dp"
                     android:background="@drawable/round_background"
                     style="@style/TextHeadingXL"/>
@@ -61,7 +61,8 @@
             <Button
                 android:id="@+id/button_sign_in"
                 android:text="@string/signin"
-                style="@style/NextButtonStyle" />
+                style="@style/NextButtonStyle"
+                android:layout_marginBottom="18dp"/>
 
             <TextView
                 android:id="@+id/button_sign_up"

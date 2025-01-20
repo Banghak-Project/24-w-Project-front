@@ -23,6 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="쇼핑 장소"
+                android:textColor="@color/main"
                 style="@style/TextHeadingXXXL"/>
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -33,22 +34,26 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
                     android:text="도시/국가"
+                    android:textColor="@color/gray_04"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
-                    android:text="•"
+                    android:text="@string/dot"
+                    android:textColor="@color/gray_04"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="00"
+                    android:textColor="@color/gray_04"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="분 전"
+                    android:text="@string/before"
+                    android:textColor="@color/gray_04"
                     style="@style/TextBodyS"/>
             </LinearLayout>
         </LinearLayout>
@@ -60,12 +65,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/round_background"
-            android:backgroundTint="@color/gray"
+            android:backgroundTint="@color/gray_02"
             android:padding="3dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0000.00.00"
+                android:textColor="@color/blue_04"
                 style="@style/TextBodyXS"/>
         </LinearLayout>
     </LinearLayout>
@@ -77,7 +83,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:text="총 합계"
+            android:text="@string/total"
+            android:textColor="@color/blue_04"
             style="@style/TextBodyXS"/>
         <LinearLayout
             android:layout_width="match_parent"
@@ -91,7 +98,7 @@
                 android:layout_gravity="center"
                 android:gravity="right"
                 android:background="@drawable/round_background"
-                android:backgroundTint="@color/gray">
+                android:backgroundTint="@color/gray_02">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -104,6 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="$"
+                    android:textColor="@color/gray_05"
                     style="@style/TextBodyS"/>
             </LinearLayout>
             <Space
@@ -117,7 +125,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_right_arrow"/>
+                    android:src="@drawable/icon_change"/>
             </LinearLayout>
             <Space
                 android:layout_width="0dp"
@@ -129,20 +137,21 @@
                 android:orientation="horizontal"
                 android:paddingHorizontal="16dp"
                 android:gravity="right"
-                android:background="@drawable/round_background"
-                android:backgroundTint="@color/gray">
+                android:background="@drawable/round_background2">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="8dp"
                     android:layout_gravity="center"
                     android:text="환율계산액"
+                    android:textColor="@color/main"
                     style="@style/TextBodyXXL" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="₩"
+                    android:textColor="@color/gray_05"
                     style="@style/TextBodyXL"/>
             </LinearLayout>
         </LinearLayout>
