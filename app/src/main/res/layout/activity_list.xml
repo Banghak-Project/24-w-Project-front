@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"    
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/white">
 
     <FrameLayout
         android:contentDescription="툴바"
@@ -13,13 +14,12 @@
             android:id="@+id/login_toolbar"
             layout="@layout/login_toolbar"/>
         <ImageView
-            android:contentDescription="쓰레기통 이미지로 바꿔야함"
             android:id="@+id/button_moveToDelete"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="end|center_vertical"
             android:layout_marginRight="24dp"
-            android:src="@drawable/ic_camera"/>
+            android:src="@drawable/icon_delete"/>
     </FrameLayout>
     
     <LinearLayout
@@ -28,7 +28,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:background="@color/gray">
+        android:background="@color/blue_00">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,6 +48,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="쇼핑 장소"
+                        android:textColor="@color/main"
                         style="@style/TextHeadingXXXL"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -58,43 +59,48 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="5dp"
                             android:text="도시/국가"
+                            android:textColor="@color/gray_04"
                             style="@style/TextBodyS"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="5dp"
                             android:text="•"
+                            android:textColor="@color/gray_04"
                             style="@style/TextBodyS"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="00"
+                            android:textColor="@color/gray_04"
                             style="@style/TextBodyS"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="분 전"
+                            android:textColor="@color/gray_04"
                             android:layout_marginEnd="16dp"
                             style="@style/TextBodyS"/>
                         <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="60dp"
+                            android:layout_height="16dp"
                             android:background="@drawable/round_background"
-                            android:backgroundTint="@color/gray"
-                            android:padding="3dp">
+                            android:backgroundTint="@color/blue_00">
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="0000.00.00"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:textColor="@color/blue_04"
                                 style="@style/TextBodyXS"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
                 <ImageView
-                    android:contentDescription="연필 아이콘으로 변경"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_camera"
+                    android:src="@drawable/icon_change_1"
                     android:layout_gravity="end"/>
             </FrameLayout>
             <LinearLayout
@@ -109,7 +115,7 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:background="@drawable/round_background"
-                    android:backgroundTint="@color/gray">
+                    android:backgroundTint="@color/blue_00">
                     <Spinner
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -122,27 +128,34 @@
                         android:layout_height="wrap_content"
                         android:text="통화"
                         android:layout_marginRight="16dp"
+                        android:textColor="@color/gray_08"
                         style="@style/TextBodyM_bold"/>
                     <ImageView
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:src="@drawable/ic_right_arrow"
-                        android:rotation="90"/>
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/icon_arrow"
+                        android:rotation="270"
+                        app:tint="@color/gray_05" />
                 </LinearLayout>
-                <LinearLayout
+                <Space
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+                <FrameLayout
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/round_button"
+                    android:gravity="center">
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:src="@drawable/ic_right_arrow"/>
-                </LinearLayout>
+                        android:src="@drawable/icon_shortcut"
+                        android:layout_gravity="center" />
+                </FrameLayout>
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
                 <LinearLayout
                     android:layout_width="120dp"
                     android:layout_height="32dp"
@@ -150,7 +163,7 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:background="@drawable/round_background"
-                    android:backgroundTint="@color/gray">
+                    android:backgroundTint="@color/blue_00">
                     <Spinner
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -163,12 +176,14 @@
                         android:layout_height="wrap_content"
                         android:text="통화"
                         android:layout_marginRight="16dp"
+                        android:textColor="@color/gray_08"
                         style="@style/TextBodyM_bold"/>
                     <ImageView
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:src="@drawable/ic_right_arrow"
-                        android:rotation="90"/>
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/icon_arrow"
+                        android:rotation="270"
+                        app:tint="@color/gray_05" />
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
@@ -180,30 +195,35 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:text="1"
+                    android:text="@string/one"
+                    android:textColor="@color/gray_05"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
                     android:text="통화"
+                    android:textColor="@color/gray_04"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
-                    android:text="당"
+                    android:text="@string/per"
+                    android:textColor="@color/gray_04"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0000.00"
+                    android:textColor="@color/gray_05"
                     android:layout_marginEnd="16dp"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="₩"
+                    android:textColor="@color/gray_04"
                     android:layout_marginEnd="16dp"
                     style="@style/TextBodyS"/>
             </LinearLayout>
@@ -213,12 +233,13 @@
                 android:orientation="horizontal"
                 android:paddingHorizontal="12dp"
                 android:background="@drawable/round_background"
-                android:backgroundTint="@color/gray">
+                android:backgroundTint="@color/gray_01">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="총계"
                     android:gravity="center"
+                    android:textColor="@color/blue_04"
                     style="@style/TextBodyXS"/>
                 <Space
                     android:layout_width="match_parent"
@@ -230,12 +251,14 @@
                     android:gravity="center"
                     android:layout_marginRight="8dp"
                     android:text="N00,000,000"
+                    android:textColor="@color/gray_08"
                     style="@style/TextLabelL"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="₩"
+                    android:textColor="@color/gray_05"
                     style="@style/TextBodyXS"/>
             </LinearLayout>
         </LinearLayout>
@@ -275,56 +298,79 @@
             </LinearLayout>
 
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_gravity="center"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                android:layout_height="match_parent"
+                android:fillViewport="true">
 
-            <LinearLayout
-                android:id="@+id/button_add"
-                android:layout_width="312dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center"
-                android:background="@drawable/round_background"
-                android:orientation="horizontal">
                 <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center">
-                    <ImageView
-                        android:contentDescription="+ 아이콘으로 바꾸기"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_camera"/>
-                    <TextView
-                        android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="직접 추가하기"
-                        android:layout_marginLeft="16dp"
-                        style="@style/TextLabelL"/>
+                        android:layout_gravity="center"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                    <LinearLayout
+                        android:id="@+id/button_add"
+                        android:layout_width="312dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/round_background"
+                        android:backgroundTint="@color/white"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="16dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/icon_add" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="16dp"
+                                android:text="@string/direct"
+                                style="@style/TextLabelL" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="8dp"
+                                android:text="@string/add"
+                                style="@style/TextLabelL" />
+                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:contentDescription="버튼 부분"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:background="@color/white">
         <FrameLayout
             android:id="@+id/button_camera"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/round_button"
+            android:backgroundTint="@color/main"
             android:gravity="center">
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_camera"
+                android:src="@drawable/icon_camera"
                 android:layout_gravity="center" />
         </FrameLayout>
     </LinearLayout>

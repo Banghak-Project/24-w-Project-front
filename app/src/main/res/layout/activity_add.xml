@@ -34,30 +34,31 @@
                 android:layout_height="wrap_content"
                 android:text="통화"
                 android:layout_marginRight="16dp"
+                android:textColor="@color/gray_08"
                 style="@style/TextBodyM_bold"/>
             <ImageView
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:src="@drawable/ic_right_arrow"
-                android:rotation="90"/>
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/icon_arrow"
+                android:rotation="270"
+                app:tint="@color/gray_05" />
         </LinearLayout>
         <Space
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1"/>
-        <LinearLayout
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:gravity="center"
+        <FrameLayout
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@drawable/round_button"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/icon_shortcut"
             android:layout_gravity="center"
-            android:orientation="horizontal"
-            android:background="@drawable/round_button">
-            <ImageView
-                android:contentDescription="아이콘 바꾸기"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_right_arrow"/>
-        </LinearLayout>
+            app:tint="@color/gray_07"/>
+    </FrameLayout>
         <Space
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -80,12 +81,14 @@
                 android:layout_height="wrap_content"
                 android:text="통화"
                 android:layout_marginRight="16dp"
+                android:textColor="@color/gray_08"
                 style="@style/TextBodyM_bold"/>
             <ImageView
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:src="@drawable/ic_right_arrow"
-                android:rotation="90"/>
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/icon_arrow"
+                android:rotation="270"
+                app:tint="@color/gray_05" />
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
@@ -96,7 +99,7 @@
         android:orientation="vertical"
         android:paddingVertical="16dp"
         android:paddingHorizontal="24dp"
-        android:background="@color/gray">
+        android:background="@color/blue_00">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -110,7 +113,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="가격 입력"
+                    android:text="@string/input_money"
                     style="@style/TextBodyS"/>
                 <Space
                     android:layout_width="0dp"
@@ -133,6 +136,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="N00,000,000"
+                    android:textColor="@color/gray_04"
                     style="@style/TextBodyL"/>
                 <Space
                     android:layout_width="0dp"
@@ -142,6 +146,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="₩"
+                    android:textColor="@color/gray_05"
                     style="@style/TextBodyL"/>
             </LinearLayout>
         </LinearLayout>
@@ -157,7 +162,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="계산값"
+                    android:text="@string/output_money"
                     style="@style/TextBodyS"/>
                 <Space
                     android:layout_width="0dp"
@@ -189,6 +194,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="₩"
+                    android:textColor="@color/gray_05"
                     style="@style/TextBodyL"/>
             </LinearLayout>
         </LinearLayout>
@@ -199,21 +205,21 @@
         android:layout_height="48dp"
         android:layout_gravity="center|bottom"
         android:layout_marginBottom="24dp"
-        android:background="@drawable/round_background">
+        android:background="@drawable/round_background"
+        android:backgroundTint="@color/white">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center">
             <ImageView
-                android:contentDescription="+ 아이콘으로 바꾸기"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_camera"/>
+                android:src="@drawable/icon_add"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="추가하기"
+                android:text="@string/add"
                 android:layout_marginLeft="16dp"
                 style="@style/TextLabelL"/>
         </LinearLayout>

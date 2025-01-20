@@ -4,18 +4,18 @@
     android:layout_width="312dp"
     android:layout_height="336dp"
     android:orientation="vertical"
-    android:background="@color/gray2">
+    android:background="@color/gray_01">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:background="@color/white"
+        android:background="@color/blue_01"
         android:paddingHorizontal="24dp">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="접근권한 안내"
+            android:text="@string/access_title"
             style="@style/TextBodyM_bold"/>
     </LinearLayout>
     <LinearLayout
@@ -30,6 +30,9 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical">
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="24dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
@@ -37,7 +40,7 @@
                 <ImageView
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/ic_camera"
+                    android:src="@drawable/img_map"
                     android:layout_marginRight="24dp"/>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -47,16 +50,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:text="위치, GPS 사용 권한"
+                        android:text="@string/access_title1"
                         style="@style/TextBodyM_bold"/>
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:text="-"
+                        android:text="@string/access_body1"
+                        android:textColor="@color/gray_06"
                         style="@style/TextBodyM_bold"/>
                 </LinearLayout>
             </LinearLayout>
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="24dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
@@ -64,7 +71,7 @@
                 <ImageView
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/ic_camera"
+                    android:src="@drawable/img_camera"
                     android:layout_marginRight="24dp"/>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -74,16 +81,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:text="사진, 카메라 사용 권한"
+                        android:text="@string/access_title2"
                         style="@style/TextBodyM_bold"/>
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:text="-"
+                        android:text="@string/access_body2"
+                        android:textColor="@color/gray_06"
                         style="@style/TextBodyM_bold"/>
                 </LinearLayout>
             </LinearLayout>
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="24dp"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/button_submit"
@@ -93,14 +104,14 @@
             android:clickable="true"
             android:focusable="true"
             android:background="@drawable/round_background"
-            android:backgroundTint="@color/black">
+            android:backgroundTint="@color/main">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="확인"
-                android:textColor="@color/white"
+                android:text="@string/confirm"
+                android:textColor="@color/blue_01"
                 style="@style/TextBodyM_bold"/>
         </LinearLayout>
     </LinearLayout>

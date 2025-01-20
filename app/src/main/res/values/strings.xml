@@ -1,3 +1,93 @@
 <resources>
-    <string name="app_name">MoneyChanger</string>
+    <string name="app_name" translatable="false">Money Lens</string>
+
+    <string name="confirm" >확인</string>
+    <string name="next" >다음</string>
+    <string name="delete">삭제하기</string>
+    <string name="add">추가하기</string>
+
+    <!--온보딩_01-->
+    <string name="access_title" >접근권한 안내</string>
+    <string name="access_title1" >위치, GPS 사용 권한</string>
+    <string name="access_title2" >사진, 카메라 사용 권한</string>
+    <string name="access_body1" >리스트 생성 시 위치값 확인</string>
+    <string name="access_body2" >환율 확인 시 사진 촬영 및 저장 관리</string>
+
+    <!--온보딩_02-->
+    <string name="app_explain1">카메라를 비추기만 하면</string>
+    <string name="app_explain2">가격과 환율을 한눈에</string>
+    <string name="app_explain3">MONEY LENS로</string>
+    <string name="app_explain4">손쉽게 확인해보세요</string>
+    <string name="kakao_login">카카오 로그인</string>
+    <string name="email_login">이메일 로그인</string>
+
+    <!--온보딩_03-->
+    <string name="login">로그인</string>
+    <string name="id_eng">ID</string>
+    <string name="pw_eng">PW</string>
+    <string name="find_idpw">아이디, 비밀번호 찾기</string>
+    <string name="signin">SIGN IN</string>
+    <string name="join_merbership">처음이신가요?</string>
+
+    <!--온보딩_04-->
+    <string name="policy_title1">서비스 이용약관에</string>
+    <string name="policy_title2">동의해주세요.</string>
+    <string name="accept_all">네, 모두 동의합니다</string>
+    <string name="essential">[필수]</string>
+    <string name="optional">[선택]</string>
+    <string name="policy_content1">-</string>
+    <string name="policy_content2">-</string>
+    <string name="policy_content3">-</string>
+
+    <!--온보딩_05,06-->
+    <string name="login_auth_title1">본인 확인을 위해 사용하실</string>
+    <string name="login_auth_title2">이메일을 입력해주세요.</string>
+    <string name="email">이메일</string>
+    <string name="input_email">이메일을 입력해주세요</string>
+    <string name="ex_email">---@mju.ac.kr</string>
+    <string name="enter_code">인증번호 입력</string>
+    <string name="enter_4number">4자리 숫자 입력</string>
+    <string name="clock_max">3:00</string>
+    <string name="new_code">새로운 코드 받기</string>
+
+    <!--온보딩_07-->
+    <string name="personal_info_title1">회원 정보를</string>
+    <string name="personal_info_title2">입력해주세요.</string>
+    <string name="sex">성별</string>
+    <string name="male">남성</string>
+    <string name="female">여성</string>
+    <string name="birth_kor">생년월일</string>
+    <string name="birth_eng">YY/MM/DD</string>
+    <string name="id_kor">아이디</string>
+    <string name="name">이름</string>
+    <string name="pw_kor">비밀번호</string>
+
+    <!--홈_01-->
+    <string name="home_title">가게 별 소비 리스트</string>
+
+    <!--홈_02-->
+    <string name="one">1</string>
+    <string name="per">당</string>
+    <string name="direct">직접</string>
+
+    <!--홈_02-->
+    <string name="select_all">전체선택</string>
+
+    <!--홈_04-->
+    <string name="input_money">가격 입력</string>
+    <string name="output_money">계산값</string>
+
+    <!--홈_05-->
+    <string name="edit">수정</string>
+    <string name="notice">공지사항</string>
+    <string name="policy">약관 및 정책</string>
+    <string name="ver_info">버전 정보</string>
+    <string name="ver">ver. </string>
+    <string name="delete_account">회원 탈퇴</string>
+
+    <!--list-->
+    <string name="dot">•</string>
+    <string name="before">분 전</string>
+    <string name="total">총 합계</string>
+
 </resources>

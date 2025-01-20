@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/gray_01">
 
     <include
         android:id="@+id/login_toolbar"
@@ -22,12 +23,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="서비스 이용약관에"
+                android:text="@string/policy_title1"
                 style="@style/TextHeadingXL"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="동의해주세요."
+                android:text="@string/policy_title2"
                 style="@style/TextHeadingXL"/>
             <Space
                 android:layout_width="wrap_content"
@@ -36,16 +37,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:orientation="horizontal"
-                android:background="@drawable/round_background">
+                android:background="@drawable/round_background"
+                android:backgroundTint="@color/gray_02"
+                android:layout_marginBottom="16dp">
                 <CheckBox
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_margin="24dp"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:button="@drawable/custom_checkbox"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="네, 모두 동의합니다"
+                    android:text="@string/accept_all"
                     android:layout_gravity="center"
                     style="@style/TextBodyM_bold"/>
             </LinearLayout>
@@ -57,16 +61,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:orientation="horizontal"
-                    android:paddingHorizontal="24dp">
+                    android:paddingHorizontal="24dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/round_background">
                     <CheckBox
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_marginRight="24dp"
-                        android:layout_gravity="center"/>
+                        android:layout_gravity="center"
+                        android:button="@drawable/custom_checkbox_circle"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="[필수] -"
+                        android:text="@string/essential"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="4dp"
+                        style="@style/TextBodyM_medium"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/policy_content1"
                         android:layout_gravity="center"
                         style="@style/TextBodyM_medium"/>
                     <Space
@@ -83,16 +97,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:orientation="horizontal"
-                    android:paddingHorizontal="24dp">
+                    android:paddingHorizontal="24dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/round_background">
                     <CheckBox
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_marginRight="24dp"
-                        android:layout_gravity="center"/>
+                        android:layout_gravity="center"
+                        android:button="@drawable/custom_checkbox_circle"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="[필수] -"
+                        android:text="@string/essential"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="4dp"
+                        style="@style/TextBodyM_medium"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/policy_content2"
                         android:layout_gravity="center"
                         style="@style/TextBodyM_medium"/>
                     <Space
@@ -109,16 +133,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:orientation="horizontal"
-                    android:paddingHorizontal="24dp">
+                    android:paddingHorizontal="24dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/round_background">
                     <CheckBox
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_marginRight="24dp"
-                        android:layout_gravity="center"/>
+                        android:layout_gravity="center"
+                        android:button="@drawable/custom_checkbox_circle"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="[선택] -"
+                        android:text="@string/optional"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="4dp"
+                        style="@style/TextBodyM_medium"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/policy_content3"
                         android:layout_gravity="center"
                         style="@style/TextBodyM_medium"/>
                     <Space
@@ -139,26 +173,11 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <LinearLayout
+        <Button
             android:id="@+id/button_next"
-            android:layout_width="312dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center|bottom"
             android:layout_marginBottom="24dp"
-            android:background="@drawable/round_background"
-            android:backgroundTint="@color/gray2">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="다음"
-                    android:layout_marginRight="16dp"
-                    style="@style/TextLabelL"/>
-            </LinearLayout>
-        </LinearLayout>
+            android:text="@string/next"
+            style="@style/NextButtonStyle" />
+
     </LinearLayout>
 </LinearLayout>

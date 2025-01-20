@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="6"
-            android:background="@color/gray"
+            android:background="@color/blue_00"
             android:orientation="vertical">
 
             <LinearLayout
@@ -37,7 +37,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="9"
-                    android:text="가게 별 소비 리스트"
+                    android:text="@string/home_title"
                     style="@style/TextHeadingXL"/>
             </LinearLayout>
 
@@ -72,17 +72,19 @@
         android:contentDescription="버튼 부분"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:background="@color/white">
         <FrameLayout
             android:id="@+id/button_camera"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/round_button"
+            android:backgroundTint="@color/main"
             android:gravity="center">
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_camera"
+                android:src="@drawable/icon_camera"
                 android:layout_gravity="center" />
         </FrameLayout>
     </LinearLayout>
