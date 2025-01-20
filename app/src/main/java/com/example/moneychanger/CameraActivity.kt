@@ -33,6 +33,12 @@ import java.util.Locale
 import android.widget.Button
 import androidx.camera.view.PreviewView
 import com.example.moneychanger.databinding.ActivityCameraBinding
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.TextRecognizer
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+
+typealias LumaListener = (luma: Double) -> Unit
 
 class CameraActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCameraBinding
@@ -40,6 +46,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var captureButton: Button
     private lateinit var cameraExecutor: ExecutorService
     private var imageCapture: ImageCapture? = null
+    private lateinit var recognizedNum : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,37 +63,102 @@ class CameraActivity : AppCompatActivity() {
         captureButton.setOnClickListener{
             takePicture()
         }
+
+        setCallback(CallBackType.ON_SUCCESS) {recognizedText ->
+            recognizedNum = recognizedText.replace("[^0-9]".toRegex(), "")
+            runOnUiThread{
+                binding.cameraText.text = "인식된 숫자: $recognizedNum"
+            }
+        }
+        setCallback(CallBackType.ON_FAIL){ errorMessage ->
+            runOnUiThread {
+                binding.cameraText.text = errorMessage
+            }
+        }
     }
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
             val preview = Preview.Builder().build()
+            preview.surfaceProvider = previewView.surfaceProvider
             imageCapture = ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY) // 지연 최소화 설정
                 .build()
 
+            val imageAnalyzer = ImageAnalysis.Builder()
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+                .also {
+                    it.setAnalyzer(cameraExecutor, getImageAnalyzer())
+                }
+
             val cameraSelector = CameraSelector.Builder()
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                 .build()
-            preview.surfaceProvider = previewView.surfaceProvider
+
             try{
                 Log.v("CameraActivity", "startCamera.try")
                 cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
+                cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture, imageAnalyzer)
             }catch (exc:Exception){
                 Log.e("CameraActivity", "Use case binding failed", exc)
             }
         },ContextCompat.getMainExecutor(this))
     }
+
+    // 콜백 타입 정의
+    enum class CallBackType {
+        ON_SUCCESS,
+        ON_FAIL
+    }
+
+    // 콜백 함수 저장용 맵
+    private val callBacks: MutableMap<CallBackType, (String) -> Unit> = mutableMapOf()
+
+    // 콜백 함수 설정
+    fun setCallback(type: CallBackType, callback: (String) -> Unit) {
+        callBacks[type] = callback
+    }
+
+    @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
+    private fun getImageAnalyzer(): ImageAnalysis.Analyzer {
+//        Log.d(TAG, "Average luminosity: $luma")
+        val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+        return ImageAnalysis.Analyzer{imageProxy ->
+            val mediaImage = imageProxy.image
+            mediaImage?.let{
+                val image = InputImage.fromMediaImage(
+                    mediaImage, imageProxy.imageInfo.rotationDegrees)
+                recognizer.process(image)
+                    .addOnSuccessListener{ text ->
+                    if (text.text.isNotEmpty()) {
+                        Log.d("TextAnalyzer","텍스트 내용: ${text.text}")
+                        callBacks[CallBackType.ON_SUCCESS]?.invoke(text.text)
+                    }else{
+                        Log.d("TextAnalyzer","텍스트가 감지되지 않았습니다.")
+                        callBacks[CallBackType.ON_FAIL]?.invoke("텍스트가 감지되지 않았습니다.")
+                    }
+                }
+                    .addOnCompleteListener{
+                        imageProxy.close()
+                        mediaImage.close()
+                    }
+                    .addOnFailureListener {
+                        Log.d("TextAnalyzer","텍스트 분석 실패: ${it.localizedMessage}")
+                        callBacks[CallBackType.ON_FAIL]?.invoke("텍스트 분석에 실패하였습니다.")
+                    }
+            }?:run{
+                imageProxy.close() // 이미지가 null인 경우 리소스 해제
+            }
+        }
+    }
+
     private fun takePicture() {
         Log.v("takePicture", "Capture button clicked!")
         val imageCapture = imageCapture ?: return
 
         Log.v("takePicture", "came here")
-        //ImageCapture 사용사례에 대한 참조를 불러온다. 사용사례가 null이면 함수 종료라는데,,, 몬소린지 모르겟음
-//        val imageCapture = imageCapture ?: return
-        //이미지를 보관할 MediaStore 콘텐츠 값
         val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
             .format(System.currentTimeMillis())
         val contentValues = ContentValues().apply{
@@ -103,7 +175,7 @@ class CameraActivity : AppCompatActivity() {
                 contentValues)
             .build()
 
-        imageCapture?.takePicture(
+        imageCapture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageSavedCallback {
@@ -116,15 +188,8 @@ class CameraActivity : AppCompatActivity() {
                     Log.v(TAG,"Photo : ${output.savedUri}")
                     Toast.makeText(baseContext, "Photo : ${output.savedUri}", Toast.LENGTH_SHORT).show()
                 }
-
-
             }
         )
-
-
-
-
-
     }
     override fun onDestroy() {
         super.onDestroy()
