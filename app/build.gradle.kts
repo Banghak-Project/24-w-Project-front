@@ -48,4 +48,16 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+
+    //Recognize Latin/Korean script
+    implementation("com.google.mlkit:text-recognition:16.0.1")
+    implementation("com.google.mlkit:text-recognition-korean:16.0.1")
+
+    val camerax_version = "1.4.0"
+    //CameraX
+    implementation("androidx.camera:camera-core:$camerax_version")
+    implementation("androidx.camera:camera-lifecycle:${camerax_version}")
+    implementation("androidx.camera:camera-view:${camerax_version}")
+    implementation("androidx.camera:camera-extensions:${camerax_version}")
+    implementation("androidx.camera:camera-camera2:${camerax_version}")
 }
