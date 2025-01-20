@@ -48,6 +48,9 @@ class CameraActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
     private lateinit var recognizedNum : String
 
+    private var lastUpdateTime: Long = 0
+    private val updateInterval = 2000 // 2초 간격
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCameraBinding.inflate(layoutInflater)
@@ -65,9 +68,13 @@ class CameraActivity : AppCompatActivity() {
         }
 
         setCallback(CallBackType.ON_SUCCESS) {recognizedText ->
-            recognizedNum = recognizedText.replace("[^0-9]".toRegex(), "")
-            runOnUiThread{
-                binding.cameraText.text = "인식된 숫자: $recognizedNum"
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastUpdateTime >= updateInterval){
+                recognizedNum = recognizedText.replace("[^0-9]".toRegex(), "")
+                runOnUiThread{
+                    binding.cameraText.text = "인식된 숫자: $recognizedNum"
+            }
+            lastUpdateTime = currentTime
             }
         }
         setCallback(CallBackType.ON_FAIL){ errorMessage ->
