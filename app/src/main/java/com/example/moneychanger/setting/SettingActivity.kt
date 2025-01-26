@@ -1,4 +1,4 @@
-package com.example.moneychanger
+package com.example.moneychanger.setting
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

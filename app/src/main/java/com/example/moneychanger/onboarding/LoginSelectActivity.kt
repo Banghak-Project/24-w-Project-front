@@ -1,10 +1,9 @@
-package com.example.moneychanger
+package com.example.moneychanger.onboarding
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.moneychanger.databinding.ActivityLoginSelectBinding
-import com.example.moneychanger.databinding.ActivityMainBinding
 
 class LoginSelectActivity : AppCompatActivity() {
 

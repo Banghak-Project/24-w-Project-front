@@ -17,7 +17,7 @@
         android:theme="@style/Theme.MoneyChanger"
         tools:targetApi="31">
         <activity
-            android:name=".SplashActivity"
+            android:name=".onboarding.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,31 +25,31 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AddActivity"
+            android:name=".list.AddActivity"
             android:exported="false" />
         <activity
-            android:name=".CameraActivity"
+            android:name=".camera.CameraActivity"
             android:exported="false" />
         <activity
-            android:name=".DeleteActivity"
+            android:name=".list.DeleteActivity"
             android:exported="false" />
         <activity
-            android:name=".ListActivity"
+            android:name=".list.ListActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingActivity"
+            android:name=".setting.SettingActivity"
             android:exported="false" />
         <activity
             android:name=".SampleActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginAuthActivity2"
+            android:name=".onboarding.LoginAuthActivity2"
             android:exported="false" />
         <activity
-            android:name=".PersonalInfoActivity"
+            android:name=".onboarding.PersonalInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".home.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,14 +58,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginSelectActivity"
+            android:name=".onboarding.LoginSelectActivity"
             android:exported="false" />
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".onboarding.LoginActivity" />
         <activity
-            android:name=".PolicyActivity"
+            android:name=".onboarding.PolicyActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginAuthActivity"
+            android:name=".onboarding.LoginAuthActivity"
             android:exported="false" />
     </application>
 

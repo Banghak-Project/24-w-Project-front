@@ -1,4 +1,4 @@
-package com.example.moneychanger
+package com.example.moneychanger.onboarding
 
 import android.app.DatePickerDialog
 import android.content.Intent
@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
-import android.widget.TextView
+import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityPersonalInfoBinding
 import java.util.Calendar
 

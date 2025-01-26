@@ -1,19 +1,20 @@
-package com.example.moneychanger
+package com.example.moneychanger.home
 
-import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.AttributeSet
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
+import com.example.moneychanger.camera.CameraActivity
+import com.example.moneychanger.list.ListActivity
+import com.example.moneychanger.MyAdapter
+import com.example.moneychanger.R
+import com.example.moneychanger.setting.SettingActivity
 import com.example.moneychanger.databinding.ActivityMainBinding
+import com.example.moneychanger.onboarding.LoginSelectActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

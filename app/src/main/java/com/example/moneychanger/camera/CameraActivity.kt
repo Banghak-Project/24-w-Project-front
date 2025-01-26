@@ -1,44 +1,29 @@
-package com.example.moneychanger
+package com.example.moneychanger.camera
 
 import android.content.ContentValues
-import android.content.ContentValues.TAG
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.media.Image
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.core.ImageCapture
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import android.widget.Toast
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.core.Preview
-import androidx.camera.core.CameraSelector
 import android.util.Log
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.ImageProxy
-import androidx.camera.video.FallbackStrategy
-import androidx.camera.video.MediaStoreOutputOptions
-import androidx.camera.video.Quality
-import androidx.camera.video.QualitySelector
-import androidx.camera.video.VideoRecordEvent
-import androidx.core.content.PermissionChecker
-import java.nio.ByteBuffer
-import java.text.SimpleDateFormat
-import java.util.Locale
 import android.widget.Button
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.core.content.ContextCompat
 import com.example.moneychanger.databinding.ActivityCameraBinding
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
-import com.google.mlkit.vision.text.TextRecognizer
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
-
-typealias LumaListener = (luma: Double) -> Unit
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 class CameraActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCameraBinding
@@ -111,7 +96,7 @@ class CameraActivity : AppCompatActivity() {
             }catch (exc:Exception){
                 Log.e("CameraActivity", "Use case binding failed", exc)
             }
-        },ContextCompat.getMainExecutor(this))
+        }, ContextCompat.getMainExecutor(this))
     }
 
     // 콜백 타입 정의
@@ -132,18 +117,19 @@ class CameraActivity : AppCompatActivity() {
     private fun getImageAnalyzer(): ImageAnalysis.Analyzer {
 //        Log.d(TAG, "Average luminosity: $luma")
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-        return ImageAnalysis.Analyzer{imageProxy ->
+        return ImageAnalysis.Analyzer{ imageProxy ->
             val mediaImage = imageProxy.image
             mediaImage?.let{
                 val image = InputImage.fromMediaImage(
-                    mediaImage, imageProxy.imageInfo.rotationDegrees)
+                    mediaImage, imageProxy.imageInfo.rotationDegrees
+                )
                 recognizer.process(image)
                     .addOnSuccessListener{ text ->
                     if (text.text.isNotEmpty()) {
-                        Log.d("TextAnalyzer","텍스트 내용: ${text.text}")
+                        Log.d("TextAnalyzer", "텍스트 내용: ${text.text}")
                         callBacks[CallBackType.ON_SUCCESS]?.invoke(text.text)
                     }else{
-                        Log.d("TextAnalyzer","텍스트가 감지되지 않았습니다.")
+                        Log.d("TextAnalyzer", "텍스트가 감지되지 않았습니다.")
                         callBacks[CallBackType.ON_FAIL]?.invoke("텍스트가 감지되지 않았습니다.")
                     }
                 }
@@ -152,7 +138,7 @@ class CameraActivity : AppCompatActivity() {
                         mediaImage.close()
                     }
                     .addOnFailureListener {
-                        Log.d("TextAnalyzer","텍스트 분석 실패: ${it.localizedMessage}")
+                        Log.d("TextAnalyzer", "텍스트 분석 실패: ${it.localizedMessage}")
                         callBacks[CallBackType.ON_FAIL]?.invoke("텍스트 분석에 실패하였습니다.")
                     }
             }?:run{
@@ -176,23 +162,24 @@ class CameraActivity : AppCompatActivity() {
             }
         }
         //파일과 메타데이터를 포함한 output option 객체 생성
-        val outputOptions = ImageCapture.OutputFileOptions
-            .Builder(contentResolver,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                contentValues)
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(
+            contentResolver,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            contentValues
+        )
             .build()
 
         imageCapture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exc:ImageCaptureException){
+                override fun onError(exc: ImageCaptureException){
                     Log.v(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
 
                 override fun
                         onImageSaved(output: ImageCapture.OutputFileResults) {
-                    Log.v(TAG,"Photo : ${output.savedUri}")
+                    Log.v(TAG, "Photo : ${output.savedUri}")
                     Toast.makeText(baseContext, "Photo : ${output.savedUri}", Toast.LENGTH_SHORT).show()
                 }
             }
