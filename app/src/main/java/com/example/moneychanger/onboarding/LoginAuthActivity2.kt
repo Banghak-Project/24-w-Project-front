@@ -1,13 +1,13 @@
-package com.example.moneychanger
+package com.example.moneychanger.onboarding
 
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityLoginAuth2Binding
 
 class LoginAuthActivity2 : AppCompatActivity() {

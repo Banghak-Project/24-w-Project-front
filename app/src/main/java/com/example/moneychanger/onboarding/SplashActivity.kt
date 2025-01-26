@@ -1,9 +1,11 @@
-package com.example.moneychanger
+package com.example.moneychanger.onboarding
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import com.example.moneychanger.home.MainActivity
+import com.example.moneychanger.R
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

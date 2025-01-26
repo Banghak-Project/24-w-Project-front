@@ -1,4 +1,4 @@
-package com.example.moneychanger
+package com.example.moneychanger.list
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +8,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.moneychanger.camera.CameraActivity
+import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityListBinding
 
 class ListActivity : AppCompatActivity(){
