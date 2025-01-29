@@ -1,5 +1,31 @@
 <resources>
     <string name="app_name" translatable="false">Money Lens</string>
+    
+    <!--통화표시-->
+    <string name="KRW">₩</string>
+    <string name="JPY">￥</string>
+    <string name="USD">＄</string>
+    <string name="THB">฿</string>
+    <string name="ITL">₤</string>
+    <string name="UTC">€</string>
+    <string name="FRF">F</string>
+    <string name="GBP">£</string>
+    <string name="CHF">Fr</string>
+    <string name="VND">đ</string>
+    <string name="AUD">＄</string>
+
+    <!--통화이름-->
+    <string name="korea">KRW</string>
+    <string name="japan">JPY</string>
+    <string name="usa">USD</string>
+    <string name="thailand">THB</string>
+    <string name="italy">ITL</string>
+    <string name="spain">UTC</string>
+    <string name="france">FRF</string>
+    <string name="uk">GBP</string>
+    <string name="swiss">CHF</string>
+    <string name="vietnam">VND</string>
+    <string name="austraila">AUD</string>
 
     <string name="confirm" >확인</string>
     <string name="next" >다음</string>

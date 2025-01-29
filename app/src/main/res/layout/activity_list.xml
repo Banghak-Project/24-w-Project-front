@@ -59,26 +59,26 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="5dp"
                             android:text="도시/국가"
-                            android:textColor="@color/gray_04"
+                            android:textColor="@color/gray_06"
                             style="@style/TextBodyS"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="5dp"
                             android:text="•"
-                            android:textColor="@color/gray_04"
+                            android:textColor="@color/gray_06"
                             style="@style/TextBodyS"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="00"
-                            android:textColor="@color/gray_04"
+                            android:textColor="@color/gray_06"
                             style="@style/TextBodyS"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="분 전"
-                            android:textColor="@color/gray_04"
+                            android:textColor="@color/gray_06"
                             android:layout_marginEnd="16dp"
                             style="@style/TextBodyS"/>
                         <LinearLayout
@@ -101,6 +101,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/icon_change_1"
+                    app:tint="@color/gray_06"
                     android:layout_gravity="end"/>
             </FrameLayout>
             <LinearLayout
@@ -109,6 +110,7 @@
                 android:orientation="horizontal"
                 android:layout_marginBottom="4dp">
                 <LinearLayout
+                    android:id="@+id/currency_container1"
                     android:layout_width="120dp"
                     android:layout_height="32dp"
                     android:orientation="horizontal"
@@ -116,21 +118,29 @@
                     android:gravity="center"
                     android:background="@drawable/round_background"
                     android:backgroundTint="@color/blue_00">
-                    <Spinner
+                    <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:dropDownWidth="72dp"
-                        android:visibility="gone"/>
-                    <TextView
-                        android:id="@+id/currency_name1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="통화"
-                        android:layout_marginRight="16dp"
-                        android:textColor="@color/gray_08"
-                        style="@style/TextBodyM_bold"/>
+                        android:layout_marginRight="16dp">
+                        <Spinner
+                            android:id="@+id/currency_spinner1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:dropDownWidth="72dp"
+                            android:dropDownHeight="80dp"
+                            android:alpha="0"/>
+                        <TextView
+                            android:id="@+id/currency_name1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="통화"
+                            android:textColor="@color/gray_08"
+                            style="@style/TextBodyM_bold"/>
+                    </FrameLayout>
                     <ImageView
+                        android:id="@+id/currency_arrow1"
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/icon_arrow"
@@ -157,6 +167,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"/>
                 <LinearLayout
+                    android:id="@+id/currency_container2"
                     android:layout_width="120dp"
                     android:layout_height="32dp"
                     android:orientation="horizontal"
@@ -164,21 +175,29 @@
                     android:gravity="center"
                     android:background="@drawable/round_background"
                     android:backgroundTint="@color/blue_00">
-                    <Spinner
+                    <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:dropDownWidth="72dp"
-                        android:visibility="gone"/>
-                    <TextView
-                        android:id="@+id/currency_name2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="통화"
-                        android:layout_marginRight="16dp"
-                        android:textColor="@color/gray_08"
-                        style="@style/TextBodyM_bold"/>
+                        android:layout_marginRight="16dp">
+                        <Spinner
+                            android:id="@+id/currency_spinner2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:dropDownWidth="72dp"
+                            android:dropDownHeight="80dp"
+                            android:alpha="0"/>
+                        <TextView
+                            android:id="@+id/currency_name2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="통화"
+                            android:textColor="@color/gray_08"
+                            style="@style/TextBodyM_bold"/>
+                    </FrameLayout>
                     <ImageView
+                        android:id="@+id/currency_arrow2"
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/icon_arrow"
@@ -196,34 +215,36 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:text="@string/one"
-                    android:textColor="@color/gray_05"
+                    android:textColor="@color/gray_06"
                     style="@style/TextBodyS"/>
                 <TextView
+                    android:id="@+id/currency_name3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
                     android:text="통화"
-                    android:textColor="@color/gray_04"
+                    android:textColor="@color/gray_06"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:text="@string/per"
-                    android:textColor="@color/gray_04"
+                    android:textColor="@color/gray_06"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0000.00"
-                    android:textColor="@color/gray_05"
+                    android:textColor="@color/gray_06"
                     android:layout_marginEnd="16dp"
                     style="@style/TextBodyS"/>
                 <TextView
+                    android:id="@+id/currency_symbol1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="₩"
-                    android:textColor="@color/gray_04"
+                    android:textColor="@color/gray_06"
                     android:layout_marginEnd="16dp"
                     style="@style/TextBodyS"/>
             </LinearLayout>
@@ -254,11 +275,12 @@
                     android:textColor="@color/gray_08"
                     style="@style/TextLabelL"/>
                 <TextView
+                    android:id="@+id/currency_symbol2"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="₩"
-                    android:textColor="@color/gray_05"
+                    android:textColor="@color/gray_06"
                     style="@style/TextBodyXS"/>
             </LinearLayout>
         </LinearLayout>
@@ -268,33 +290,37 @@
             android:layout_weight="1"
             android:orientation="vertical">
             <LinearLayout
-                android:id="@+id/spinnerContainer"
-                android:layout_width="wrap_content"
+                android:id="@+id/sort_container"
+                android:layout_width="72dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:orientation="horizontal"
-                android:layout_marginVertical="4dp">
-                <Spinner
-                    android:id="@+id/sortSpinner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="24dp"
-                    android:background="@null"
-                    android:dropDownWidth="72dp"
-                    android:visibility="invisible"/>
-                <TextView
-                    android:id="@+id/sortSpinnerText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:paddingRight="8dp"
-                    style="@style/TextBodyM_bold"/>
+                android:layout_marginVertical="4dp"
+                android:layout_marginHorizontal="8dp">
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="24dp">
+                    <Spinner
+                        android:id="@+id/sort_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:dropDownWidth="72dp"
+                        android:alpha="0"/>
+                    <TextView
+                        android:id="@+id/sort_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:textColor="@color/gray_06"
+                        style="@style/TextBodyM_bold"/>
+                </FrameLayout>
                 <ImageView
-                    android:id="@+id/sortSpinnerArrow"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
+                    android:id="@+id/sort_arrow"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_dropdown"/>
+                    android:src="@drawable/icon_drop_down"/>
             </LinearLayout>
 
 
