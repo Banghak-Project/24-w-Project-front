@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    android:background="@color/gray_01">
+    android:background="@color/white">
 
     <include
         android:id="@+id/login_toolbar"
@@ -51,8 +51,8 @@
                     android:text="@string/ex_email"
                     android:gravity="center_vertical"
                     android:background="@drawable/round_background"
-                    android:backgroundTint="@color/gray_02"
-                    android:textColor="@color/gray_04"
+                    android:backgroundTint="@color/gray_01"
+                    android:textColor="@color/gray_06"
                     style="@style/TextBodyL"/>
             </LinearLayout>
             <LinearLayout
@@ -95,7 +95,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/new_code"
-                    android:textColor="@color/gray_05"/>
+                    android:textColor="@color/gray_06"/>
             </LinearLayout>
         </LinearLayout>
 
