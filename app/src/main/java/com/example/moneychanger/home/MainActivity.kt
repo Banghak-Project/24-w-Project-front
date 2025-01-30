@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
@@ -74,18 +75,23 @@ class MainActivity : AppCompatActivity() {
 
     //팝업 띄우는 함수
     private fun showAccessPopup() {
-        val dialogView = layoutInflater.inflate(R.layout.access_popup, null)
-        val dialog = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.access_popup, null) // 팝업 레이아웃 inflate
+        val dialog = AlertDialog.Builder(this, R.style.PopupDialogTheme) // 팝업 테마 적용
             .setView(dialogView)
             .create()
 
+        // 버튼 클릭 이벤트
         val buttonSubmit = dialogView.findViewById<LinearLayout>(R.id.button_submit)
-
         buttonSubmit.setOnClickListener {
-            dialog.dismiss()
+            dialog.dismiss() // 팝업 닫기
         }
 
+        // 팝업 크기 설정
+        dialog.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
         dialog.show()
-
     }
+
 }

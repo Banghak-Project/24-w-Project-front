@@ -6,7 +6,8 @@
     android:id="@+id/login_toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="?attr/actionBarSize">
+    android:minHeight="?attr/actionBarSize"
+    android:background="@color/white">
         <ImageView
             android:id="@+id/button_back"
             android:layout_width="24dp"

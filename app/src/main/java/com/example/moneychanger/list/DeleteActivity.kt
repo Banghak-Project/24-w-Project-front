@@ -25,5 +25,7 @@ class DeleteActivity : AppCompatActivity() {
         }
 
         binding.loginToolbar.pageText.text = "삭제하기"
+
+
     }
 }

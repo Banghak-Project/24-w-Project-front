@@ -95,6 +95,7 @@
     <string name="one">1</string>
     <string name="per">당</string>
     <string name="direct">직접</string>
+    <string name="edit_long">수정하기</string>
 
     <!--홈_02-->
     <string name="select_all">전체선택</string>
@@ -104,7 +105,7 @@
     <string name="output_money">계산값</string>
 
     <!--홈_05-->
-    <string name="edit">수정</string>
+    <string name="edit_short">수정</string>
     <string name="notice">공지사항</string>
     <string name="policy">약관 및 정책</string>
     <string name="ver_info">버전 정보</string>

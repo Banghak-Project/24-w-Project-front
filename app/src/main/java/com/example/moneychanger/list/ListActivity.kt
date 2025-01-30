@@ -3,21 +3,27 @@ package com.example.moneychanger.list
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.moneychanger.CustomSpinner
+import com.example.moneychanger.OnStoreNameUpdatedListener
 import com.example.moneychanger.camera.CameraActivity
 import com.example.moneychanger.R
+import com.example.moneychanger.SlideEdit
 import com.example.moneychanger.databinding.ActivityListBinding
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class ListActivity : AppCompatActivity(){
+class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
     private lateinit var binding: ActivityListBinding
     private lateinit var viewModel: CurrencyViewModel
 
@@ -83,6 +89,12 @@ class ListActivity : AppCompatActivity(){
 //        val adapter = CurrencyAdapter(viewModel)
 //        binding.recyclerView.adapter = adapter
 
+        // 장소 수정하기 버튼 클릭 이벤트 처리
+        binding.buttonEdit.setOnClickListener {
+            val slideEdit = SlideEdit()
+            slideEdit.show(supportFragmentManager, slideEdit.tag)
+        }
+
 
         // 삭제하기 버튼 클릭 이벤트 처리
         binding.buttonMoveToDelete.setOnClickListener {
@@ -105,6 +117,11 @@ class ListActivity : AppCompatActivity(){
 
 
     }
+
+    override fun onStoreNameUpdated(storeName: String) {
+        // SlideEdit에서 받은 데이터를 placeName TextView에 업데이트
+        binding.placeName.text = storeName
+    }
 }
 
 // list_product recylcerview에 통화 기호 전달하기 위한 클래스
@@ -116,3 +133,6 @@ class CurrencyViewModel : ViewModel() {
         _selectedCurrency.value = currency
     }
 }
+
+
+
