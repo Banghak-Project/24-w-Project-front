@@ -18,26 +18,35 @@
         android:paddingVertical="16dp"
         android:layout_marginBottom="16dp">
         <LinearLayout
+            android:id="@+id/currency_container1"
             android:layout_width="120dp"
             android:layout_height="32dp"
             android:orientation="horizontal"
             android:layout_gravity="center"
             android:gravity="center">
-            <Spinner
+            <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@null"
-                android:dropDownWidth="72dp"
-                android:visibility="gone"/>
-            <TextView
-                android:id="@+id/currency_name1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="통화"
-                android:layout_marginRight="16dp"
-                android:textColor="@color/gray_08"
-                style="@style/TextBodyM_bold"/>
+                android:layout_marginRight="16dp">
+                <Spinner
+                    android:id="@+id/currency_spinner1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:dropDownWidth="72dp"
+                    android:dropDownHeight="80dp"
+                    android:alpha="0"/>
+                <TextView
+                    android:id="@+id/currency_name1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="통화"
+                    android:textColor="@color/gray_08"
+                    style="@style/TextBodyM_bold"/>
+            </FrameLayout>
             <ImageView
+                android:id="@+id/currency_arrow1"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@drawable/icon_arrow"
@@ -65,26 +74,35 @@
             android:layout_height="0dp"
             android:layout_weight="1"/>
         <LinearLayout
+            android:id="@+id/currency_container2"
             android:layout_width="120dp"
             android:layout_height="32dp"
             android:orientation="horizontal"
             android:layout_gravity="center"
             android:gravity="center">
-            <Spinner
+            <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@null"
-                android:dropDownWidth="72dp"
-                android:visibility="gone"/>
-            <TextView
-                android:id="@+id/currency_name2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="통화"
-                android:layout_marginRight="16dp"
-                android:textColor="@color/gray_08"
-                style="@style/TextBodyM_bold"/>
+                android:layout_marginRight="16dp">
+                <Spinner
+                    android:id="@+id/currency_spinner2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:dropDownWidth="72dp"
+                    android:dropDownHeight="80dp"
+                    android:alpha="0"/>
+                <TextView
+                    android:id="@+id/currency_name2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="통화"
+                    android:textColor="@color/gray_08"
+                    style="@style/TextBodyM_bold"/>
+            </FrameLayout>
             <ImageView
+                android:id="@+id/currency_arrow2"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@drawable/icon_arrow"
@@ -121,35 +139,38 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"/>
                 <TextView
+                    android:id="@+id/currency_text1"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="통화"
                     style="@style/TextBodyS"/>
             </LinearLayout>
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingVertical="16dp"
-                android:paddingHorizontal="24dp"
-                android:background="@drawable/round_background">
+                android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/input_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:paddingHorizontal="24dp"
+                    android:hint="N00,000,000"
+                    android:background="@drawable/round_background"
+                    android:textColor="@color/gray_06"
+                    style="@style/TextBodyL"
+                    android:inputType="number"
+                    android:imeOptions="actionDone"/>
                 <TextView
+                    android:id="@+id/currency_symbol1"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="N00,000,000"
-                    android:textColor="@color/gray_04"
-                    style="@style/TextBodyL"/>
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_gravity="center|right"
                     android:text="₩"
+                    android:paddingRight="24dp"
                     android:textColor="@color/gray_05"
                     style="@style/TextBodyL"/>
-            </LinearLayout>
+            </FrameLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -170,6 +191,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"/>
                 <TextView
+                    android:id="@+id/currency_text2"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="통화"
@@ -186,43 +208,54 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="N00,000,000"
+                    android:textColor="@color/gray_06"
                     style="@style/TextBodyL"/>
                 <Space
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"/>
+
                 <TextView
+                    android:id="@+id/currency_symbol2"
+                    style="@style/TextBodyL"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="₩"
-                    android:textColor="@color/gray_05"
-                    style="@style/TextBodyL"/>
+                    android:textColor="@color/gray_05" />
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/button_add"
-        android:layout_width="312dp"
-        android:layout_height="48dp"
-        android:layout_gravity="center|bottom"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/round_background"
-        android:backgroundTint="@color/white">
-        <LinearLayout
+        <Space
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/icon_add"/>
-            <TextView
-                android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <LinearLayout
+            android:id="@+id/button_add"
+            android:layout_width="312dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center|bottom"
+            android:background="@drawable/round_background"
+            android:layout_marginBottom="24dp"
+            android:backgroundTint="@color/main">
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/add"
-                android:layout_marginLeft="16dp"
-                style="@style/TextLabelL"/>
+                android:layout_gravity="center"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/icon_add"
+                    android:layout_gravity="center"
+                    app:tint="@color/white"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add"
+                    android:layout_marginLeft="16dp"
+                    android:textColor="@color/white"
+                    style="@style/TextLabelL"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

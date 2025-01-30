@@ -5,7 +5,6 @@
     android:layout_height="104dp"
     android:orientation="vertical"
     android:background="@drawable/round_background"
-    android:backgroundTint="@color/white"
     android:padding="16dp"
     android:layout_marginBottom="8dp">
     <LinearLayout
@@ -26,19 +25,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1"
-                    android:textColor="@color/blue_05"
+                    android:textColor="@color/blue_06"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=" / "
-                    android:textColor="@color/blue_05"
+                    android:textColor="@color/blue_06"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="5"
-                    android:textColor="@color/blue_05"
+                    android:textColor="@color/blue_06"
                     style="@style/TextBodyS"/>
             </LinearLayout>
             <Space
@@ -67,13 +66,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="00"
-                    android:textColor="@color/gray_05"
+                    android:textColor="@color/gray_06"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/before"
-                    android:textColor="@color/gray_05"
+                    android:textColor="@color/gray_06"
                     style="@style/TextBodyS"/>
             </LinearLayout>
         </LinearLayout>
@@ -118,7 +117,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="$"
-                        android:textColor="@color/gray_05"
+                        android:textColor="@color/gray_06"
                         style="@style/TextBodyS"/>
                 </LinearLayout>
             </LinearLayout>
@@ -135,7 +134,7 @@
                 android:background="@drawable/round_background2">
                 <TextView
                     android:layout_width="70dp"
-                    android:layout_height="20dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
                     android:layout_gravity="center"
                     android:gravity="end"
@@ -148,7 +147,7 @@
                     android:layout_gravity="center"
                     android:gravity="end"
                     android:text="₩"
-                    android:textColor="@color/gray_05"
+                    android:textColor="@color/gray_06"
                     style="@style/TextBodyXL"/>
             </LinearLayout>
         </LinearLayout>

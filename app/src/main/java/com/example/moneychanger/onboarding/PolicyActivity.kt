@@ -33,6 +33,16 @@ class PolicyActivity : AppCompatActivity() {
         binding = ActivityPolicyBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
+
+        // 뒤로 가기
+        val backButton : ImageView = toolbar.findViewById(R.id.button_back)
+        backButton.setOnClickListener{
+            finish()
+        }
+
         // CheckBoxSet 초기화
         checkBoxSets = listOf(
             CheckBoxSet(

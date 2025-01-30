@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 체크된 상태 -->
+    <item
+        android:state_checked="true">
+        <layer-list>
+            <item
+                android:width="88dp"
+                android:height="40dp"
+                android:drawable="@drawable/select_selected"
+                android:text="선택"/>
+        </layer-list>
+    </item>
+    <!-- 체크되지 않은 상태 -->
+    <item>
+        <layer-list>
+            <item
+                android:width="88dp"
+                android:height="40dp"
+                android:drawable="@drawable/select_unselected"
+                android:text="선택" />
+        </layer-list>
+    </item>
+</selector>

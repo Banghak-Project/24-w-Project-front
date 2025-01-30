@@ -285,11 +285,13 @@
             </LinearLayout>
         </LinearLayout>
         <LinearLayout
+            android:contentDescription="쇼핑장소 아랫부분"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="vertical">
             <LinearLayout
+                android:contentDescription="최신순/가격순 스피너"
                 android:id="@+id/sort_container"
                 android:layout_width="72dp"
                 android:layout_height="wrap_content"
@@ -327,13 +329,50 @@
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fillViewport="true">
+                android:fillViewport="true"
+                android:paddingHorizontal="24dp">
 
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
+                    <LinearLayout
+                        android:contentDescription="레이아웃 확인용 임시"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <include
+                            android:id="@+id/list_product"
+                            layout="@layout/list_product"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                        <include
+                            layout="@layout/list_product"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                        <include
+                            layout="@layout/list_product"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                        <include
+                            layout="@layout/list_product"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                        <include
+                            layout="@layout/list_product"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                        <include
+                            layout="@layout/list_product"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"/>
+                    </LinearLayout>
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView"
                         android:layout_width="match_parent"
@@ -347,33 +386,33 @@
                         android:layout_height="48dp"
                         android:layout_gravity="center"
                         android:background="@drawable/round_background"
-                        android:backgroundTint="@color/white"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="16dp">
-
+                        android:layout_marginTop="24dp"
+                        android:backgroundTint="@color/main">
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center">
-
                             <ImageView
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
-                                android:src="@drawable/icon_add" />
-
+                                android:src="@drawable/icon_add"
+                                android:layout_gravity="center"
+                                app:tint="@color/white"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="16dp"
                                 android:text="@string/direct"
-                                style="@style/TextLabelL" />
+                                android:layout_marginLeft="16dp"
+                                android:textColor="@color/white"
+                                style="@style/TextLabelL"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="8dp"
                                 android:text="@string/add"
-                                style="@style/TextLabelL" />
+                                android:layout_marginLeft="8dp"
+                                android:textColor="@color/white"
+                                style="@style/TextLabelL"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -381,7 +420,7 @@
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
-        android:contentDescription="버튼 부분"
+        android:contentDescription="카메라 버튼 부분"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:gravity="center"
