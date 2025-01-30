@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,16 +11,15 @@
         android:layout_gravity="center"
         android:orientation="vertical">
         <ImageView
-            android:contentDescription="임시로고"
             android:layout_width="match_parent"
             android:layout_height="140dp"
-            android:src="@drawable/ic_camera"/>
-        <TextView
+            android:src="@drawable/logo_image"/>
+        <Space
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/app_name"
-            android:textColor="@color/blue_01"
-            style="@style/TextHeadingXXL"/>
+            android:layout_height="40dp"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="22dp"
+            android:src="@drawable/logo_text"/>
     </LinearLayout>
 </LinearLayout>
