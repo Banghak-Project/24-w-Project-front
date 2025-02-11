@@ -140,6 +140,7 @@
                     android:layout_height="48dp"
                     android:paddingHorizontal="24dp"
                     android:hint="@string/pw_eng"
+                    android:inputType="textPassword"
                     android:background="@drawable/round_background"
                     style="@style/TextBodyL"/>
             </LinearLayout>

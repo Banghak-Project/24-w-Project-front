@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name" translatable="false">Money Lens</string>
-    
+
     <!--통화표시-->
     <string name="KRW">₩</string>
     <string name="JPY">￥</string>
@@ -27,17 +27,17 @@
     <string name="vietnam">VND</string>
     <string name="austraila">AUD</string>
 
-    <string name="confirm" >확인</string>
-    <string name="next" >다음</string>
+    <string name="confirm">확인</string>
+    <string name="next">다음</string>
     <string name="delete">삭제하기</string>
     <string name="add">추가하기</string>
 
     <!--온보딩_01-->
-    <string name="access_title" >접근권한 안내</string>
-    <string name="access_title1" >위치, GPS 사용 권한</string>
-    <string name="access_title2" >사진, 카메라 사용 권한</string>
-    <string name="access_body1" >리스트 생성 시 위치값 확인</string>
-    <string name="access_body2" >환율 확인 시 사진 촬영 및 저장 관리</string>
+    <string name="access_title">접근권한 안내</string>
+    <string name="access_title1">위치, GPS 사용 권한</string>
+    <string name="access_title2">사진, 카메라 사용 권한</string>
+    <string name="access_body1">리스트 생성 시 위치값 확인</string>
+    <string name="access_body2">환율 확인 시 사진 촬영 및 저장 관리</string>
 
     <!--온보딩_02-->
     <string name="app_explain1">카메라를 비추기만 하면</string>
@@ -116,5 +116,24 @@
     <string name="dot">•</string>
     <string name="before">분 전</string>
     <string name="total">총 합계</string>
+
+    <!--설정_04-->
+    <string name="unsubscribe_title">정말로 탈퇴하시겠습니까?</string>
+    <string name="unsubscribe_content_title">탈퇴 전 유의사항</string>
+    <string name="unsubscribe_content1">• 계정 데이터 및 지출 기록이 영구적으로 삭제됨</string>
+    <string name="unsubscribe_content2">• 등록된 가게 정보 및 위치 기록이 삭제됨</string>
+    <string name="unsubscribe_content3">• 재가입 시 이전 데이터는 복구되지 않음</string>
+    <string name="no">아니오</string>
+    <string name="yes">예</string>
+
+    <!--설정_05_1-->
+    <string name="password_input_title1">본인 확인을 위해</string>
+    <string name="password_input_title2">비밀번호를 입력해주세요.</string>
+    <string name="unsubscribe">탈퇴하기</string>
+
+    <!--설정_05_2-->
+    <string name="unsubscribe_success">회원 탈퇴가 완료되었습니다</string>
+    <string name="to_start">처음으로</string>
+
 
 </resources>

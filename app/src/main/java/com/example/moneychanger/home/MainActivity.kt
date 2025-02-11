@@ -86,12 +86,13 @@ class MainActivity : AppCompatActivity() {
             dialog.dismiss() // 팝업 닫기
         }
 
+        dialog.show()
+
         // 팝업 크기 설정
         dialog.window?.setLayout(
-            ViewGroup.LayoutParams.MATCH_PARENT,
+            (resources.displayMetrics.widthPixels * 0.8).toInt(),
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
-        dialog.show()
     }
 
 }
