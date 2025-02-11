@@ -10,7 +10,12 @@
         android:maxSdkVersion="29" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!--network 연결-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <application
+        android:name=".onboarding.kakaoApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -59,6 +64,9 @@
         <activity
             android:name=".onboarding.PersonalInfoActivity"
             android:exported="false" />
+
+        <activity android:name=".onboarding.KakaoLoginActivity"
+            android:exported="true"/>
         <activity
             android:name=".home.MainActivity"
             android:exported="true">
@@ -78,6 +86,22 @@
         <activity
             android:name=".onboarding.LoginAuthActivity"
             android:exported="false" />
+
+    <!-- 카카오 로그인을 위한 부분 -->
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="@string/kakao_native_app_key"/>
+
+        <activity
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:host="oauth" android:scheme="@string/kakao_scheme"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
