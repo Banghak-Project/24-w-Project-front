@@ -63,7 +63,7 @@
                 android:layout_width="53dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
-                android:text="@string/edit"
+                android:text="@string/edit_short"
                 android:backgroundTint="@color/white"
                 style="@style/TextBodyXS"/>
         </LinearLayout>
@@ -143,8 +143,11 @@
                 android:textColor="@color/gray_05"/>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/button_unsubscribe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
             android:padding="10dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/round_background"

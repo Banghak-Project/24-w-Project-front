@@ -7,15 +7,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?attr/actionBarSize"
-    app:menu="@menu/menu">
-<!--    <ImageView-->
-<!--        android:layout_width=""-->
-<!--        android:layout_height=""-->
-<!--        android:layout_marginRight=""-->
-<!--        android:src="@drawable/"/>-->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="로고 들어갈 자리"
-        android:textSize="20dp"/>
+    app:menu="@menu/menu"
+    android:background="@color/white">
+    <ImageView
+        android:layout_width="124dp"
+        android:layout_height="22dp"
+        android:src="@drawable/logo"/>
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="로고 들어갈 자리"-->
+<!--        android:textSize="20dp"/>-->
 </androidx.appcompat.widget.Toolbar>

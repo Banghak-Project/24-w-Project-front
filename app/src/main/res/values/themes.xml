@@ -8,6 +8,8 @@
 
         <!-- 전체 텍스트 색상 -->
         <item name="android:textColor">@color/gray_09</item>
+        <!-- 창 뒷배경 투명 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="CameraButtonStyle" parent="Widget.AppCompat.Button">
@@ -43,6 +45,20 @@
         <item name="android:textColor">@color/gray_01</item>
         <item name="android:textSize">@dimen/M</item>
     </style>
+
+    <!--팝업 페이지 스타일-->
+    <style name="PopupDialogTheme" parent="Theme.AppCompat.Dialog">
+        <!-- 창 배경 투명 -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <!--슬라이드 페이지 스타일-->
+    <style name="SlidePageTheme" parent="Theme.MaterialComponents.BottomSheetDialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
 
 
     <!--텍스트 스타일 정의-->

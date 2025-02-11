@@ -34,26 +34,26 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
                     android:text="도시/국가"
-                    android:textColor="@color/gray_04"
+                    android:textColor="@color/gray_06"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
                     android:text="@string/dot"
-                    android:textColor="@color/gray_04"
+                    android:textColor="@color/gray_06"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="00"
-                    android:textColor="@color/gray_04"
+                    android:textColor="@color/gray_06"
                     style="@style/TextBodyS"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/before"
-                    android:textColor="@color/gray_04"
+                    android:textColor="@color/gray_06"
                     style="@style/TextBodyS"/>
             </LinearLayout>
         </LinearLayout>
@@ -71,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="0000.00.00"
-                android:textColor="@color/blue_04"
+                android:textColor="@color/blue_06"
                 style="@style/TextBodyXS"/>
         </LinearLayout>
     </LinearLayout>
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:text="@string/total"
-            android:textColor="@color/blue_04"
+            android:textColor="@color/blue_06"
             style="@style/TextBodyXS"/>
         <LinearLayout
             android:layout_width="match_parent"
@@ -111,7 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="$"
-                    android:textColor="@color/gray_05"
+                    android:textColor="@color/gray_07"
                     style="@style/TextBodyS"/>
             </LinearLayout>
             <Space
@@ -151,7 +151,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="₩"
-                    android:textColor="@color/gray_05"
+                    android:textColor="@color/gray_07"
                     style="@style/TextBodyXL"/>
             </LinearLayout>
         </LinearLayout>

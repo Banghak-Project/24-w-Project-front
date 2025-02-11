@@ -9,11 +9,11 @@
         android:id="@+id/main_toolbar"
         layout="@layout/main_toolbar"/>
 
-    <LinearLayout
-        android:contentDescription="가름선"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/black"/>
+<!--    <LinearLayout-->
+<!--        android:contentDescription="가름선"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="1dp"-->
+<!--        android:background="@color/black"/>-->
 
     <LinearLayout
         android:id="@+id/main_content"
@@ -31,7 +31,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="24dp">
+                android:paddingVertical="16dp"
+                android:paddingHorizontal="24dp">
 
                 <TextView
                     android:layout_width="0dp"
