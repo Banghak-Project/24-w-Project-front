@@ -11,13 +11,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import com.example.moneychanger.camera.CameraActivity
 import com.example.moneychanger.list.ListActivity
-import com.example.moneychanger.MyAdapter
+import com.example.moneychanger.adapter.MyAdapter
 import com.example.moneychanger.R
 import com.example.moneychanger.setting.SettingActivity
 import com.example.moneychanger.databinding.ActivityMainBinding
+import com.example.moneychanger.etc.BaseActivity
 import com.example.moneychanger.onboarding.LoginSelectActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: MyAdapter
 

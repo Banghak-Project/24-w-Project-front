@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/notice"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <!-- 서비스 이용 약관 (클릭 가능) -->
+    <LinearLayout
+        android:id="@+id/notice_container"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:focusable="true">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/birth_eng"
+                android:paddingBottom="4dp"
+                android:textColor="@color/gray_06"
+                style="@style/TextBodyXS"/>
+            <TextView
+                android:id="@+id/notice_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="공지사항 제목"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                style="@style/TextLabelL"/>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+        <ImageView
+            android:id="@+id/notice_arrow"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:src="@drawable/icon_arrow"
+            android:rotation="270"
+            app:tint="@color/gray_06"/>
+
+    </LinearLayout>
+    <!-- 세부 내용-->
+    <LinearLayout
+        android:id="@+id/notice_detail_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="17dp"
+        android:paddingHorizontal="16dp"
+        android:background="@color/white"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/notice_detail_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="(임시)공지사항 내용"
+            style="@style/TextBodyS_content" />
+    </LinearLayout>
+</LinearLayout>

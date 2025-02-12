@@ -72,7 +72,6 @@
                 android:text="@string/unsubscribe"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:layout_marginRight="16dp"
                 android:textColor="@color/point"
                 style="@style/TextLabelL"/>
         </LinearLayout>

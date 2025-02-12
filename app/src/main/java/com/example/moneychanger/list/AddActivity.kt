@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.moneychanger.CustomSpinner
+import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityAddBinding
 
