@@ -33,35 +33,7 @@
             <Space
                 android:layout_width="wrap_content"
                 android:layout_height="28dp"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="8dp" >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/sex"
-                    style="@style/TextBodyS"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <Button
-                        android:id="@+id/button_male"
-                        android:text="@string/male"
-                        style="@style/SexButtonStyle"/>
-                    <Space
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:layout_weight="1"/>
-                    <Button
-                        android:id="@+id/button_female"
-                        android:text="@string/female"
-                        style="@style/SexButtonStyle"/>
-                </LinearLayout>
-            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -152,9 +124,9 @@
             android:layout_weight="1" />
 
         <Button
-            android:id="@+id/button_next"
+            android:id="@+id/button_edit"
             android:layout_marginBottom="24dp"
-            android:text="@string/next"
+            android:text="@string/edit_long"
             style="@style/NextButtonStyle" />
     </LinearLayout>
 </LinearLayout>

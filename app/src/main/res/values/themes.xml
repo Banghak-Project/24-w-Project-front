@@ -130,6 +130,11 @@
         <item name="android:lineHeight">160sp</item>
         <item name="android:textFontWeight">500</item>
     </style>
+    <style name="TextBodyS_content">
+        <item name="android:textSize">@dimen/S</item>
+        <item name="android:lineHeight">20sp</item>
+        <item name="android:textFontWeight">500</item>
+    </style>
     <style name="TextBodyXS">
         <item name="android:textSize">@dimen/XS</item>
         <item name="android:lineHeight">10sp</item>

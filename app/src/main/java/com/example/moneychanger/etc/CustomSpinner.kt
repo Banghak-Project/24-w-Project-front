@@ -1,4 +1,4 @@
-package com.example.moneychanger
+package com.example.moneychanger.etc
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.PopupWindow
 import android.widget.TextView
+import com.example.moneychanger.R
 
 class CustomSpinner(private val context: Context, private val items: List<String>) {
     private var popupWindow: PopupWindow? = null

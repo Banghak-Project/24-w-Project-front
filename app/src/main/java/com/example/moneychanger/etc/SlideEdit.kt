@@ -1,4 +1,4 @@
-package com.example.moneychanger
+package com.example.moneychanger.etc
 
 import android.content.Context
 import android.os.Bundle
