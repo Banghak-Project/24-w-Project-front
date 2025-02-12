@@ -60,6 +60,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>
             <Button
+                android:id="@+id/button_edit"
                 android:layout_width="53dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
@@ -68,8 +69,9 @@
                 style="@style/TextBodyXS"/>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/button_notice"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:padding="10dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/round_background"
@@ -90,12 +92,15 @@
                 android:src="@drawable/ic_right_arrow"/>
         </LinearLayout>
         <LinearLayout
+            android:id="@+id/button_term"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:padding="10dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/round_background"
-            android:backgroundTint="@color/white">
+            android:backgroundTint="@color/white"
+            android:clickable="true"
+            android:focusable="true">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -113,7 +118,7 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:padding="10dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/round_background"
@@ -145,7 +150,7 @@
         <LinearLayout
             android:id="@+id/button_unsubscribe"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:clickable="true"
             android:focusable="true"
             android:padding="10dp"

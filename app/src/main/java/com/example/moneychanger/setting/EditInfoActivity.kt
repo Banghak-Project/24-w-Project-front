@@ -5,13 +5,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import com.example.moneychanger.R
-import com.example.moneychanger.databinding.ActivityPasswordInputBinding
+import com.example.moneychanger.databinding.ActivityEditInfoBinding
 
-class PasswordInputActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityPasswordInputBinding
+class EditInfoActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityEditInfoBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityPasswordInputBinding.inflate(layoutInflater)
+        binding = ActivityEditInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
@@ -24,10 +24,10 @@ class PasswordInputActivity : AppCompatActivity() {
             finish()
         }
 
-        // '회원탈퇴가 완료되었습니다' 화면으로 이동
-        // 탈퇴 기능 추기
-        binding.buttonUnsubscribe.setOnClickListener{
-            val intent = Intent(this, UnsubscribeSuccessActivity::class.java)
+        // 수정하기 버튼 클릭 이벤트
+        binding.buttonEdit.setOnClickListener {
+            // 설정 화면으로 돌아오기
+            val intent = Intent(this, SettingActivity::class.java)
             startActivity(intent)
         }
     }

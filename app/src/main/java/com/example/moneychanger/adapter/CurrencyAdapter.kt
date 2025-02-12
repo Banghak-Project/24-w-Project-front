@@ -1,4 +1,4 @@
-package com.example.moneychanger
+package com.example.moneychanger.adapter
 
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moneychanger.list.CurrencyViewModel
