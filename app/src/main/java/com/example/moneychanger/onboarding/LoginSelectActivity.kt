@@ -13,10 +13,14 @@ class LoginSelectActivity : AppCompatActivity() {
         binding= ActivityLoginSelectBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 카카오 로그인 버튼 클릭 이벤트 추가
         binding.buttonKakaoLogin.setOnClickListener{
             // 카카오톡 로그인 페이지로 연결
+            val intent = Intent(this, KakaoLoginActivity::class.java)
+            startActivity(intent)
         }
 
+        // 이메일 로그인 버튼 클릭 이벤트
         binding.buttonEmailLogin.setOnClickListener{
             // 이메일 로그인 페이지로 연결
             val intent = Intent(this, LoginActivity::class.java)

@@ -96,6 +96,7 @@
                     android:text="@string/name"
                     style="@style/TextBodyS"/>
                 <EditText
+                    android:id="@+id/input_name"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:paddingHorizontal="24dp"
@@ -115,6 +116,7 @@
                     android:text="@string/email"
                     style="@style/TextBodyS"/>
                 <TextView
+                    android:id="@+id/input_email"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:gravity="center_vertical"
@@ -122,7 +124,9 @@
                     android:backgroundTint="@color/gray_01"
                     android:textColor="@color/gray_06"
                     android:padding="10dp"
-                    android:text="@string/ex_email"/>
+                    android:text="@string/ex_email"
+                    android:focusable="false"
+                    android:clickable="false"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -136,6 +140,7 @@
                     android:text="@string/pw_kor"
                     style="@style/TextBodyS"/>
                 <EditText
+                    android:id="@+id/input_password"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:paddingHorizontal="24dp"

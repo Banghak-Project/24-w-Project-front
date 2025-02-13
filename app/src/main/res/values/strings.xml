@@ -49,7 +49,7 @@
 
     <!--온보딩_03-->
     <string name="login">로그인</string>
-    <string name="id_eng">ID</string>
+    <string name="id_eng">EMAIL</string>
     <string name="pw_eng">PW</string>
     <string name="find_idpw">아이디, 비밀번호 찾기</string>
     <string name="signin">SIGN IN</string>
@@ -72,7 +72,7 @@
     <string name="input_email">이메일을 입력해주세요</string>
     <string name="ex_email">---@mju.ac.kr</string>
     <string name="enter_code">인증번호 입력</string>
-    <string name="enter_4number">4자리 숫자 입력</string>
+    <string name="enter_4number">인증코드를 입력하세요</string>
     <string name="clock_max">3:00</string>
     <string name="new_code">새로운 코드 받기</string>
 
@@ -178,7 +178,6 @@
 
     </string>
 
-
     <!--설정_04-->
     <string name="unsubscribe_title">정말로 탈퇴하시겠습니까?</string>
     <string name="unsubscribe_content_title">탈퇴 전 유의사항</string>
@@ -197,5 +196,8 @@
     <string name="unsubscribe_success">회원 탈퇴가 완료되었습니다</string>
     <string name="to_start">처음으로</string>
 
+    <!--  kakao login native app key  -->
+    <string name="kakao_native_app_key">6bd868dc4dfc4411b3ed036307340a65</string>
+    <string name="kakao_scheme">kakao6bd868dc4dfc4411b3ed036307340a65</string>
 
 </resources>

@@ -78,6 +78,11 @@ class PolicyActivity : AppCompatActivity() {
                 ContextCompat.getColor(this, R.color.gray_08)
             }
             binding.textAll.setTextColor(textColor)
+
+            // 버튼 상태 업데이트 (딜레이 후 확실하게 적용)
+            binding.buttonNext.post {
+                updateButtonState()
+            }
         }
 
         // 개별 체크박스 클릭 시
@@ -110,17 +115,23 @@ class PolicyActivity : AppCompatActivity() {
         // 버튼 클릭 리스너
         binding.buttonNext.setOnClickListener {
             if (binding.checkboxFirst.isChecked && binding.checkboxSecond.isChecked) {
-                val intent = Intent(this, LoginAuthActivity::class.java)
+                val intent = Intent(this, LoginAuthActivity::class.java).apply {
+                    putExtra("checkboxFirst", binding.checkboxFirst.isChecked)
+                    putExtra("checkboxSecond", binding.checkboxSecond.isChecked)
+                    putExtra("checkboxThird", binding.checkboxThird.isChecked) // 선택 동의
+                }
+                Log.d("PolicyActivity", "동의 데이터 전달: 필수1=${binding.checkboxFirst.isChecked}, 필수2=${binding.checkboxSecond.isChecked}, 선택=${binding.checkboxThird.isChecked}")
                 startActivity(intent)
             } else {
                 Toast.makeText(this, "필수 이용약관에 동의해주세요", Toast.LENGTH_SHORT).show()
-                Log.d("PolicyActivity", "toast.")
+                Log.d("PolicyActivity", "필수 약관 동의 필요")
             }
         }
 
         // 초기 버튼 상태 업데이트
         updateButtonState()
     }
+
 
     private fun updateCheckBoxState(isChecked: Boolean) {
         checkBoxSets.forEach { checkBoxSet ->
@@ -135,7 +146,10 @@ class PolicyActivity : AppCompatActivity() {
                     checkBoxSet.arrow
                 )
                 binding.checkboxAll.isChecked = allCheckBoxesChecked()
-                updateButtonState() // 버튼 상태 업데이트
+                // 버튼 상태 업데이트 ( 딜레이 후 확실하게 적용)
+                binding.buttonNext.post {
+                    updateButtonState()
+                }
             }
             updateIndividualCheckBoxUI(
                 isChecked,
@@ -144,6 +158,11 @@ class PolicyActivity : AppCompatActivity() {
                 checkBoxSet.content,
                 checkBoxSet.arrow
             )
+        }
+
+        // 버튼 상태 업데이트
+        binding.buttonNext.post{
+            updateButtonState()
         }
     }
 
@@ -175,6 +194,7 @@ class PolicyActivity : AppCompatActivity() {
 
     private fun updateButtonState() {
         binding.buttonNext.isEnabled = binding.checkboxFirst.isChecked && binding.checkboxSecond.isChecked
+        Log.d("PolicyActivity", "버튼 활성화 상태: ${binding.buttonNext.isEnabled}")
     }
 }
 

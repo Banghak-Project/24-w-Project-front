@@ -9,11 +9,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityLoginAuth2Binding
+import com.example.moneychanger.network.OtpRequest
+import com.example.moneychanger.network.RetrofitClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class LoginAuthActivity2 : AppCompatActivity() {
     private lateinit var binding: ActivityLoginAuth2Binding
     private lateinit var countDownTimer: CountDownTimer
     private var isInputReceived = false // 입력 여부 확인 변수
+    private var email: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,20 +38,24 @@ class LoginAuthActivity2 : AppCompatActivity() {
             finish()
         }
 
-        // 다음
-        binding.buttonNext.setOnClickListener {
-//            // 입력 검증 예제: 사용자가 특정 필드를 채우지 않았을 경우 Toast 표시
-//            if (binding.inputField.text.isNullOrEmpty()) {
-//                Toast.makeText(this, "인증 코드를 입력해주세요.", Toast.LENGTH_SHORT).show()
-//            } else {
-//                // 개인정보 입력 페이지로 이동
-//                val intent = Intent(this, PersonalInfoActivity::class.java)
-//                startActivity(intent)
-//            }
-            // 임시코드 - 개인정보 입력 페이지로 연결
-            val intent = Intent(this, PersonalInfoActivity::class.java)
-            startActivity(intent)
+        email = intent.getStringExtra("email")
+
+        if (email.isNullOrEmpty()) {
+            Toast.makeText(this, "이메일 정보가 없습니다.", Toast.LENGTH_SHORT).show()
+            finish()
+            return
         }
+
+        binding.buttonNext.setOnClickListener {
+            val otp = binding.inputField.text.toString().trim()
+            if (otp.isEmpty()) {
+                Toast.makeText(this, "인증 코드를 입력해주세요.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            verifyOtp(email!!, otp)
+        }
+
+        startCountDown(3 * 60 * 1000)
 
         // 새 코드 보내기 버튼 스타일링 및 동작
         binding.buttonNewcode.paintFlags = binding.buttonNewcode.paintFlags or Paint.UNDERLINE_TEXT_FLAG
@@ -83,7 +94,7 @@ class LoginAuthActivity2 : AppCompatActivity() {
                     // 입력이 없을 경우 토스트 메시지 표시
                     Toast.makeText(
                         this@LoginAuthActivity2,
-                        "입력 시간이 종료되었습니다.",
+                        "인증 시간이 만료되었습니다.",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -104,5 +115,29 @@ class LoginAuthActivity2 : AppCompatActivity() {
     private fun sendNewCode() {
         Toast.makeText(this, "새 코드를 전송했습니다.", Toast.LENGTH_SHORT).show()
         startCountDown(3 * 60 * 1000) // 새 코드 전송 시 타이머 재시작
+    }
+
+    private fun verifyOtp(email: String, otp: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = RetrofitClient.apiService.verifyOtp(OtpRequest(email, otp))
+                runOnUiThread {
+                    if (response == "이메일 인증 성공") {
+                        val intent =
+                            Intent(this@LoginAuthActivity2, PersonalInfoActivity::class.java)
+                        intent.putExtra("email", email)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        Toast.makeText(this@LoginAuthActivity2, "인증 코드 불일치", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            } catch (e: HttpException) {
+                runOnUiThread {
+                    Toast.makeText(this@LoginAuthActivity2, "네트워크 오류 발생", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 }
