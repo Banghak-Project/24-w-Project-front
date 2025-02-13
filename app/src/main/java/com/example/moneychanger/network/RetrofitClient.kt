@@ -1,54 +1,48 @@
 package com.example.moneychanger.network
 
+import com.google.gson.Gson
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.POST
+import java.util.concurrent.TimeUnit
 
-// Retrofit 인터페이스 정의
-interface ApiService {
-    @POST("/api/auth/signin")
-    suspend fun signIn(@Body signInRequest: SignInRequest): SignInResponse
-
-    @POST("/api/auth/signup")
-    suspend fun signUp(@Body signUpRequest: SignUpRequest): SignUpResponse
-
-    @POST("/api/auth/signup/otp")
-    suspend fun sendOtp(@Body emailRequest: EmailRequest): String
-
-    @POST("/api/auth/signup/otp/check")
-    suspend fun verifyOtp(@Body otpRequest: OtpRequest): String
-
-    @POST("/api/auth/kakao/signin")
-    suspend fun kakaoSignIn(@Body request: RetrofitClient.KakaoLoginRequest): RetrofitClient.KakaoLoginResponse
-}
-
-// Retrofit 클라이언트 객체 생성
 object RetrofitClient {
-    private const val BASE_URL = "http://localhost:8080/" // 백엔드 URL
+    private const val BASE_URL = "http://10.0.2.2:8080/"
+    // 애뮬레이터에서 실행하는 거면 이거 사용
+    //실제 기기에서 돌릴때는 PC의 로컬 IP 주소 사용해야한다고 함.
+    private val client = OkHttpClient.Builder()
+        .addInterceptor(AuthInterceptor()) // 요청 시 토큰 자동 추가
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(15, TimeUnit.SECONDS)
+        .writeTimeout(15, TimeUnit.SECONDS)
+        .build()
+
+    private val gson = Gson().newBuilder()
+        .setLenient() // JSON 파싱을 좀 더 유연하게 설정
+        .create()
 
     val apiService: ApiService by lazy {
-        retrofit2.Retrofit.Builder()
+        Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(retrofit2.converter.gson.GsonConverterFactory.create())
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService::class.java)
     }
-    data class KakaoLoginRequest(
-        val accessToken: String
-    )
-
-    data class KakaoLoginResponse(
-        val msg: String,
-        val accessToken: String?,
-        val refreshToken: String?
-    )
 }
 
-// 데이터 클래스 정의
-data class SignInRequest(val email: String, val password: String)
-data class SignInResponse(val msg: String, val token: String)
-data class SignUpRequest(val email: String, val password: String, val otp: String, val agreedTerms: List<Boolean>)
-data class SignUpResponse(val msg: String)
-data class EmailRequest(val email: String)
-data class OtpRequest(val email: String, val otp: String)
+// 토큰 자동 추가 Interceptor
+class AuthInterceptor : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val token = TokenManager.getAccessToken()
+        val request = chain.request().newBuilder()
+
+        if (!token.isNullOrEmpty()) {
+            request.addHeader("Authorization", "Bearer $token")
+        }
+
+        return chain.proceed(request.build())
+    }
+}

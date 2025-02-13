@@ -116,7 +116,6 @@
     <string name="dot">•</string>
     <string name="before">분 전</string>
     <string name="total">총 합계</string>
-<<<<<<< Updated upstream
 
     <!--설정_04-->
     <string name="edit_title1">수정하실 회원 정보를</string>
@@ -178,7 +177,6 @@
 	    •	사용자가 잘못된 데이터를 입력하거나 권한 허가를 거부하여 발생하는 문제에 대해서는 책임을 지지 않습니다.
 
     </string>
-
 
     <!--설정_04-->
     <string name="unsubscribe_title">정말로 탈퇴하시겠습니까?</string>
