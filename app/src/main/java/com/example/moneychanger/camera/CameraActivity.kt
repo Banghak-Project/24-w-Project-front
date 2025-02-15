@@ -55,7 +55,7 @@ class CameraActivity : AppCompatActivity() {
         setCallback(CallBackType.ON_SUCCESS) {recognizedText ->
             val currentTime = System.currentTimeMillis()
             if (currentTime - lastUpdateTime >= updateInterval){
-                recognizedNum = recognizedText.replace("[^0-9]".toRegex(), "")
+                recognizedNum = recognizedText.replace(Regex("[^0-9]"), "")
                 runOnUiThread{
                     binding.cameraText.text = "인식된 숫자: $recognizedNum"
             }

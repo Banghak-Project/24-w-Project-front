@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityLoginAuthBinding
-import com.example.moneychanger.network.EmailRequest
+import com.example.moneychanger.network.user.EmailRequest
 import com.example.moneychanger.network.RetrofitClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.moneychanger.network.ProductModel
+import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
