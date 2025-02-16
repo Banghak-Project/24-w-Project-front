@@ -42,15 +42,8 @@
                     style="@style/TextHeadingXL"/>
             </LinearLayout>
 
-            <include
-                android:contentDescription="레이아웃 확인용 임시"
-                android:id="@+id/list_place"
-                layout="@layout/list_place"
-                android:clickable="true"
-                android:focusable="true"/>
-
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+                android:id="@+id/list_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>

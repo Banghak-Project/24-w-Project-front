@@ -2,18 +2,29 @@ package com.example.moneychanger.list
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.etc.OnStoreNameUpdatedListener
 import com.example.moneychanger.camera.CameraActivity
 import com.example.moneychanger.R
+import com.example.moneychanger.adapter.ListAdapter
+import com.example.moneychanger.adapter.NoticeAdapter
+import com.example.moneychanger.adapter.ProductAdapter
 import com.example.moneychanger.etc.SlideEdit
 import com.example.moneychanger.databinding.ActivityListBinding
+import com.example.moneychanger.etc.DataProvider
+import com.example.moneychanger.network.product.ProductModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
     private lateinit var binding: ActivityListBinding
@@ -77,9 +88,6 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             }
         }
 
-        // 나중에 list_product 아답터가 생기면... `RecyclerViewAdapter`에 ViewModel 전달
-//        val adapter = CurrencyAdapter(viewModel)
-//        binding.recyclerView.adapter = adapter
 
         // 장소 수정하기 버튼 클릭 이벤트 처리
         binding.buttonEdit.setOnClickListener {
@@ -107,12 +115,44 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             startActivity(intent)
         }
 
+        // 더미 데이터 - 임시
+        val listData = DataProvider.listDummyModel
+
+        // 인텐트에서 list_id 받아오기
+        val selectedListId = intent.getLongExtra("list_id", 0L)
+        // 선택된 list_id에 맞는 리스트 데이터 연결
+        val selectedList = listData.find { it.listId == selectedListId }
+
+        selectedList?.let {
+            binding.placeName.text = it.name
+            binding.locationName.text = it.location
+            val dateTime = LocalDateTime.parse(it.createdAt, DateTimeFormatter.ISO_DATE_TIME)
+            binding.createdDate.text = dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+            binding.createdTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+
+            // list_id와 연결된 product 데이터 필터링
+            val filteredProducts = DataProvider.productDummyModel.filter { product -> product.listId == it.listId }
+            Log.d("ListActivity", "Filtered products: $filteredProducts")
+
+            // 하단(상품 부분 리사이클 뷰) 데이터 연결
+            binding.productContainer.layoutManager = LinearLayoutManager(this)
+            binding.productContainer.adapter = ProductAdapter(filteredProducts.toMutableList())
+        } ?: run {
+            Log.e("ListActivity", "No list found for listId: $selectedListId")
+            Toast.makeText(this, "리스트 데이터를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+            finish()
+        }
 
     }
 
     override fun onStoreNameUpdated(storeName: String) {
         // SlideEdit에서 받은 데이터를 placeName TextView에 업데이트
         binding.placeName.text = storeName
+    }
+
+    // list와 관련있는 product만 걸러서 가져오기 위한 함수
+    fun getProductsByListId(listId: Int): List<ProductModel> {
+        return DataProvider.productDummyModel.filter { it.productId == listId }
     }
 }
 

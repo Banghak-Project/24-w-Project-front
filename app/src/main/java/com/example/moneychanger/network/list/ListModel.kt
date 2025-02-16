@@ -3,8 +3,10 @@ package com.example.moneychanger.network.list
 data class ListModel(
     val listId: Long,
     val name: String,
+    val createdAt: String,
     val location: String,
     val deletedYn: Boolean
+    // created_at이 없음 임시로 만들어둠 -유빈
 )
 
 data class ListsRequestDto(
