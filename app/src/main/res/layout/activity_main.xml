@@ -41,30 +41,39 @@
                     android:text="@string/home_title"
                     style="@style/TextHeadingXL"/>
             </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list_container"
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+                android:layout_height="match_parent"
+                android:fillViewport="true">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/list_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
-            <Button
-                android:id="@+id/b1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="임시버튼"
-                android:text="로그인 선택 화면으로 이동" />
-            <Button
-                android:id="@+id/b2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="임시버튼"
-                android:text="달력 화면으로 이동" />
-            <TextView
-                android:id="@+id/sampletext"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:text="sample"/>
+                    <Button
+                        android:id="@+id/b1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="임시버튼"
+                        android:text="로그인 선택 화면으로 이동" />
+                    <Button
+                        android:id="@+id/b2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="임시버튼"
+                        android:text="달력 화면으로 이동" />
+                    <TextView
+                        android:id="@+id/sampletext"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:text="sample"/>
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
 
         </LinearLayout>
     </LinearLayout>

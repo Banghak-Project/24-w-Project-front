@@ -13,11 +13,11 @@ object DataProvider {
     )
 
     val productDummyModel = mutableListOf(
-        ProductModel(1, 1, "Laptop", 1200.0),
-        ProductModel(2, 1, "Smartphone", 800.0),
-        ProductModel(3, 1, "Tablet", 500.0),
-        ProductModel(4, 2, "Headphones", 150.0),
-        ProductModel(5, 2,"Smartwatch", 300.0)
+        ProductModel(1, 1, "Laptop", 1200.0, false),
+        ProductModel(2, 1, "Smartphone", 800.0, false),
+        ProductModel(3, 1, "Tablet", 500.0, false),
+        ProductModel(4, 2, "Headphones", 150.0, false),
+        ProductModel(5, 2,"Smartwatch", 300.0, false)
     )
 
 }

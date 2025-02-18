@@ -96,11 +96,6 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         }
 
 
-        // 삭제하기 버튼 클릭 이벤트 처리
-        binding.buttonMoveToDelete.setOnClickListener {
-            val intent = Intent(this, DeleteActivity::class.java)
-            startActivity(intent)
-        }
 
         // 직접 추가하기 버튼 클릭 이벤트 처리
         binding.buttonAdd.setOnClickListener {
@@ -117,12 +112,23 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
 
         // 더미 데이터 - 임시
         val listData = DataProvider.listDummyModel
+        val productData = DataProvider.productDummyModel
 
         // 인텐트에서 list_id 받아오기
         val selectedListId = intent.getLongExtra("list_id", 0L)
-        // 선택된 list_id에 맞는 리스트 데이터 연결
+        // 선택된 list_id에 맞는 list 데이터 찾기
         val selectedList = listData.find { it.listId == selectedListId }
+        // 선택된 list_id에 맞는 product 데이터 필터링
+        val productList = productData.filter { product -> product.listId == selectedListId }
 
+        // 삭제하기 버튼 클릭 이벤트 처리
+        binding.buttonMoveToDelete.setOnClickListener {
+            val intent = Intent(this, DeleteActivity::class.java)
+            intent.putExtra("list_id", selectedListId)
+            startActivity(intent)
+        }
+
+        // 아답터 사용하여 데이터 바인딩
         selectedList?.let {
             binding.placeName.text = it.name
             binding.locationName.text = it.location
@@ -130,15 +136,14 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             binding.createdDate.text = dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
             binding.createdTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
 
-            // list_id와 연결된 product 데이터 필터링
-            val filteredProducts = DataProvider.productDummyModel.filter { product -> product.listId == it.listId }
-            Log.d("ListActivity", "Filtered products: $filteredProducts")
+            // 디버깅 로그
+            //Log.d("ListActivity", "Filtered products: $productList")
 
             // 하단(상품 부분 리사이클 뷰) 데이터 연결
             binding.productContainer.layoutManager = LinearLayoutManager(this)
-            binding.productContainer.adapter = ProductAdapter(filteredProducts.toMutableList())
+            binding.productContainer.adapter = ProductAdapter(productList.toMutableList())
         } ?: run {
-            Log.e("ListActivity", "No list found for listId: $selectedListId")
+            // Log.e("ListActivity", "No list found for listId: $selectedListId")
             Toast.makeText(this, "리스트 데이터를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
             finish()
         }

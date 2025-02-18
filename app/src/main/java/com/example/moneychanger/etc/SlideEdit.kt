@@ -37,6 +37,9 @@ class SlideEdit : BottomSheetDialogFragment() {
         binding.buttonUpdate.setOnClickListener {
             val storeName = binding.textStoreName.text.toString()
 
+            // 이 부분에 db 업데이트 코드 추가
+            // ex) updateStoreNameInDB(storeName)
+
             // ListActivity로 데이터 전달
             listener?.onStoreNameUpdated(storeName)
 
