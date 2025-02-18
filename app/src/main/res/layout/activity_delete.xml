@@ -26,9 +26,11 @@
             android:paddingVertical="8dp">
 
             <CheckBox
+                android:id="@+id/checkbox_all"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginRight="8dp" />
+                android:layout_marginRight="8dp"
+                android:button="@drawable/custom_checkbox" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -47,52 +49,15 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <LinearLayout
-                    android:contentDescription="레이아웃 확인용 임시"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <include
-                        android:id="@+id/list_product"
-                        layout="@layout/list_delete"
-                        android:gravity="center"
-                        android:clickable="true"
-                        android:focusable="true"/>
-                    <include
-                        layout="@layout/list_delete"
-                        android:gravity="center"
-                        android:clickable="true"
-                        android:focusable="true"/>
-                    <include
-                        layout="@layout/list_delete"
-                        android:gravity="center"
-                        android:clickable="true"
-                        android:focusable="true"/>
-                    <include
-                        layout="@layout/list_delete"
-                        android:gravity="center"
-                        android:clickable="true"
-                        android:focusable="true"/>
-                    <include
-                        layout="@layout/list_delete"
-                        android:gravity="center"
-                        android:clickable="true"
-                        android:focusable="true"/>
-                    <include
-                        layout="@layout/list_delete"
-                        android:gravity="center"
-                        android:clickable="true"
-                        android:focusable="true"/>
-                </LinearLayout>
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
+                    android:id="@+id/deleteContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                 <LinearLayout
-                    android:id="@+id/button_add"
+                    android:id="@+id/button_delete"
                     android:layout_width="312dp"
                     android:layout_height="48dp"
                     android:layout_gravity="center|bottom"

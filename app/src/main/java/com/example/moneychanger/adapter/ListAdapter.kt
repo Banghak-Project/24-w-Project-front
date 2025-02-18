@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moneychanger.R
+import com.example.moneychanger.databinding.ListDeleteBinding
+import com.example.moneychanger.databinding.ListPlaceBinding
 import com.example.moneychanger.network.list.ListModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -17,20 +19,15 @@ class ListAdapter(
     private val onItemClick: (ListModel) -> Unit
 ) : RecyclerView.Adapter<ListAdapter.ListViewHolder>() {
 
-    inner class ListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val placeName: TextView = view.findViewById(R.id.place_name)
-        val locationName: TextView = view.findViewById(R.id.location_name)
-        val createdDate: TextView = view.findViewById(R.id.created_date)
-        val createdTime: TextView = view.findViewById(R.id.created_time)
+    inner class ListViewHolder(val binding: ListPlaceBinding) : RecyclerView.ViewHolder(binding.root) {
         //val imageViewDelete: ImageView = view.findViewById(R.id.imageViewDelete)
-
         fun bind(item: ListModel) {
-            placeName.text = item.name
-            locationName.text = item.location
+            binding.placeName.text = item.name
+            binding.locationName.text = item.location
 
             val dateTime = LocalDateTime.parse(item.createdAt, DateTimeFormatter.ISO_DATE_TIME)
-            createdDate.text = dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
-            createdTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+            binding.createdDate.text = dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+            binding.createdTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
 
             itemView.setOnClickListener { onItemClick(item) }
             //imageViewDelete.setOnClickListener { deleteItem(adapterPosition) }
@@ -38,8 +35,8 @@ class ListAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_place, parent, false)
-        return ListViewHolder(view)
+        val binding = ListPlaceBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ListViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
