@@ -20,17 +20,14 @@ object RetrofitClient {
         .build()
 
     private val gson = Gson().newBuilder()
-        .setLenient() // JSON 파싱을 좀 더 유연하게 설정
         .create()
 
-    val apiService: ApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ApiService::class.java)
-    }
+    val apiService: ApiService = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .client(client)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(ApiService::class.java)
 }
 
 // 토큰 자동 추가 Interceptor

@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityLoginAuth2Binding
-import com.example.moneychanger.network.OtpRequest
+import com.example.moneychanger.network.user.OtpRequest
 import com.example.moneychanger.network.RetrofitClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -11,7 +11,7 @@ import com.kakao.sdk.common.KakaoSdk
 import com.kakao.sdk.user.UserApiClient
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.home.MainActivity
-import com.example.moneychanger.network.KakaoLoginRequest
+import com.example.moneychanger.network.user.KakaoLoginRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
