@@ -52,19 +52,19 @@
         android:gravity="center"
         android:orientation="vertical">
         <!--   카카오 디자인 문서에서 제공해주는 이미지로 변경        -->
-        <LinearLayout
+        <ImageView
             android:id="@+id/button_kakao_login"
             android:layout_width="312dp"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:paddingHorizontal="14dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:background="@drawable/kakao_login_medium_narrow"
+            android:background="@drawable/kakao_login_medium_wide"
             android:clickable="true"
             android:focusable="true"
             android:elevation="2dp">
-        </LinearLayout>
+        </ImageView>
         <LinearLayout
             android:id="@+id/button_email_login"
             android:layout_width="312dp"

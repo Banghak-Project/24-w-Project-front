@@ -56,9 +56,10 @@ class LoginAuthActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) { // UI 업데이트는 Main 스레드에서
                     if (response.isSuccessful) {
                         Toast.makeText(this@LoginAuthActivity, "인증 코드가 전송되었습니다.", Toast.LENGTH_SHORT).show()
-                        // 다음 화면으로 이동 (이메일 데이터 함께 전달)
+                        // OTP 요청 성공 시 다음 화면으로 이동 (이메일 데이터 함께 전달)
                         val intent = Intent(this@LoginAuthActivity, LoginAuthActivity2::class.java)
                         intent.putExtra("email", email)
+                        Log.d("LoginAuthActivity", "전달할 이메일: $email") // 로그 추가
                         startActivity(intent)
                     } else {
                         // 🚨 서버 응답이 200이 아닐 경우

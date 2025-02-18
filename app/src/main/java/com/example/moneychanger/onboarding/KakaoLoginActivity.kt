@@ -2,6 +2,7 @@ package com.example.moneychanger.onboarding
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -26,8 +27,8 @@ class KakaoLoginActivity : AppCompatActivity() {
         // 카카오 SDK 초기화
         KakaoSdk.init(this, getString(R.string.kakao_native_app_key))
 
-        // 카카오 로그인 버튼 참조 (activity_login_select.xml에서는 LinearLayout)
-        val kakaoLoginButton = findViewById<LinearLayout>(R.id.button_kakao_login)
+        // 카카오 로그인 버튼 참조
+        val kakaoLoginButton = findViewById<ImageView>(R.id.button_kakao_login)
 
         // 카카오 로그인 버튼 클릭 이벤트
         kakaoLoginButton.setOnClickListener {

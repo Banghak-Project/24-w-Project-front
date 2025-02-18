@@ -22,12 +22,15 @@ object RetrofitClient {
     private val gson = Gson().newBuilder()
         .create()
 
-    val apiService: ApiService = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(client)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create(ApiService::class.java)
+    val apiService: ApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson)) // JSON 응답 지원
+            .build()
+            .create(ApiService::class.java)
+    }
 }
 
 // 토큰 자동 추가 Interceptor

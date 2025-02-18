@@ -14,6 +14,7 @@ import com.example.moneychanger.network.user.SignInRequest
 import com.example.moneychanger.network.user.SignInResponse
 import com.example.moneychanger.network.user.SignUpRequest
 import com.example.moneychanger.network.user.SignUpResponse
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -35,7 +36,7 @@ interface ApiService {
     suspend fun sendOtp(@Body emailRequest: EmailRequest): Response<Void>
 
     @POST("/api/auth/signup/otp/check")
-    suspend fun verifyOtp(@Body otpRequest: OtpRequest): String
+    suspend fun verifyOtp(@Body request: OtpRequest): Response<ResponseBody>
 
     @POST("/api/auth/kakao/signin")
     suspend fun kakaoSignIn(@Body request: KakaoLoginRequest): KakaoLoginResponse
