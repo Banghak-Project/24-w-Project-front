@@ -116,6 +116,7 @@
     <string name="dot">•</string>
     <string name="before">분 전</string>
     <string name="total">총 합계</string>
+    <string name="select">선택</string>
 
     <!--설정_04-->
     <string name="edit_title1">수정하실 회원 정보를</string>

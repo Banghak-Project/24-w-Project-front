@@ -6,27 +6,25 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moneychanger.R
+import com.example.moneychanger.databinding.ListProductBinding
 import com.example.moneychanger.network.product.ProductModel
 
-class ProductAdapter(private val products: MutableList<ProductModel>) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+class ProductAdapter(
+    private val products: MutableList<ProductModel>
+) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
-    inner class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val productName: TextView = itemView.findViewById(R.id.product_name)
-        private val originalPrice: TextView = itemView.findViewById(R.id.origin_price)
-        private val perNumber: TextView = itemView.findViewById(R.id.per_number)
-        private val allNumber: TextView = itemView.findViewById(R.id.all_number)
-
+    inner class ProductViewHolder(val binding: ListProductBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(product: ProductModel, position: Int, totalCount: Int) {
-            productName.text = product.name
-            originalPrice.text = product.originPrice.toString()
-            perNumber.text = (position + 1).toString()
-            allNumber.text = totalCount.toString()
+            binding.productName.text = product.name
+            binding.originPrice.text = product.originPrice.toString()
+            binding.perNumber.text = (position + 1).toString()
+            binding.allNumber.text = totalCount.toString()
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_product, parent, false)
-        return ProductViewHolder(view)
+        val binding = ListProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ProductViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
