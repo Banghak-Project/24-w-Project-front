@@ -6,6 +6,7 @@ import com.example.moneychanger.network.list.ListsRequestDto
 import com.example.moneychanger.network.list.ListsResponseDto
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductRequestDto
+import com.example.moneychanger.network.user.ApiResponse
 import com.example.moneychanger.network.user.EmailRequest
 import com.example.moneychanger.network.user.KakaoLoginRequest
 import com.example.moneychanger.network.user.KakaoLoginResponse
@@ -27,10 +28,10 @@ import retrofit2.http.Path
 interface ApiService {
     //User
     @POST("/api/auth/signin")
-    suspend fun signIn(@Body signInRequest: SignInRequest): SignInResponse
+    suspend fun signIn(@Body request: SignInRequest): Response<ApiResponse<SignInResponse>>
 
     @POST("/api/auth/signup")
-    suspend fun signUp(@Body signUpRequest: SignUpRequest): SignUpResponse
+    suspend fun signUp(@Body signUpRequest: SignUpRequest): Response<ApiResponse<SignUpResponse>>
 
     @POST("/api/auth/signup/otp")
     suspend fun sendOtp(@Body emailRequest: EmailRequest): Response<Void>

@@ -17,8 +17,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.HttpException
+import retrofit2.Response
 import java.io.IOException
 
 class LoginAuthActivity2 : AppCompatActivity() {
@@ -97,7 +99,6 @@ class LoginAuthActivity2 : AppCompatActivity() {
             override fun onTick(millisUntilFinished: Long) {
                 val minutes = millisUntilFinished / 1000 / 60
                 val seconds = millisUntilFinished / 1000 % 60
-
                 // "mm:ss" 형식으로 텍스트 업데이트
                 binding.timerText.text = String.format("%02d:%02d", minutes, seconds)
             }
@@ -126,11 +127,13 @@ class LoginAuthActivity2 : AppCompatActivity() {
         }
     }
 
+    /**
+     * 📌 새 OTP 요청 보내기
+     */
     private fun sendNewCode() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = RetrofitClient.apiService.sendOtp(EmailRequest(email))
-                val responseBody = response.errorBody()?.string()
+                val response: Response<Void> = RetrofitClient.apiService.sendOtp(EmailRequest(email))
 
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
@@ -141,7 +144,8 @@ class LoginAuthActivity2 : AppCompatActivity() {
                         ).show()
                         startCountDown(3 * 60 * 1000) // 타이머 재시작
                     } else {
-                        Log.e("LoginAuthActivity2", "응답 오류: $responseBody")
+                        val errorMessage = response.errorBody()?.string() ?: "알 수 없는 오류"
+                        Log.e("LoginAuthActivity2", "응답 오류: $errorMessage")
                         Toast.makeText(
                             this@LoginAuthActivity2,
                             "새 코드 요청 실패: ${response.code()}",
@@ -151,41 +155,56 @@ class LoginAuthActivity2 : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Log.e("LoginAuthActivity2", "네트워크 오류: ${e.message}")
+                    Log.e("LoginAuthActivity2", "네트워크 오류 발생: ${e.message}")
                     Toast.makeText(this@LoginAuthActivity2, "네트워크 오류 발생", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
-
+    /**
+     * 📌 OTP 검증 요청
+     */
     private fun verifyOtp(email: String, otp: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = RetrofitClient.apiService.verifyOtp(OtpRequest(email, otp))
-
-                // 🚨 서버 응답 확인
-                val responseBody = response.body()?.string() ?: ""
-                Log.d("LoginAuthActivity2", "서버 응답 본문: $responseBody")
-
-                // JSON 파싱
-                val jsonResponse = JSONObject(responseBody)
-                val message = jsonResponse.optString("message", "")
+                val response: Response<ResponseBody> = RetrofitClient.apiService.verifyOtp(OtpRequest(email, otp))
 
                 withContext(Dispatchers.Main) {
-                    if (response.isSuccessful && message == "이메일 인증 성공") {
-                        val intent = Intent(this@LoginAuthActivity2, PersonalInfoActivity::class.java)
-                        intent.putExtra("email", email)
-                        startActivity(intent)
-                        finish()
+                    if (response.isSuccessful) {
+                        val responseText = response.body()?.string() ?: "null"
+                        Log.d("LoginAuthActivity2", "서버 응답 성공: $responseText")
+
+                        if (responseText.contains("이메일 인증 성공")) {
+                            val intent = Intent(this@LoginAuthActivity2, PersonalInfoActivity::class.java)
+                            intent.putExtra("email", email)
+                            intent.putExtra("otp", otp)
+                            Log.d("LoginAuthActivity2", "PersonalInfoActivity로 전달할 otp: $otp")
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            Toast.makeText(this@LoginAuthActivity2, "인증 코드 불일치", Toast.LENGTH_SHORT).show()
+                        }
                     } else {
-                        Toast.makeText(this@LoginAuthActivity2, "인증 실패: $message", Toast.LENGTH_SHORT).show()
+                        val errorMessage = response.errorBody()?.string() ?: "알 수 없는 오류"
+                        Log.e("LoginAuthActivity2", "인증 실패: $errorMessage")
+                        Toast.makeText(this@LoginAuthActivity2, "서버 오류 발생: $errorMessage", Toast.LENGTH_SHORT).show()
                     }
+                }
+            } catch (e: HttpException) {
+                withContext(Dispatchers.Main) {
+                    Log.e("LoginAuthActivity2", "HTTP 오류: ${e.message}")
+                    Toast.makeText(this@LoginAuthActivity2, "서버 응답 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: IOException) {
+                withContext(Dispatchers.Main) {
+                    Log.e("LoginAuthActivity2", "네트워크 오류: ${e.message}")
+                    Toast.makeText(this@LoginAuthActivity2, "네트워크 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Log.e("LoginAuthActivity2", "네트워크 오류 발생: ${e.message}")
-                    Toast.makeText(this@LoginAuthActivity2, "네트워크 오류 발생", Toast.LENGTH_SHORT).show()
+                    Log.e("LoginAuthActivity2", "예외 발생: ${e.message}")
+                    Toast.makeText(this@LoginAuthActivity2, "알 수 없는 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
         }

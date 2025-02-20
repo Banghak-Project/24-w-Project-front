@@ -115,11 +115,16 @@ class PolicyActivity : AppCompatActivity() {
         // 버튼 클릭 리스너
         binding.buttonNext.setOnClickListener {
             if (binding.checkboxFirst.isChecked && binding.checkboxSecond.isChecked) {
+                val agreedTerms = arrayListOf(
+                    binding.checkboxFirst.isChecked,
+                    binding.checkboxSecond.isChecked,
+                    binding.checkboxThird.isChecked // 선택 동의
+                )
+
                 val intent = Intent(this, LoginAuthActivity::class.java).apply {
-                    putExtra("checkboxFirst", binding.checkboxFirst.isChecked)
-                    putExtra("checkboxSecond", binding.checkboxSecond.isChecked)
-                    putExtra("checkboxThird", binding.checkboxThird.isChecked) // 선택 동의
+                    putExtra("agreedTerms", agreedTerms) // ArrayList<Boolean>을 putExtra로 전달
                 }
+
                 Log.d("PolicyActivity", "동의 데이터 전달: 필수1=${binding.checkboxFirst.isChecked}, 필수2=${binding.checkboxSecond.isChecked}, 선택=${binding.checkboxThird.isChecked}")
                 startActivity(intent)
             } else {
@@ -127,7 +132,6 @@ class PolicyActivity : AppCompatActivity() {
                 Log.d("PolicyActivity", "필수 약관 동의 필요")
             }
         }
-
         // 초기 버튼 상태 업데이트
         updateButtonState()
     }

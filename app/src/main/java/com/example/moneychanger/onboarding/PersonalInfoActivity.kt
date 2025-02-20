@@ -5,14 +5,33 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityPersonalInfoBinding
+import com.example.moneychanger.network.RetrofitClient
+import com.example.moneychanger.network.user.SignUpRequest
+import com.example.moneychanger.network.user.SignUpResponse
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.HttpException
+import java.io.IOException
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 class PersonalInfoActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPersonalInfoBinding
+    private lateinit var email: String // 이메일 필수
+    private lateinit var otp: String // OTP 필수
+    private lateinit var agreedTerms: List<Boolean> // 이용약관 동의 내역
+    private var selectedGender: Boolean? = null // true: 남성, false: 여성
+    private var selectedDateOfBirth: String = "" // "yyyy-MM-dd" 포맷
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,32 +47,51 @@ class PersonalInfoActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             finish()
         }
-        // PolicyActivity에서 전달된 데이터 받기
-        val agreedTerms = listOf(
-            intent.getBooleanExtra("checkboxFirst", false),
-            intent.getBooleanExtra("checkboxSecond", false),
-            intent.getBooleanExtra("checkboxThird", false)
-        )
 
-        Log.d("PersonalInfoActivity", "받은 동의 데이터: $agreedTerms")
+        // 동의 내역 받기 (ArrayList<Boolean>로 받기)
+        agreedTerms = intent.getSerializableExtra("agreedTerms") as? ArrayList<Boolean> ?: arrayListOf(false, false, false)
+        Log.d("PersonalInfoActivity", "✅ 받은 동의 데이터: $agreedTerms")
 
 
-        // LoginAuthActivity에서 이메일 받아오기
-        val email = intent.getStringExtra("EMAIL_KEY") ?: ""
-        binding.inputEmail.setText(email) // 받아온 이메일 자동 입력
+        // 이메일 값 받기 (LoginAuthActivity에서 전달됨)
+        email = intent.getStringExtra("email")?.lowercase(Locale.getDefault()) ?: "" // ✅ 이메일 소문자로 변환
+        if (email.isEmpty()) {
+            Log.e("PersonalInfo", "이메일 값이 없습니다!")
+            Toast.makeText(this, "이메일 정보가 없습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+        binding.inputEmail.text = email
 
-        // 다음 버튼 클릭 시 로그인 선택 페이지로 이동
-        binding.buttonNext.setOnClickListener {
-            val intent = Intent(this, LoginSelectActivity::class.java)
-            startActivity(intent)
+        // OTP 값 받기 (LoginAuthActivity2에서 전달됨)
+        otp = intent.getStringExtra("otp") ?: ""
+        if (otp.isNullOrEmpty()) {
+            Log.e("PersonalInfoActivity", "OTP 값이 전달되지 않았습니다!")
+            Toast.makeText(this, "OTP 정보가 없습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+        } else {
+            Log.d("PersonalInfoActivity", "전달받은 OTP: $otp")  // 디버깅 로그 추가
         }
 
+
         // 성별 버튼 선택 이벤트
-        binding.buttonMale.setOnClickListener { Log.d("Debug", "Male selected") }
-        binding.buttonFemale.setOnClickListener { Log.d("Debug", "Female selected") }
+        binding.buttonMale.setOnClickListener {
+            selectedGender = true
+            updateGenderSelectionUI()
+            Log.d("PersonalInfoActivity", "Male selected")
+        }
+        binding.buttonFemale.setOnClickListener {
+            selectedGender = false
+            updateGenderSelectionUI()
+            Log.d("PersonalInfoActivity", "Female selected")
+        }
 
         // 날짜 선택 기능
         setupDatePicker()
+
+        // 다음 버튼 클릭 시 회원가입 요청
+        binding.buttonNext.setOnClickListener {
+            sendSignUpRequest()
+        }
     }
 
     private fun setupDatePicker() {
@@ -64,13 +102,77 @@ class PersonalInfoActivity : AppCompatActivity() {
 
         val datePickerDialog = DatePickerDialog(this, null, year, month, day)
         datePickerDialog.datePicker.init(year, month, day) { _, selectedYear, selectedMonth, selectedDay ->
-            val formattedDate = String.format("%02d/%02d/%02d", selectedYear % 100, selectedMonth + 1, selectedDay)
-            binding.dateText.setText(formattedDate)
-            datePickerDialog.dismiss()
+            selectedDateOfBirth = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay)
+            binding.dateText.setText(selectedDateOfBirth)
+            Log.d("PersonalInfoActivity", "선택한 생년월일: $selectedDateOfBirth")
         }
 
         binding.dateText.setOnClickListener {
             datePickerDialog.show()
         }
+    }
+
+    //     회원가입 요청
+    private fun sendSignUpRequest() {
+        val name = binding.inputName.text.toString().trim()
+        val password = binding.inputPassword.text.toString().trim()
+
+        if (name.isEmpty() || password.isEmpty() || selectedGender == null || selectedDateOfBirth.isEmpty()) {
+            Toast.makeText(this, "모든 정보를 입력해주세요.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val date = dateFormat.parse(selectedDateOfBirth)
+        val dateOfBirthMillis = date?.time ?: System.currentTimeMillis()
+
+
+        val signUpRequest = SignUpRequest(
+            userName = name,
+            userDateOfBirth = dateOfBirthMillis,
+            userGender = selectedGender ?: false,
+            userEmail = email, // ✅ 소문자로 변환된 이메일 사용
+            userPassword = password,
+            otp = otp,
+            agreedTerms = agreedTerms
+        )
+
+        Log.d("PersonalInfoActivity", "📩 보낼 회원가입 요청 데이터: $signUpRequest")
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = RetrofitClient.apiService.signUp(signUpRequest)
+
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        val signUpResponse = response.body()
+                        Log.d("PersonalInfoActivity", "✅ 회원가입 응답 데이터: ${Gson().toJson(signUpResponse)}")
+
+                        var signUpData: SignUpResponse? = null
+
+                        if (signUpResponse?.message == "회원가입 성공") {
+                            val userName = signUpData?.userName?: "회원정보 없음" ;
+                            Toast.makeText(this@PersonalInfoActivity, "${signUpResponse.message} ($userName 님)", Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this@PersonalInfoActivity, LoginActivity::class.java))
+                            finish()
+                        } else {
+                            Toast.makeText(this@PersonalInfoActivity, signUpResponse?.message ?: "회원가입 실패", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        val errorBody = response.errorBody()?.string()
+                        Log.e("PersonalInfoActivity", "🚨 회원가입 실패 - HTTP ${response.code()}: $errorBody")
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Log.e("PersonalInfoActivity", "⚠️ 예외 발생: ${e.message}")
+                }
+            }
+        }
+    }
+
+    private fun updateGenderSelectionUI() {
+        binding.buttonMale.isSelected = selectedGender == true
+        binding.buttonFemale.isSelected = selectedGender == false
     }
 }
