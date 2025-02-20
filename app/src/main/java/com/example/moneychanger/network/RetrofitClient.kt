@@ -1,6 +1,8 @@
 package com.example.moneychanger.network
 
+import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -19,15 +21,21 @@ object RetrofitClient {
         .writeTimeout(15, TimeUnit.SECONDS)
         .build()
 
-    private val gson = Gson().newBuilder()
+    private val gson = GsonBuilder()
+        .serializeNulls() // null 값도 JSON에 포함
+        .setLenient()  // ✅ JSON 파싱 오류 방지
+        .setDateFormat("yyyy-MM-dd") // 날짜 포맷 설정
+        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES) // ✅ 백엔드 JSON 구조 맞추기
         .create()
 
-    val apiService: ApiService = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(client)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create(ApiService::class.java)
+    val apiService: ApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create(gson)) // JSON 응답 지원
+            .build()
+            .create(ApiService::class.java)
+    }
 }
 
 // 토큰 자동 추가 Interceptor

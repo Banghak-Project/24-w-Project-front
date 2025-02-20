@@ -45,6 +45,7 @@
                     android:layout_marginBottom="4dp"
                     style="@style/TextBodyS"/>
                 <TextView
+                    android:id="@+id/input_email"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:paddingHorizontal="24dp"

@@ -6,6 +6,7 @@ import com.example.moneychanger.network.list.ListsRequestDto
 import com.example.moneychanger.network.list.ListsResponseDto
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductRequestDto
+import com.example.moneychanger.network.user.ApiResponse
 import com.example.moneychanger.network.user.EmailRequest
 import com.example.moneychanger.network.user.KakaoLoginRequest
 import com.example.moneychanger.network.user.KakaoLoginResponse
@@ -14,6 +15,7 @@ import com.example.moneychanger.network.user.SignInRequest
 import com.example.moneychanger.network.user.SignInResponse
 import com.example.moneychanger.network.user.SignUpRequest
 import com.example.moneychanger.network.user.SignUpResponse
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -26,16 +28,16 @@ import retrofit2.http.Path
 interface ApiService {
     //User
     @POST("/api/auth/signin")
-    suspend fun signIn(@Body signInRequest: SignInRequest): SignInResponse
+    suspend fun signIn(@Body request: SignInRequest): Response<ApiResponse<SignInResponse>>
 
     @POST("/api/auth/signup")
-    suspend fun signUp(@Body signUpRequest: SignUpRequest): SignUpResponse
+    suspend fun signUp(@Body signUpRequest: SignUpRequest): Response<ApiResponse<SignUpResponse>>
 
     @POST("/api/auth/signup/otp")
     suspend fun sendOtp(@Body emailRequest: EmailRequest): Response<Void>
 
     @POST("/api/auth/signup/otp/check")
-    suspend fun verifyOtp(@Body otpRequest: OtpRequest): String
+    suspend fun verifyOtp(@Body request: OtpRequest): Response<ResponseBody>
 
     @POST("/api/auth/kakao/signin")
     suspend fun kakaoSignIn(@Body request: KakaoLoginRequest): KakaoLoginResponse
