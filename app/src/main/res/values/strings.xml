@@ -198,7 +198,7 @@
     <string name="to_start">처음으로</string>
 
     <!--  kakao login native app key  -->
-    <string name="kakao_native_app_key">6bd868dc4dfc4411b3ed036307340a65</string>
-    <string name="kakao_scheme">kakao6bd868dc4dfc4411b3ed036307340a65</string>
+    <string name="kakao_native_app_key"></string>
+    <string name="kakao_scheme"></string>
 
 </resources>
