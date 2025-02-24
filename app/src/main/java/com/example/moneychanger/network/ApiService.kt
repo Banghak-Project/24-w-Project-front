@@ -15,6 +15,7 @@ import com.example.moneychanger.network.user.SignInRequest
 import com.example.moneychanger.network.user.SignInResponse
 import com.example.moneychanger.network.user.SignUpRequest
 import com.example.moneychanger.network.user.SignUpResponse
+import com.google.android.gms.common.api.Api
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
@@ -40,7 +41,7 @@ interface ApiService {
     suspend fun verifyOtp(@Body request: OtpRequest): Response<ResponseBody>
 
     @POST("/api/auth/kakao/signin")
-    suspend fun kakaoSignIn(@Body request: KakaoLoginRequest): KakaoLoginResponse
+    suspend fun kakaoSignIn(@Body request: KakaoLoginRequest): Response<ApiResponse<KakaoLoginResponse>>
 
     //List
     @POST("/api/lists/add")

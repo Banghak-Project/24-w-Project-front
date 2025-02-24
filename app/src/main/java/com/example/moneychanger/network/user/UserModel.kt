@@ -33,5 +33,14 @@ data class SignInResponse(  @SerializedName("userId") val userId: Long,
 
 data class EmailRequest(val email: String)
 data class OtpRequest(val email: String, val otp: String)
-data class KakaoLoginRequest(val accessToken: String)
-data class KakaoLoginResponse(val msg: String, val accessToken: String?, val refreshToken: String?)
+data class KakaoLoginRequest(
+    @SerializedName("access_token") val accessToken: String
+)
+
+data class KakaoLoginResponse(
+    val userId: Long?,
+    val userName: String?,
+    val msg: String?,
+    val accessToken: String?,
+    val refreshToken: String?
+)
