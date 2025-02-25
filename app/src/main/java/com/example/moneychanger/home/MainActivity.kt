@@ -13,12 +13,11 @@ import com.example.moneychanger.camera.CameraActivity
 import com.example.moneychanger.list.ListActivity
 import com.example.moneychanger.adapter.ListAdapter
 import com.example.moneychanger.R
-import com.example.moneychanger.adapter.NoticeAdapter
 import com.example.moneychanger.setting.SettingActivity
 import com.example.moneychanger.databinding.ActivityMainBinding
 import com.example.moneychanger.etc.BaseActivity
 import com.example.moneychanger.etc.DataProvider
-import com.example.moneychanger.network.list.ListModel
+import com.example.moneychanger.onboarding.find.FindIdPwActivity
 import com.example.moneychanger.onboarding.LoginSelectActivity
 
 class MainActivity : BaseActivity() {
@@ -62,7 +61,7 @@ class MainActivity : BaseActivity() {
             startActivity(intent)
         }
         binding.b2.setOnClickListener{
-            val intent = Intent(this, ListActivity::class.java)
+            val intent = Intent(this, FindIdPwActivity::class.java)
             startActivity(intent)
         }
 //        binding.listPlace.root.setOnClickListener{

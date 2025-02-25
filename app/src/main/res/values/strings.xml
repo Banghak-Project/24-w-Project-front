@@ -88,6 +88,26 @@
     <string name="name">이름</string>
     <string name="pw_kor">비밀번호</string>
 
+    <!--id,pw 찾기-->
+    <string name="button_id">ID 찾기</string>
+    <string name="button_pw">비밀번호 재설정</string>
+    <string name="find_id_title1">가입 정보로</string>
+    <string name="find_id_title2">아이디를 확인하세요</string>
+    <string name="find_pw_title1">비밀번호 재설정을 위한</string>
+    <string name="find_pw_title2">임시 비밀번호를 발급맏으세요</string>
+    <string name="submit_button_id">아이디 찾기</string>
+    <string name="submit_button_pw">비밀번호 재설정 메일 요청</string>
+
+    <!--id 찾기 결과-->
+    <string name="id_result_title1">님의 아이디는</string>
+    <string name="id_result_title2">입니다.</string>
+    <string name="button_to_login">로그인 화면으로</string>
+
+    <!--pw 찾기 결과-->
+    <string name="pw_result_title1">입력하신 메일로</string>
+    <string name="pw_result_title2">비밀번호가 전송되었습니다</string>
+
+
     <!--홈_01-->
     <string name="home_title">가게 별 소비 리스트</string>
 

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <include
+        android:id="@+id/login_toolbar"
+        layout="@layout/login_toolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="20dp"
+        android:paddingHorizontal="20dp">
+
+        <Button
+            android:id="@+id/btnFindId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="ID 찾기"/>
+
+        <Button
+            android:id="@+id/btnResetPassword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="비밀번호 재설정"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_findID"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/find_id_title1"
+                style="@style/TextHeadingXL"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/find_id_title2"
+                style="@style/TextHeadingXL"/>
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="8dp" >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/name"
+                    style="@style/TextBodyS"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:paddingHorizontal="24dp"
+                    android:hint="@string/name"
+                    android:background="@drawable/round_background"
+                    style="@style/TextBodyL"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="8dp" >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/birth_kor"
+                    style="@style/TextBodyS"/>
+                <EditText
+                    android:id="@+id/date_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:paddingHorizontal="24dp"
+                    android:hint="@string/birth_eng"
+                    android:background="@drawable/round_background"
+                    style="@style/TextBodyL"
+                    android:focusable="false"
+                    android:clickable="true" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/button_to_id_result"
+            android:layout_marginBottom="24dp"
+            android:text="@string/submit_button_id"
+            style="@style/NextButtonStyle" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/layout_findPW"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/find_pw_title1"
+            style="@style/TextHeadingXL"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/find_pw_title2"
+            style="@style/TextHeadingXL"/>
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="8dp" >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginBottom="4dp"
+                android:text="@string/name"
+                style="@style/TextBodyS"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:paddingHorizontal="24dp"
+                android:hint="@string/name"
+                android:background="@drawable/round_background"
+                style="@style/TextBodyL"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="8dp" >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginBottom="4dp"
+                android:text="@string/email"
+                style="@style/TextBodyS"/>
+            <EditText
+                android:id="@+id/date_text_pw"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:paddingHorizontal="24dp"
+                android:hint="@string/ex_email"
+                android:background="@drawable/round_background"
+                style="@style/TextBodyL"/>
+        </LinearLayout>
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/button_to_pw_result"
+            android:layout_marginBottom="24dp"
+            android:text="@string/submit_button_pw"
+            style="@style/NextButtonStyle" />
+    </LinearLayout>
+</LinearLayout>
