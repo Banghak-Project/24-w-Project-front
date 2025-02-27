@@ -27,6 +27,7 @@ import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import android.Manifest
+import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 
 class CameraActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCameraBinding
@@ -66,13 +67,14 @@ class CameraActivity : AppCompatActivity() {
         setCallback(CallBackType.ON_SUCCESS) {recognizedText ->
             val currentTime = System.currentTimeMillis()
             if (currentTime - lastUpdateTime >= updateInterval){
-                recognizedNum = recognizedText.replace(Regex("[^0-9]"), "")
+                val filteredText = extractItemsAndPrices(recognizedText)
                 runOnUiThread{
-                    binding.cameraText.text = "인식된 숫자: $recognizedNum"
-            }
-            lastUpdateTime = currentTime
+                    binding.cameraText.text = filteredText
+                }
+                lastUpdateTime = currentTime
             }
         }
+
         setCallback(CallBackType.ON_FAIL){ errorMessage ->
             runOnUiThread {
                 binding.cameraText.text = errorMessage
@@ -132,7 +134,7 @@ class CameraActivity : AppCompatActivity() {
 
     @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
     private fun getImageAnalyzer(): ImageAnalysis.Analyzer {
-        val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+        val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
         return ImageAnalysis.Analyzer{ imageProxy ->
             val mediaImage = imageProxy.image
             mediaImage?.let{
@@ -229,6 +231,28 @@ class CameraActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "카메라 권한이 필요합니다.", Toast.LENGTH_LONG).show()
             }
+        }
+    }
+
+    // OCR에서 상품명과 가격만 필터링
+    private fun extractItemsAndPrices(ocrText: String): String {
+        val itemList = mutableListOf<String>()
+        val lines = ocrText.split("\n")
+
+        for (line in lines) {
+            val match = Regex("(.+?)\\s+(\\d{1,3}(?:,\\d{3})*)$").find(line)
+            val excludeKeywords = listOf("서울특별시", "합계", "부가세", "거스름돈", "판매일") // 필요 없는 항목
+
+            if (match != null) {
+                val (item, price) = match.destructured
+                itemList.add("$item : $price 원")
+            }
+        }
+
+        return if (itemList.isNotEmpty()) {
+            itemList.joinToString("\n")
+        } else {
+            "상품을 인식할 수 없습니다."
         }
     }
 
