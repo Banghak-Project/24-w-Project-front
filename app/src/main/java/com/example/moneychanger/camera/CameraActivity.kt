@@ -49,7 +49,15 @@ class CameraActivity : AppCompatActivity() {
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        startCamera()
+        // 강제
+//        binding.previewView.implementationMode = PreviewView.ImplementationMode.PERFORMANCE
+
+//        startCamera()
+        if (!hasCameraPermission()) {
+            requestCameraPermission()
+        } else {
+            startCamera()
+        }
 
         captureButton.setOnClickListener{
             takePicture()
@@ -75,8 +83,14 @@ class CameraActivity : AppCompatActivity() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
-            val preview = Preview.Builder().build()
-            preview.surfaceProvider = previewView.surfaceProvider
+
+            // 기존 바인딩 해제
+            cameraProvider.unbindAll()
+
+            val preview = Preview.Builder().build().also {
+                it.setSurfaceProvider(previewView.surfaceProvider)
+            }
+
             imageCapture = ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY) // 지연 최소화 설정
                 .build()
@@ -94,7 +108,7 @@ class CameraActivity : AppCompatActivity() {
 
             try{
                 Log.v("CameraActivity", "startCamera.try")
-                cameraProvider.unbindAll()
+//                cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture, imageAnalyzer)
             }catch (exc:Exception){
                 Log.e("CameraActivity", "Use case binding failed", exc)
@@ -118,7 +132,6 @@ class CameraActivity : AppCompatActivity() {
 
     @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
     private fun getImageAnalyzer(): ImageAnalysis.Analyzer {
-//        Log.d(TAG, "Average luminosity: $luma")
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
         return ImageAnalysis.Analyzer{ imageProxy ->
             val mediaImage = imageProxy.image
@@ -196,7 +209,27 @@ class CameraActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "CameraXApp"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+        private const val CAMERA_PERMISSION_CODE: Int = 10
 
+    }
+
+    private fun hasCameraPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestCameraPermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startCamera()
+            } else {
+                Toast.makeText(this, "카메라 권한이 필요합니다.", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
 }
