@@ -69,6 +69,8 @@ dependencies {
     implementation("androidx.camera:camera-extensions:${camerax_version}")
     implementation("androidx.camera:camera-camera2:${camerax_version}")
     implementation("com.google.guava:guava:30.1-jre")
+    // 한국어
+    implementation ("com.google.mlkit:text-recognition-korean:16.0.0")
 
     //Retrofit2
     implementation("com.google.code.gson:gson:2.10.1")
