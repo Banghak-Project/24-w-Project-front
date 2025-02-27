@@ -27,6 +27,8 @@ import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import android.Manifest
+import android.view.View
+import com.bumptech.glide.Glide
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 
 class CameraActivity : AppCompatActivity() {
@@ -35,7 +37,6 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var captureButton: Button
     private lateinit var cameraExecutor: ExecutorService
     private var imageCapture: ImageCapture? = null
-    private lateinit var recognizedNum : String
 
     private var lastUpdateTime: Long = 0
     private val updateInterval = 2000 // 2초 간격
@@ -51,9 +52,8 @@ class CameraActivity : AppCompatActivity() {
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         // 강제
-//        binding.previewView.implementationMode = PreviewView.ImplementationMode.PERFORMANCE
+        // binding.previewView.implementationMode = PreviewView.ImplementationMode.PERFORMANCE
 
-//        startCamera()
         if (!hasCameraPermission()) {
             requestCameraPermission()
         } else {
@@ -86,7 +86,6 @@ class CameraActivity : AppCompatActivity() {
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
 
-            // 기존 바인딩 해제
             cameraProvider.unbindAll()
 
             val preview = Preview.Builder().build().also {
@@ -110,7 +109,6 @@ class CameraActivity : AppCompatActivity() {
 
             try{
                 Log.v("CameraActivity", "startCamera.try")
-//                cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture, imageAnalyzer)
             }catch (exc:Exception){
                 Log.e("CameraActivity", "Use case binding failed", exc)
@@ -143,14 +141,14 @@ class CameraActivity : AppCompatActivity() {
                 )
                 recognizer.process(image)
                     .addOnSuccessListener{ text ->
-                    if (text.text.isNotEmpty()) {
-                        Log.d("TextAnalyzer", "텍스트 내용: ${text.text}")
-                        callBacks[CallBackType.ON_SUCCESS]?.invoke(text.text)
-                    }else{
-                        Log.d("TextAnalyzer", "텍스트가 감지되지 않았습니다.")
-                        callBacks[CallBackType.ON_FAIL]?.invoke("텍스트가 감지되지 않았습니다.")
+                        if (text.text.isNotEmpty()) {
+                            Log.d("TextAnalyzer", "텍스트 내용: ${text.text}")
+                            callBacks[CallBackType.ON_SUCCESS]?.invoke(text.text)
+                        }else{
+                            Log.d("TextAnalyzer", "텍스트가 감지되지 않았습니다.")
+                            callBacks[CallBackType.ON_FAIL]?.invoke("텍스트가 감지되지 않았습니다.")
+                        }
                     }
-                }
                     .addOnCompleteListener{
                         imageProxy.close()
                         mediaImage.close()
@@ -179,13 +177,12 @@ class CameraActivity : AppCompatActivity() {
                 put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-Image")
             }
         }
-        //파일과 메타데이터를 포함한 output option 객체 생성
+        // 파일과 메타데이터를 포함한 output option 객체 생성
         val outputOptions = ImageCapture.OutputFileOptions.Builder(
             contentResolver,
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             contentValues
-        )
-            .build()
+        ).build()
 
         imageCapture.takePicture(
             outputOptions,
@@ -195,24 +192,20 @@ class CameraActivity : AppCompatActivity() {
                     Log.v(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
 
-                override fun
-                        onImageSaved(output: ImageCapture.OutputFileResults) {
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     Log.v(TAG, "Photo : ${output.savedUri}")
                     Toast.makeText(baseContext, "Photo : ${output.savedUri}", Toast.LENGTH_SHORT).show()
+
+                    runOnUiThread {
+                        Glide.with(this@CameraActivity)
+                            .load(output.savedUri)
+                            .into(binding.capturedImageView)
+                        binding.previewView.visibility = View.INVISIBLE
+                        binding.capturedImageView.visibility = View.VISIBLE
+                    }
                 }
             }
         )
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        cameraExecutor.shutdown()
-    }
-
-    companion object {
-        private const val TAG = "CameraXApp"
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-        private const val CAMERA_PERMISSION_CODE: Int = 10
-
     }
 
     private fun hasCameraPermission(): Boolean {
@@ -254,6 +247,18 @@ class CameraActivity : AppCompatActivity() {
         } else {
             "상품을 인식할 수 없습니다."
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cameraExecutor.shutdown()
+    }
+
+    companion object {
+        private const val TAG = "CameraXApp"
+        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+        private const val CAMERA_PERMISSION_CODE: Int = 10
+
     }
 
 }
