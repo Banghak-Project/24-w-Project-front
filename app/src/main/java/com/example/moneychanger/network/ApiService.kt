@@ -4,6 +4,7 @@ import com.example.moneychanger.network.currency.CurrencyModel
 import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.network.list.ListsRequestDto
 import com.example.moneychanger.network.list.ListsResponseDto
+import com.example.moneychanger.network.product.ImageProductResponseDto
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductRequestDto
 import com.example.moneychanger.network.user.ApiResponse
@@ -16,14 +17,18 @@ import com.example.moneychanger.network.user.SignInResponse
 import com.example.moneychanger.network.user.SignUpRequest
 import com.example.moneychanger.network.user.SignUpResponse
 import com.google.android.gms.common.api.Api
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface ApiService {
@@ -68,6 +73,13 @@ interface ApiService {
     //아이디에 맞는 상품 삭제
     @DELETE("/api/products/{id}")
     fun deleteProduct(@Path("id") productId: Long): Call<Void>
+    //이미지 분석
+    @Multipart
+    @POST("/api/products/image")
+    fun analyzeImage(
+        @Part image: MultipartBody.Part,
+        @Part("description") description: RequestBody
+    ): Call<ApiResponse<List<ImageProductResponseDto>>>
 
     //Notice
     //추후에 추가
@@ -78,5 +90,6 @@ interface ApiService {
 
     @GET("/api/currency")
     fun findAll(): Call<List<CurrencyModel>>
+
 
 }
