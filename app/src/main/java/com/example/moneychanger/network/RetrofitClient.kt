@@ -40,6 +40,15 @@ object RetrofitClient {
             .build()
             .create(ApiService::class.java)
     }
+
+    val imageApiService: ApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create()) // JSON 변환
+            .build()
+            .create(ApiService::class.java)
+    }
 }
 
 // 토큰 자동 추가 Interceptor

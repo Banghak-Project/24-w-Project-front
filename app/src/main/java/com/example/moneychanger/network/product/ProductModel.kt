@@ -18,3 +18,7 @@ data class ProductResponseDto(
     val originPrice: Double,
     val deletedYn : Boolean
 )
+data class ImageProductResponseDto(
+    val name: String,
+    val price: Double,
+)
