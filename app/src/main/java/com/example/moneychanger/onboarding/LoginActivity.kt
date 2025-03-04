@@ -12,6 +12,7 @@ import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
 import com.example.moneychanger.network.user.SignInRequest
 import com.example.moneychanger.network.user.SignInResponse
+import com.example.moneychanger.onboarding.find.FindIdPwActivity
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.CoroutineScope
@@ -51,7 +52,8 @@ class LoginActivity : AppCompatActivity() {
         // 아이디/비밀번호 찾기
         binding.buttonFindIdPw.paintFlags = binding.buttonFindIdPw.paintFlags or android.graphics.Paint.UNDERLINE_TEXT_FLAG
         binding.buttonFindIdPw.setOnClickListener {
-            // 아이디 비밀번호 찾기 로직 추가 가능
+            val intent = Intent(this, FindIdPwActivity::class.java)
+            startActivity(intent)
         }
 
         // 회원가입 이동

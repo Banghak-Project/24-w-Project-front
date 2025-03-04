@@ -222,4 +222,7 @@
     <string name="kakao_native_app_key"></string>
     <string name="kakao_scheme"></string>
 
+    <string name="find_pw">비밀번호 재설정</string>
+    <string name="find_id">ID 찾기</string>
+
 </resources>

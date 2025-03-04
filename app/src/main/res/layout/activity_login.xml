@@ -54,6 +54,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/find_idpw"
                     style="@style/TextBodyS_deco"
+                    android:clickable="true"
                     android:textColor="@color/gray_06"/>
             </LinearLayout>
             <Space
