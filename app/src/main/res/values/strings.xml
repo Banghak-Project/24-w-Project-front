@@ -130,6 +130,7 @@
     <string name="policy">약관 및 정책</string>
     <string name="ver_info">버전 정보</string>
     <string name="ver">ver. </string>
+    <string name="logout">로그아웃</string>
     <string name="delete_account">회원 탈퇴</string>
 
     <!--list-->
