@@ -50,29 +50,29 @@ interface ApiService {
 
     //List
     @POST("/api/lists/add")
-    fun createList(@Body requestDto: ListsRequestDto): Call<ListModel>
+    fun createList(@Body requestDto: ListsRequestDto): Response<ApiResponse<Call<ListModel>>>
 
     @GET("/api/lists")
-    fun getAllLists(): Call<List<ListsResponseDto>>
+    fun getAllLists(): Response<ApiResponse<Call<List<ListsResponseDto>>>>
 
     @DELETE("/api/lists/delete/{id}")
-    fun deleteList(@Path("id") id: Long): Call<Void>
+    fun deleteList(@Path("id") id: Long): Response<ApiResponse<Call<Void>>>
 
     //Product
     @POST("/api/products")
-    fun createProduct(@Body requestDto: ProductRequestDto): Call<ProductModel>
+    fun createProduct(@Body requestDto: ProductRequestDto): Response<ApiResponse<Call<ProductModel>>>
     //아이디에 맞는 상품 갖고옴
     @GET("/api/products/{id}")
-    fun getProductByListsId(@Path("id") productId:Long): Call<ProductModel>
+    fun getProductByListsId(@Path("id") productId:Long): Response<ApiResponse<Call<ProductModel>>>
     //모든 상품 조회
     @GET("/api/products")
-    fun getAllProducts(): Call<List<ProductModel>>
+    fun getAllProducts(): Response<ApiResponse<Call<List<ProductModel>>>>
     //아이디에 맞는 상품 수정
     @PUT("/api/products/{id}")
-    fun updateProduct(@Path("id") productId: Long, @Body requestDto: ProductRequestDto): Call<ProductModel>
+    fun updateProduct(@Path("id") productId: Long, @Body requestDto: ProductRequestDto): Response<ApiResponse<Call<ProductModel>>>
     //아이디에 맞는 상품 삭제
     @DELETE("/api/products/{id}")
-    fun deleteProduct(@Path("id") productId: Long): Call<Void>
+    fun deleteProduct(@Path("id") productId: Long): Response<ApiResponse<Call<Void>>>
     //이미지 분석
     @Multipart
     @POST("/api/products/image")
@@ -86,7 +86,7 @@ interface ApiService {
 
     //Currency
     @POST("/api/currency/import")
-    fun importCurrency(): Call<List<CurrencyModel>>
+    fun importCurrency(): Response<ApiResponse<Call<List<CurrencyModel>>>>
 
     @GET("/api/currency")
     fun findAll(): Call<List<CurrencyModel>>
