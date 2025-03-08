@@ -23,15 +23,30 @@ import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import android.Manifest
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import android.view.View
+import android.view.ViewTreeObserver
+import android.widget.FrameLayout
+import android.widget.ImageView
+import androidx.camera.core.impl.utils.MatrixExt.postRotate
+import androidx.camera.core.internal.utils.ImageUtil.rotateBitmap
 import com.bumptech.glide.Glide
+import com.example.moneychanger.R
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.product.ImageProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.Text
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -46,9 +61,7 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var captureButton: Button
     private lateinit var cameraExecutor: ExecutorService
     private var imageCapture: ImageCapture? = null
-
-    private var lastUpdateTime: Long = 0
-    private val updateInterval = 2000 // 2초 간격
+    private val selectedTexts = mutableListOf<String>() // 사용자가 선택한 텍스트 저장
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,35 +73,20 @@ class CameraActivity : AppCompatActivity() {
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        // 강제
-        // binding.previewView.implementationMode = PreviewView.ImplementationMode.PERFORMANCE
-
         if (!hasCameraPermission()) {
             requestCameraPermission()
         } else {
             startCamera()
         }
 
-        captureButton.setOnClickListener{
-            takePicture()
+        captureButton.setOnClickListener {
+            if (captureButton.text == "Capture") {
+                takePicture()
+            } else {
+                resetCamera()
+            }
         }
 
-//        setCallback(CallBackType.ON_SUCCESS) {recognizedText ->
-//            val currentTime = System.currentTimeMillis()
-//            if (currentTime - lastUpdateTime >= updateInterval){
-//                val filteredText = extractItemsAndPrices(recognizedText)
-//                runOnUiThread{
-//                    binding.cameraText.text = filteredText
-//                }
-//                lastUpdateTime = currentTime
-//            }
-//        }
-//
-//        setCallback(CallBackType.ON_FAIL){ errorMessage ->
-//            runOnUiThread {
-//                binding.cameraText.text = errorMessage
-//            }
-//        }
     }
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
@@ -105,13 +103,6 @@ class CameraActivity : AppCompatActivity() {
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY) // 지연 최소화 설정
                 .build()
 
-//            val imageAnalyzer = ImageAnalysis.Builder()
-//                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-//                .build()
-//                .also {
-//                    it.setAnalyzer(cameraExecutor, getImageAnalyzer())
-//                }
-
             val cameraSelector = CameraSelector.Builder()
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                 .build()
@@ -125,68 +116,18 @@ class CameraActivity : AppCompatActivity() {
         }, ContextCompat.getMainExecutor(this))
     }
 
-    // 콜백 타입 정의
-    enum class CallBackType {
-        ON_SUCCESS,
-        ON_FAIL
-    }
-
-    // 콜백 함수 저장용 맵
-    private val callBacks: MutableMap<CallBackType, (String) -> Unit> = mutableMapOf()
-
-    // 콜백 함수 설정
-    fun setCallback(type: CallBackType, callback: (String) -> Unit) {
-        callBacks[type] = callback
-    }
-
-//    @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
-//    private fun getImageAnalyzer(): ImageAnalysis.Analyzer {
-//        val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
-//        return ImageAnalysis.Analyzer{ imageProxy ->
-//            val mediaImage = imageProxy.image
-//            mediaImage?.let{
-//                val image = InputImage.fromMediaImage(
-//                    mediaImage, imageProxy.imageInfo.rotationDegrees
-//                )
-//                recognizer.process(image)
-//                    .addOnSuccessListener{ text ->
-//                        if (text.text.isNotEmpty()) {
-//                            Log.d("TextAnalyzer", "텍스트 내용: ${text.text}")
-//                            callBacks[CallBackType.ON_SUCCESS]?.invoke(text.text)
-//                        }else{
-//                            Log.d("TextAnalyzer", "텍스트가 감지되지 않았습니다.")
-//                            callBacks[CallBackType.ON_FAIL]?.invoke("텍스트가 감지되지 않았습니다.")
-//                        }
-//                    }
-//                    .addOnCompleteListener{
-//                        imageProxy.close()
-//                        mediaImage.close()
-//                    }
-//                    .addOnFailureListener {
-//                        Log.d("TextAnalyzer", "텍스트 분석 실패: ${it.localizedMessage}")
-//                        callBacks[CallBackType.ON_FAIL]?.invoke("텍스트 분석에 실패하였습니다.")
-//                    }
-//            }?:run{
-//                imageProxy.close() // 이미지가 null인 경우 리소스 해제
-//            }
-//        }
-//    }
-
     private fun takePicture() {
-        Log.v("takePicture", "Capture button clicked!")
         val imageCapture = imageCapture ?: return
+        val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis())
 
-        Log.v("takePicture", "came here")
-        val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
-            .format(System.currentTimeMillis())
-        val contentValues = ContentValues().apply{
+        val contentValues = ContentValues().apply {
             put(MediaStore.MediaColumns.DISPLAY_NAME, name)
             put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.P){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-Image")
             }
         }
-        // 파일과 메타데이터를 포함한 output option 객체 생성
+
         val outputOptions = ImageCapture.OutputFileOptions.Builder(
             contentResolver,
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
@@ -197,24 +138,69 @@ class CameraActivity : AppCompatActivity() {
             outputOptions,
             ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exc: ImageCaptureException){
-                    Log.v(TAG, "Photo capture failed: ${exc.message}", exc)
+                override fun onError(exc: ImageCaptureException) {
+                    Log.e("CameraActivity", "사진 캡처 실패: ${exc.message}", exc)
                 }
 
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    Log.v(TAG, "Photo : ${output.savedUri}")
+                    val savedUri = output.savedUri ?: return
+                    Log.d("CameraActivity", "사진 저장됨: $savedUri")
                     Toast.makeText(baseContext, "Photo : ${output.savedUri}", Toast.LENGTH_SHORT).show()
-                    output.savedUri?.let { analyzeImage(it) }
+
+                    //output.savedUri?.let { analyzeImage(it) }
+
+                    // 비트맵 불러오면서 EXIF 회전 적용
+                    val bitmap = loadBitmapWithRotation(savedUri)
+
                     runOnUiThread {
-                        Glide.with(this@CameraActivity)
-                            .load(output.savedUri)
-                            .into(binding.capturedImageView)
+                        binding.capturedImageView.setImageBitmap(bitmap) // 올바르게 회전된 이미지 표시
                         binding.previewView.visibility = View.INVISIBLE
                         binding.capturedImageView.visibility = View.VISIBLE
+                        binding.cameraButton.text = "🔄"
                     }
+
+                    // OCR 실행
+                    recognizeTextFromBitmap(bitmap)
                 }
             }
         )
+    }
+
+    private fun resetCamera() {
+        binding.previewView.visibility = View.VISIBLE
+        binding.capturedImageView.visibility = View.INVISIBLE
+        binding.cameraButton.text = "Capture"
+        binding.confirmButton.visibility = View.INVISIBLE
+
+        binding.textOverlay.removeAllViews() // OCR 박스 초기화
+        selectedTexts.clear()
+
+        startCamera() // 카메라 다시 실행
+    }
+
+    private fun loadBitmapWithRotation(uri: Uri): Bitmap {
+        val inputStream = contentResolver.openInputStream(uri)
+        val bitmap = BitmapFactory.decodeStream(inputStream)
+
+        // ExifInterface를 사용해 원본 이미지의 회전 정보를 가져오기
+        val exif = ExifInterface(contentResolver.openInputStream(uri)!!)
+        val rotation = when (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> 90
+            ExifInterface.ORIENTATION_ROTATE_180 -> 180
+            ExifInterface.ORIENTATION_ROTATE_270 -> 270
+            else -> 0
+        }
+
+        return if (rotation != 0) {
+            rotateBitmap(bitmap, rotation)
+        } else {
+            bitmap
+        }
+    }
+
+    private fun rotateBitmap(bitmap: Bitmap, degree: Int): Bitmap {
+        val matrix = Matrix().apply { postRotate(degree.toFloat()) }
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
     private fun hasCameraPermission(): Boolean {
@@ -235,28 +221,6 @@ class CameraActivity : AppCompatActivity() {
             }
         }
     }
-
-    // OCR에서 상품명과 가격만 필터링
-//    private fun extractItemsAndPrices(ocrText: String): String {
-//        val itemList = mutableListOf<String>()
-//        val lines = ocrText.split("\n")
-//
-//        for (line in lines) {
-//            val match = Regex("(.+?)\\s+(\\d{1,3}(?:,\\d{3})*)$").find(line)
-//            val excludeKeywords = listOf("서울특별시", "합계", "부가세", "거스름돈", "판매일") // 필요 없는 항목
-//
-//            if (match != null) {
-//                val (item, price) = match.destructured
-//                itemList.add("$item : $price 원")
-//            }
-//        }
-//
-//        return if (itemList.isNotEmpty()) {
-//            itemList.joinToString("\n")
-//        } else {
-//            "상품을 인식할 수 없습니다."
-//        }
-//    }
 
     private fun analyzeImage(imageUri: Uri) {
         val contentResolver = applicationContext.contentResolver
@@ -301,6 +265,84 @@ class CameraActivity : AppCompatActivity() {
                 Log.e("Upload", "서버 요청 실패: ${t.message}")
             }
         })
+    }
+
+    private fun recognizeTextFromBitmap(bitmap: Bitmap) {
+        val image = InputImage.fromBitmap(bitmap, 0)
+        val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
+
+        recognizer.process(image)
+            .addOnSuccessListener { visionText ->
+                displayRecognizedText(visionText, bitmap) // 비트맵 기준으로 OCR 박스 생성
+            }
+            .addOnFailureListener { e ->
+                Log.e("OCR", "텍스트 인식 실패: ${e.localizedMessage}")
+                Toast.makeText(this, "텍스트 인식 실패", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun displayRecognizedText(visionText: Text, bitmap: Bitmap) {
+        binding.textOverlay.removeAllViews()
+        selectedTexts.clear()
+
+        binding.capturedImageView.post {
+            val displayedWidth = binding.capturedImageView.width.toFloat()
+            val displayedHeight = binding.capturedImageView.height.toFloat()
+
+            val originalWidth = bitmap.width.toFloat()
+            val originalHeight = bitmap.height.toFloat()
+
+            // OCR 박스의 크기 조정
+            val scaleX = displayedWidth / originalWidth
+            val scaleY = displayedHeight / originalHeight
+
+            val offsetX = (displayedWidth - (originalWidth * scaleX)) / 2
+            val offsetY = (displayedHeight - (originalHeight * scaleY)) / 2
+
+            Log.d("OCR", "🔍 Scale Factor: X=$scaleX, Y=$scaleY, OffsetX: $offsetX, OffsetY: $offsetY")
+
+            for (block in visionText.textBlocks) {
+                for (line in block.lines) {
+                    val rect = line.boundingBox ?: continue
+                    val angle = line.angle  // ML Kit이 감지한 회전 각도 (기울어진 텍스트)
+
+                    val borderView = View(this@CameraActivity).apply {
+                        setBackgroundResource(R.drawable.ocr_border)
+                        isClickable = true
+                        rotation = angle  // 기울어진 텍스트의 각도를 OCR 박스에 적용
+                        setOnClickListener { toggleSelection(this, line.text) }
+                    }
+
+                    val layoutParams = FrameLayout.LayoutParams(
+                        (rect.width() * scaleX).toInt(),
+                        (rect.height() * scaleY).toInt()
+                    ).apply {
+                        leftMargin = (rect.left * scaleX + offsetX).toInt()
+                        topMargin = (rect.top * scaleY + offsetY).toInt()
+                    }
+
+                    binding.textOverlay.addView(borderView, layoutParams)
+                }
+            }
+
+            binding.textOverlay.visibility = View.VISIBLE
+            binding.confirmButton.visibility = View.VISIBLE
+            binding.confirmButton.setOnClickListener { confirmSelection() }
+        }
+    }
+
+    private fun toggleSelection(view: View, text: String) {
+        if (selectedTexts.contains(text)) {
+            selectedTexts.remove(text)
+            view.setBackgroundResource(R.drawable.ocr_border) // 기본 테두리
+        } else {
+            selectedTexts.add(text)
+            view.setBackgroundResource(R.drawable.ocr_border_selected) // 선택된 상태
+        }
+    }
+
+    private fun confirmSelection() {
+        binding.cameraText.text = selectedTexts.joinToString(", ")
     }
 
     override fun onDestroy() {
