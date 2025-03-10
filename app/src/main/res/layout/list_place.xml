@@ -66,17 +66,31 @@
             android:layout_weight="1"/>
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/round_background"
-            android:backgroundTint="@color/gray_02"
-            android:padding="3dp">
-            <TextView
-                android:id="@+id/created_date"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/date_box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0000.00.00"
-                android:textColor="@color/blue_06"
-                style="@style/TextBodyXS"/>
+                android:background="@drawable/round_background"
+                android:backgroundTint="@color/gray_02"
+                android:padding="3dp">
+                <TextView
+                    android:id="@+id/created_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0000.00.00"
+                    android:textColor="@color/blue_06"
+                    style="@style/TextBodyXS"/>
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/delete_icon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/icon_delete"
+                android:layout_gravity="end"
+                app:tint="@color/gray_06"
+                android:visibility="gone"/>
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
