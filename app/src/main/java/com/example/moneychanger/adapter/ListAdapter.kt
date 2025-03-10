@@ -19,6 +19,8 @@ class ListAdapter(
     private val onItemClick: (ListModel) -> Unit
 ) : RecyclerView.Adapter<ListAdapter.ListViewHolder>() {
 
+    private var isDeleteMode = false
+
     inner class ListViewHolder(val binding: ListPlaceBinding) : RecyclerView.ViewHolder(binding.root) {
         //val imageViewDelete: ImageView = view.findViewById(R.id.imageViewDelete)
         fun bind(item: ListModel) {
@@ -29,8 +31,20 @@ class ListAdapter(
             binding.createdDate.text = dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
             binding.createdTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
 
-            itemView.setOnClickListener { onItemClick(item) }
-            //imageViewDelete.setOnClickListener { deleteItem(adapterPosition) }
+            itemView.setOnClickListener {
+                if (!isDeleteMode) onItemClick(item) // 삭제 모드가 아닐 때만 클릭 가능
+            }
+
+            // 삭제 버튼 가시성 조정
+            binding.deleteIcon.visibility = if (isDeleteMode) View.VISIBLE else View.GONE
+            binding.dateBox.visibility = if (!isDeleteMode) View.VISIBLE else View.GONE
+
+            // 삭제 아이콘 클릭 시 해당 아이템 삭제
+            binding.deleteIcon.setOnClickListener {
+                if (isDeleteMode && adapterPosition != RecyclerView.NO_POSITION) {
+                    deleteItem(adapterPosition)
+                }
+            }
         }
     }
 
@@ -45,9 +59,17 @@ class ListAdapter(
 
     override fun getItemCount(): Int = items.size
 
+    fun toggledeleteMode() {
+        isDeleteMode = !isDeleteMode
+        notifyDataSetChanged()
+    }
+
     fun deleteItem(position: Int) {
-        items.removeAt(position)
-        notifyItemRemoved(position)
+        if (position in items.indices) {
+            items.removeAt(position)
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, items.size)
+        }
     }
 
     fun updateList(newList: List<ListModel>) {

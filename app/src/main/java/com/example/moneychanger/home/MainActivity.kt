@@ -22,6 +22,7 @@ import com.example.moneychanger.onboarding.LoginSelectActivity
 
 class MainActivity : BaseActivity() {
     private lateinit var binding:  ActivityMainBinding
+    private lateinit var adapter: ListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,12 +44,13 @@ class MainActivity : BaseActivity() {
         val data = DataProvider.listDummyModel
 
         // recyclerView 연결
-        binding.listContainer.layoutManager = LinearLayoutManager(this)
-        binding.listContainer.adapter = ListAdapter(data) { item ->
+        adapter = ListAdapter(data) { item ->
             val intent = Intent(this, ListActivity::class.java)
             intent.putExtra("list_id", item.listId)
             startActivity(intent)
         }
+        binding.listContainer.layoutManager = LinearLayoutManager(this)
+        binding.listContainer.adapter = adapter
 
 
         //팝업 띄우기
@@ -69,6 +71,8 @@ class MainActivity : BaseActivity() {
 //            startActivity(intent)
 //        }
 
+        // delete
+
 
 
     }
@@ -83,6 +87,10 @@ class MainActivity : BaseActivity() {
             R.id.button_setting -> { // 설정 버튼 클릭 처리
                 val intent = Intent(this, SettingActivity::class.java)
                 startActivity(intent)
+                true
+            }
+            R.id.button_delete -> {
+                adapter.toggledeleteMode()
                 true
             }
 
