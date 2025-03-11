@@ -119,6 +119,7 @@
                     android:text="@string/name"
                     style="@style/TextBodyS"/>
                 <EditText
+                    android:id="@+id/editTextName"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:paddingHorizontal="24dp"
@@ -193,6 +194,7 @@
                 android:text="@string/name"
                 style="@style/TextBodyS"/>
             <EditText
+                android:id="@+id/editTextNamePw"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:paddingHorizontal="24dp"
