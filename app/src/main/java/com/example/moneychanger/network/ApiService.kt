@@ -9,6 +9,7 @@ import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductRequestDto
 import com.example.moneychanger.network.user.ApiResponse
 import com.example.moneychanger.network.user.EmailRequest
+import com.example.moneychanger.network.user.FindPasswordRequest
 import com.example.moneychanger.network.user.KakaoLoginRequest
 import com.example.moneychanger.network.user.KakaoLoginResponse
 import com.example.moneychanger.network.user.OtpRequest
@@ -102,8 +103,6 @@ interface ApiService {
 
     // 비밀번호 찾기 API (임시 비밀번호 발급)
     @POST("/api/auth/find-password")
-    suspend fun findPassword(
-        @Query("userEmail") userEmail: String,
-        @Query("userName") userName: String
-    ): Response<ApiResponse<String>>
+    suspend fun findPassword(@Body request: FindPasswordRequest): Response<ApiResponse<String>>
+
 }

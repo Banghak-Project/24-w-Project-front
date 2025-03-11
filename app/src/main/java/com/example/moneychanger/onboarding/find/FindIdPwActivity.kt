@@ -12,6 +12,7 @@ import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityFindIdPwBinding
 import com.example.moneychanger.etc.BaseActivity
 import com.example.moneychanger.network.RetrofitClient
+import com.example.moneychanger.network.user.FindPasswordRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,11 +43,6 @@ class FindIdPwActivity : BaseActivity() {
         // 생년월일 선택 (아이디 찾기용)
         binding.dateText.setOnClickListener{
             showDatePickerDialog()
-        }
-
-        // 생년월일 선택 (비밀번호 찾기용)
-        binding.dateTextPw.setOnClickListener{
-            showDatePickerDialogForPw()
         }
 
         // 상단 버튼 선택 이벤트
@@ -114,16 +110,18 @@ class FindIdPwActivity : BaseActivity() {
         // 비밀번호 찾기 요청
         binding.buttonToPwResult.setOnClickListener {
             val userName = binding.editTextNamePw.text.toString()
-            val userEmail = binding.dateTextPw.text.toString()
+            val userEmail = binding.editTextEmailPw.text.toString()
 
             if (userName.isEmpty() || userEmail.isEmpty()) {
                 Toast.makeText(this, "모든 필드를 입력해주세요.", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            // ✅ JSON 본문으로 전송하도록 수정
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    val response = RetrofitClient.apiService.findPassword(userEmail, userName)
+                    val requestBody = FindPasswordRequest(userEmail, userName) // DTO 생성
+                    val response = RetrofitClient.apiService.findPassword(requestBody)
 
                     withContext(Dispatchers.Main) {
                         if (response.isSuccessful) {
@@ -155,23 +153,6 @@ class FindIdPwActivity : BaseActivity() {
                 selectedDate.set(year, month, dayOfMonth)
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                 binding.dateText.setText(dateFormat.format(selectedDate.time))
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        )
-        datePicker.show()
-    }
-
-    // 날짜 선택 Dialog (비밀번호 찾기)
-    private fun showDatePickerDialogForPw() {
-        val datePicker = DatePickerDialog(
-            this,
-            { _, year, month, dayOfMonth ->
-                val selectedDate = Calendar.getInstance()
-                selectedDate.set(year, month, dayOfMonth)
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                binding.dateTextPw.setText(dateFormat.format(selectedDate.time))
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),

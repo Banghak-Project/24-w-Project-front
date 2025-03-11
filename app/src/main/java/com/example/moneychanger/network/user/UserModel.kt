@@ -44,3 +44,10 @@ data class KakaoLoginResponse(
     val accessToken: String?,
     val refreshToken: String?
 )
+data class FindPasswordRequest(
+    @SerializedName("userEmail") val userEmail: String,
+    @SerializedName("userName") val userName: String,
+    @SerializedName("inputOtp") val inputOtp: String? = null
+)
+
+
