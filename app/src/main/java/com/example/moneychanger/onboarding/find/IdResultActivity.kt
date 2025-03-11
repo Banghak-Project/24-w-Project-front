@@ -4,6 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityFindIdPwBinding
 import com.example.moneychanger.databinding.ActivityIdResultBinding
@@ -17,7 +19,7 @@ class IdResultActivity : BaseActivity() {
         binding = ActivityIdResultBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
+        val toolbar: Toolbar = findViewById(R.id.login_toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
 
@@ -26,6 +28,13 @@ class IdResultActivity : BaseActivity() {
         backButton.setOnClickListener {
             finish()
         }
+
+        val userName = intent.getStringExtra("userName") ?: "사용자"
+        val userEmail = intent.getStringExtra("userEmail") ?: "아이디를 찾을 수 없습니다."
+        binding.textViewUserName.text = userName
+        val resultTextView: TextView = findViewById(R.id.textViewIdResult)
+        resultTextView.text = userEmail ?: "아이디를 찾을 수 없습니다."
+
 
         // 로그인 화면으로
         binding.buttonToLogin.setOnClickListener {

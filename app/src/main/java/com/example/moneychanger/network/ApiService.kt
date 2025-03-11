@@ -9,6 +9,7 @@ import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductRequestDto
 import com.example.moneychanger.network.user.ApiResponse
 import com.example.moneychanger.network.user.EmailRequest
+import com.example.moneychanger.network.user.FindPasswordRequest
 import com.example.moneychanger.network.user.KakaoLoginRequest
 import com.example.moneychanger.network.user.KakaoLoginResponse
 import com.example.moneychanger.network.user.OtpRequest
@@ -30,6 +31,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
     //User
@@ -91,5 +93,16 @@ interface ApiService {
     @GET("/api/currency")
     fun findAll(): Call<List<CurrencyModel>>
 
+
+    // ID 찾기 API
+    @GET("/api/auth/find-id")
+    suspend fun findId(
+        @Query("userName") userName: String,
+        @Query("userDateOfBirth") userDateOfBirth: String
+    ): Response<ApiResponse<String>>
+
+    // 비밀번호 찾기 API (임시 비밀번호 발급)
+    @POST("/api/auth/find-password")
+    suspend fun findPassword(@Body request: FindPasswordRequest): Response<ApiResponse<String>>
 
 }
