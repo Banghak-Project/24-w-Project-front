@@ -16,8 +16,18 @@ object DataProvider {
         ProductModel(1, 1, "Laptop", 1200.0, false),
         ProductModel(2, 1, "Smartphone", 800.0, false),
         ProductModel(3, 1, "Tablet", 500.0, false),
-        ProductModel(4, 2, "Headphones", 150.0, false),
-        ProductModel(5, 2,"Smartwatch", 300.0, false)
+        ProductModel(4, 1, "Headphones", 150.0, false),
+        ProductModel(5, 1,"Smartwatch", 300.0, false),
+        ProductModel(6, 1, "Laptop", 1200.0, false),
+        ProductModel(7, 1, "Smartphone", 800.0, false),
+        ProductModel(8, 2, "Tablet", 500.0, false),
+        ProductModel(9, 2, "Headphones", 150.0, false),
+        ProductModel(10, 2,"Smartwatch", 300.0, false),
+        ProductModel(11, 2, "Laptop", 1200.0, false),
+        ProductModel(12, 3, "Smartphone", 800.0, false),
+        ProductModel(13, 3, "Tablet", 500.0, false),
+        ProductModel(14, 3, "Headphones", 150.0, false),
+        ProductModel(15, 3,"Smartwatch", 300.0, false)
     )
 
 }
