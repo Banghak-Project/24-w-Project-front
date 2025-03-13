@@ -107,6 +107,8 @@
     <string name="pw_result_title1">입력하신 메일로</string>
     <string name="pw_result_title2">비밀번호가 전송되었습니다</string>
 
+    <!--카메라 리스트-->
+    <string name="product_name">상품명</string>
 
     <!--홈_01-->
     <string name="home_title">가게 별 소비 리스트</string>

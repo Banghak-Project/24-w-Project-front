@@ -2,9 +2,7 @@ package com.example.moneychanger.list
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
@@ -16,8 +14,6 @@ import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.etc.OnStoreNameUpdatedListener
 import com.example.moneychanger.camera.CameraActivity
 import com.example.moneychanger.R
-import com.example.moneychanger.adapter.ListAdapter
-import com.example.moneychanger.adapter.NoticeAdapter
 import com.example.moneychanger.adapter.ProductAdapter
 import com.example.moneychanger.etc.SlideEdit
 import com.example.moneychanger.databinding.ActivityListBinding
