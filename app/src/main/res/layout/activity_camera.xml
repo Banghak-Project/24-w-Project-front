@@ -42,11 +42,34 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-        <TextView
+        <androidx.camera.view.PreviewView
+            android:id="@+id/previewView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/blue_03"
-            android:text="카메라 여기 들어오면 됨"/>
+            android:visibility="visible"/>
+        <ImageView
+            android:id="@+id/capturedImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"/>
+        <TextView
+            android:id="@+id/cameraText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="카메라 여기 들어오면 됨"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:background="#80000000"
+            android:padding="12dp"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_marginTop="16dp"
+            android:elevation="6dp"
+            android:visibility="visible"/>
+        <FrameLayout
+            android:id="@+id/textOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
 
         <LinearLayout
             android:layout_width="312dp"
@@ -71,7 +94,7 @@
                 android:layout_width="86dp"
                 android:layout_height="match_parent"/>
             <FrameLayout
-                android:id="@+id/camera_button"
+                android:id="@+id/cameraButton"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:background="@drawable/round_button"
@@ -86,6 +109,14 @@
             <Space
                 android:layout_width="126dp"
                 android:layout_height="match_parent"/>
+<!--            <Button-->
+<!--                android:id="@+id/confirmButton"-->
+<!--                android:layout_width="60dp"-->
+<!--                android:layout_height="60dp"-->
+<!--                android:background="@drawable/round_button"-->
+<!--                android:backgroundTint="@color/main"-->
+<!--                android:layout_gravity="center">-->
+<!--            </Button>-->
         </LinearLayout>
     </FrameLayout>
 
