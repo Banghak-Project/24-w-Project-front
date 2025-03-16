@@ -17,7 +17,6 @@ import com.example.moneychanger.network.user.SignInRequest
 import com.example.moneychanger.network.user.SignInResponse
 import com.example.moneychanger.network.user.SignUpRequest
 import com.example.moneychanger.network.user.SignUpResponse
-import com.google.android.gms.common.api.Api
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -55,10 +54,10 @@ interface ApiService {
     fun createList(@Body requestDto: ListsRequestDto): Response<ApiResponse<Call<ListModel>>>
 
     @GET("/api/lists")
-    fun getAllLists(): Response<ApiResponse<Call<List<ListsResponseDto>>>>
+    fun getAllLists(): Call<ApiResponse<List<ListsResponseDto?>>>
 
     @DELETE("/api/lists/delete/{id}")
-    fun deleteList(@Path("id") id: Long): Response<ApiResponse<Call<Void>>>
+    fun deleteList(@Path("id") id: Long): Call<ApiResponse<Void>>
 
     //Product
     @POST("/api/products")

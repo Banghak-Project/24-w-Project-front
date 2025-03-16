@@ -3,13 +3,10 @@ package com.example.moneychanger.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.moneychanger.R
-import com.example.moneychanger.databinding.ListDeleteBinding
 import com.example.moneychanger.databinding.ListPlaceBinding
+import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.list.ListModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -19,6 +16,7 @@ class ListAdapter(
     private val onItemClick: (ListModel) -> Unit
 ) : RecyclerView.Adapter<ListAdapter.ListViewHolder>() {
 
+    val apiService = RetrofitClient.apiService
     private var isDeleteMode = false
 
     inner class ListViewHolder(val binding: ListPlaceBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -66,6 +64,8 @@ class ListAdapter(
 
     fun deleteItem(position: Int) {
         if (position in items.indices) {
+            val listId = items[position].listId
+            apiService.deleteList(listId)
             items.removeAt(position)
             notifyItemRemoved(position)
             notifyItemRangeChanged(position, items.size)
@@ -90,6 +90,12 @@ class ListAdapter(
         items.clear()
         items.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun updateData(newList: List<ListModel>) {
+        items.clear()
+        items.addAll(newList)
+        notifyDataSetChanged() // UI 갱신
     }
 }
 
