@@ -90,10 +90,14 @@ class LoginActivity : AppCompatActivity() {
 
                                 if (signInResponse.msg == "로그인 성공") {
                                     val accessToken = signInResponse.accessToken ?: ""
+                                    val refreshToken = signInResponse.refreshToken ?: ""
 
                                     if (accessToken.isNotEmpty()) {
                                         TokenManager.saveAccessToken(accessToken)
+                                        TokenManager.saveRefreshToken(refreshToken)
+                                        TokenManager.saveUserInfo(signInResponse) // ✅ 사용자 정보 저장
 
+                                        Log.d("LoginActivity", "토큰 저장 완료: ${TokenManager.getAccessToken()}")
                                         // ✅ UI 업데이트 보장
                                         withContext(Dispatchers.Main) {
                                             Toast.makeText(this@LoginActivity, "로그인 성공!", Toast.LENGTH_SHORT).show()

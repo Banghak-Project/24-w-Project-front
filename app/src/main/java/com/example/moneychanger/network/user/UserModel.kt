@@ -24,6 +24,7 @@ data class SignInRequest(@SerializedName("userEmail") val userEmail: String? = "
                          @SerializedName("userPassword") val userPassword: String)
 data class SignInResponse(  @SerializedName("userId") val userId: Long,
                             @SerializedName("userName") val userName: String? = null,
+                            @SerializedName("userEmail") val userEmail: String? = null,
                             @SerializedName("msg") val msg: String? = null,
                             @SerializedName("accessToken") val accessToken: String? = null,
                             @SerializedName("refreshToken") val refreshToken: String? = null,
