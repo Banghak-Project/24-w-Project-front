@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
@@ -25,43 +24,32 @@ import java.util.concurrent.Executors
 import android.Manifest
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
 import android.view.View
-import android.view.ViewTreeObserver
 import android.widget.FrameLayout
-import android.widget.ImageView
-import androidx.camera.core.impl.utils.MatrixExt.postRotate
-import androidx.camera.core.internal.utils.ImageUtil.rotateBitmap
-import com.bumptech.glide.Glide
+import androidx.camera.core.AspectRatio
 import com.example.moneychanger.R
-import com.example.moneychanger.network.RetrofitClient
-import com.example.moneychanger.network.product.ImageProductResponseDto
-import com.example.moneychanger.network.user.ApiResponse
-import com.google.common.reflect.TypeToken
-import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
+import com.example.moneychanger.etc.DataProvider
+import com.example.moneychanger.etc.OnProductAddedListener
+import com.example.moneychanger.etc.SlideCameraList
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.File
-import retrofit2.Call
-import retrofit2.Callback
 
-class CameraActivity : AppCompatActivity() {
+class CameraActivity : AppCompatActivity(), OnProductAddedListener {
     private lateinit var binding: ActivityCameraBinding
     private lateinit var previewView: PreviewView
-    private lateinit var captureButton: Button
+    private lateinit var captureButton: FrameLayout
     private lateinit var cameraExecutor: ExecutorService
     private var imageCapture: ImageCapture? = null
     private val selectedTexts = mutableListOf<String>() // 사용자가 선택한 텍스트 저장
+
+    private var selectedProductName: String? = null
+    private var selectedProductPrice: String? = null
+    private var isSelectingPrice = false // 현재 상품 가격 선택 중인지 확인하는 플래그
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,15 +67,18 @@ class CameraActivity : AppCompatActivity() {
             startCamera()
         }
 
+        binding.listButton.setOnClickListener {
+            val productList = DataProvider.productDummyModel  // 더미 데이터 가져오기
+            val slideCameraList = SlideCameraList.newInstance(productList)  // newInstance() 사용
+            slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
+        }
+
         captureButton.setOnClickListener {
-            if (captureButton.text == "Capture") {
-                takePicture()
-            } else {
-                resetCamera()
-            }
+            takePicture()
         }
 
     }
+
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener({
@@ -95,13 +86,18 @@ class CameraActivity : AppCompatActivity() {
 
             cameraProvider.unbindAll()
 
-            val preview = Preview.Builder().build().also {
-                it.setSurfaceProvider(previewView.surfaceProvider)
-            }
+            val preview = Preview.Builder()
+                .setTargetAspectRatio(AspectRatio.RATIO_16_9) // 📌 화면 비율을 16:9로 설정
+                .build()
+                .also {
+                    it.setSurfaceProvider(previewView.surfaceProvider)
+                }
 
             imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY) // 지연 최소화 설정
+                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                .setTargetAspectRatio(AspectRatio.RATIO_16_9) // 📌 사진 촬영 비율을 16:9로 설정
                 .build()
+
 
             val cameraSelector = CameraSelector.Builder()
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
@@ -145,9 +141,7 @@ class CameraActivity : AppCompatActivity() {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = output.savedUri ?: return
                     Log.d("CameraActivity", "사진 저장됨: $savedUri")
-                    Toast.makeText(baseContext, "Photo : ${output.savedUri}", Toast.LENGTH_SHORT).show()
-
-                    //output.savedUri?.let { analyzeImage(it) }
+//                    Toast.makeText(baseContext, "Photo : ${output.savedUri}", Toast.LENGTH_SHORT).show()
 
                     // 비트맵 불러오면서 EXIF 회전 적용
                     val bitmap = loadBitmapWithRotation(savedUri)
@@ -156,7 +150,6 @@ class CameraActivity : AppCompatActivity() {
                         binding.capturedImageView.setImageBitmap(bitmap) // 올바르게 회전된 이미지 표시
                         binding.previewView.visibility = View.INVISIBLE
                         binding.capturedImageView.visibility = View.VISIBLE
-                        binding.cameraButton.text = "🔄"
                     }
 
                     // OCR 실행
@@ -164,18 +157,6 @@ class CameraActivity : AppCompatActivity() {
                 }
             }
         )
-    }
-
-    private fun resetCamera() {
-        binding.previewView.visibility = View.VISIBLE
-        binding.capturedImageView.visibility = View.INVISIBLE
-        binding.cameraButton.text = "Capture"
-        binding.confirmButton.visibility = View.INVISIBLE
-
-        binding.textOverlay.removeAllViews() // OCR 박스 초기화
-        selectedTexts.clear()
-
-        startCamera() // 카메라 다시 실행
     }
 
     private fun loadBitmapWithRotation(uri: Uri): Bitmap {
@@ -222,51 +203,6 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    private fun analyzeImage(imageUri: Uri) {
-        val contentResolver = applicationContext.contentResolver
-        val inputStream = contentResolver.openInputStream(imageUri) ?: return
-
-        // 임시 파일로 변환
-        val file = File(cacheDir, "temp_image.jpg")
-        file.outputStream().use { output ->
-            inputStream.copyTo(output)
-        }
-
-        val requestFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
-        val body = MultipartBody.Part.createFormData("image", file.name, requestFile)
-        val description = "Captured image".toRequestBody("text/plain".toMediaTypeOrNull())
-
-        RetrofitClient.imageApiService.analyzeImage(body, description)
-            .enqueue(object : Callback<ApiResponse<List<ImageProductResponseDto>>> {
-            override fun onResponse(
-                call: Call<ApiResponse<List<ImageProductResponseDto>>>,
-                response: retrofit2.Response<ApiResponse<List<ImageProductResponseDto>>>
-            ) {
-                if (response.isSuccessful) {
-                    val apiResponse = response.body()
-                    if (apiResponse != null && apiResponse.status == "success") {
-                        val jsonData = Gson().toJson(apiResponse.data)
-                        val products: List<ImageProductResponseDto> = try {
-                            Gson().fromJson(jsonData, object : TypeToken<List<ImageProductResponseDto>>() {}.type)
-                        } catch (e: JsonSyntaxException) {
-                            Log.e("Upload", "🚨 JSON 변환 오류: ${e.message}")
-                            emptyList()
-                        }
-                        if (!products.isNullOrEmpty()) {
-                            val resultText = products.joinToString("\n") { "${it.name}: ${it.price} 원" }
-                            runOnUiThread { binding.cameraText.text = resultText }
-                            Log.d("Upload", "상품 리스트: $resultText")
-                        } else Log.e("Upload", "상품 없음")
-                    } else Log.e("Upload", "서버 응답 오류: ${apiResponse?.message ?: "알 수 없는 오류"}")
-                } else Log.e("Upload", "응답 실패: ${response.errorBody()?.string()}")
-            }
-
-            override fun onFailure(call: Call<ApiResponse<List<ImageProductResponseDto>>>, t: Throwable) {
-                Log.e("Upload", "서버 요청 실패: ${t.message}")
-            }
-        })
-    }
-
     private fun recognizeTextFromBitmap(bitmap: Bitmap) {
         val image = InputImage.fromBitmap(bitmap, 0)
         val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
@@ -292,7 +228,7 @@ class CameraActivity : AppCompatActivity() {
             val originalWidth = bitmap.width.toFloat()
             val originalHeight = bitmap.height.toFloat()
 
-            // OCR 박스의 크기 조정
+            // OCR 박스 크기 조정 (이미지의 실제 비율에 맞춰 보정)
             val scaleX = displayedWidth / originalWidth
             val scaleY = displayedHeight / originalHeight
 
@@ -306,19 +242,21 @@ class CameraActivity : AppCompatActivity() {
                     val rect = line.boundingBox ?: continue
                     val angle = line.angle  // ML Kit이 감지한 회전 각도 (기울어진 텍스트)
 
+                    // 박스 크기 보정 (약간의 padding 추가)
+                    val boxPadding = 4  // 4px 패딩 추가
+                    val adjustedWidth = (rect.width() * scaleX + boxPadding).toInt()
+                    val adjustedHeight = (rect.height() * scaleY + boxPadding).toInt()
+
                     val borderView = View(this@CameraActivity).apply {
                         setBackgroundResource(R.drawable.ocr_border)
                         isClickable = true
-                        rotation = angle  // 기울어진 텍스트의 각도를 OCR 박스에 적용
+                        rotation = angle  // 기울어진 텍스트 각도를 OCR 박스에 적용
                         setOnClickListener { toggleSelection(this, line.text) }
                     }
 
-                    val layoutParams = FrameLayout.LayoutParams(
-                        (rect.width() * scaleX).toInt(),
-                        (rect.height() * scaleY).toInt()
-                    ).apply {
-                        leftMargin = (rect.left * scaleX + offsetX).toInt()
-                        topMargin = (rect.top * scaleY + offsetY).toInt()
+                    val layoutParams = FrameLayout.LayoutParams(adjustedWidth, adjustedHeight).apply {
+                        leftMargin = (rect.left * scaleX + offsetX - boxPadding / 2).toInt()
+                        topMargin = (rect.top * scaleY + offsetY - boxPadding / 2).toInt()
                     }
 
                     binding.textOverlay.addView(borderView, layoutParams)
@@ -326,23 +264,72 @@ class CameraActivity : AppCompatActivity() {
             }
 
             binding.textOverlay.visibility = View.VISIBLE
-            binding.confirmButton.visibility = View.VISIBLE
-            binding.confirmButton.setOnClickListener { confirmSelection() }
+            Toast.makeText(this@CameraActivity, "상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun toggleSelection(view: View, text: String) {
         if (selectedTexts.contains(text)) {
+            // 이미 선택된 항목을 클릭하면 선택 해제
             selectedTexts.remove(text)
-            view.setBackgroundResource(R.drawable.ocr_border) // 기본 테두리
+            view.setBackgroundResource(R.drawable.ocr_border) // 기본 테두리로 변경
+
+            if (selectedProductName == text) {
+                selectedProductName = null
+                isSelectingPrice = false
+                Toast.makeText(this, "상품명이 선택 해제되었습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
+            } else if (selectedProductPrice == text) {
+                selectedProductPrice = null
+                isSelectingPrice = true // 가격 선택 상태를 다시 활성화
+                Toast.makeText(this, "상품 가격이 선택 해제되었습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
+            }
+            return
+        }
+
+        // 선택되지 않은 항목을 클릭한 경우
+        selectedTexts.add(text)
+        view.setBackgroundResource(R.drawable.ocr_border_selected) // 선택된 상태
+
+        if (selectedProductName == null) {
+            // 상품명을 선택하는 단계 (숫자가 포함된 텍스트는 상품명이 아닐 확률이 높음)
+            if (text.any { it.isDigit() }) {
+                Toast.makeText(this, "잘못된 선택입니다. 상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
+                return
+            }
+            selectedProductName = text
+            isSelectingPrice = true
+            Toast.makeText(this, "상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
         } else {
-            selectedTexts.add(text)
-            view.setBackgroundResource(R.drawable.ocr_border_selected) // 선택된 상태
+            // 상품 가격을 선택하는 단계
+            val cleanPrice = cleanPriceText(text)
+
+            if (cleanPrice.isEmpty()) {
+                Toast.makeText(this, "잘못된 선택입니다. 숫자로 된 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            // 기존에 선택된 가격이 있으면 해제하고 새로운 가격 선택
+            if (selectedProductPrice != null) {
+                selectedTexts.remove(selectedProductPrice) // UI에서 선택 해제
+            }
+
+            selectedProductPrice = text
+            updateSelectedText()
         }
     }
 
-    private fun confirmSelection() {
-        binding.cameraText.text = selectedTexts.joinToString(", ")
+    private fun cleanPriceText(priceText: String): String {
+        val cleaned = priceText.replace(Regex("[^0-9.]"), "") // 숫자와 소수점만 남김
+        return if (cleaned.matches(Regex("\\d+(\\.\\d+)?"))) cleaned else ""
+    }
+
+    private fun updateSelectedText() {
+        if (selectedProductName != null && selectedProductPrice != null) {
+            val cleanPrice = cleanPriceText(selectedProductPrice!!)
+            val resultText = "상품명: ${selectedProductName}, 상품가격: ${cleanPrice}"
+            binding.cameraText.text = resultText
+            Toast.makeText(this, "선택 완료: $resultText", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onDestroy() {
@@ -355,6 +342,10 @@ class CameraActivity : AppCompatActivity() {
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val CAMERA_PERMISSION_CODE: Int = 10
 
+    }
+
+    override fun onProductAdded(productName: String, price: Double) {
+        Log.d("CameraActivity", "상품명: $productName, 가격: $price")
     }
 
 }
