@@ -51,11 +51,11 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"/>
+
     <CheckBox
         android:id="@+id/checkbox"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_margin="24dp"
-        android:layout_gravity="center"
+        android:layout_gravity="end|center"
         android:button="@drawable/custom_checkbox"/>
 </LinearLayout>
