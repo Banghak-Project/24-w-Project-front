@@ -3,18 +3,16 @@ package com.example.moneychanger.onboarding.find
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.ImageView
 import com.example.moneychanger.R
-import com.example.moneychanger.databinding.ActivityPwResultBinding
-import com.example.moneychanger.etc.BaseActivity
+import com.example.moneychanger.databinding.ActivityNewPwBinding
 import com.example.moneychanger.onboarding.LoginActivity
 
-class PwResultActivity : BaseActivity() {
-    private lateinit var binding: ActivityPwResultBinding
+class NewPwActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityNewPwBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityPwResultBinding.inflate(layoutInflater)
+        binding = ActivityNewPwBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
@@ -29,8 +27,8 @@ class PwResultActivity : BaseActivity() {
 
 
         // 로그인 화면으로
-        binding.buttonToNewPw.setOnClickListener {
-            val intent = Intent(this, NewPwActivity::class.java)
+        binding.buttonToLogin.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
     }
