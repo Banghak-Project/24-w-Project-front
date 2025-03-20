@@ -17,12 +17,42 @@
             android:layout_height="56dp"
             android:layout_gravity="center"
             android:gravity="center">
-            <TextView
+            <LinearLayout
+                android:id="@+id/currency_container1"
                 android:layout_width="120dp"
                 android:layout_height="32dp"
-                android:text="통화"
+                android:orientation="horizontal"
                 android:layout_gravity="center"
-                android:gravity="center"/>
+                android:gravity="center">
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp">
+                    <Spinner
+                        android:id="@+id/currency_spinner1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:dropDownWidth="72dp"
+                        android:dropDownHeight="80dp"
+                        android:alpha="0"/>
+                    <TextView
+                        android:id="@+id/currency_name1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="통화"
+                        android:textColor="@color/gray_08"
+                        style="@style/TextBodyM_bold"/>
+                </FrameLayout>
+                <ImageView
+                    android:id="@+id/currency_arrow1"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/icon_arrow"
+                    android:rotation="270"
+                    app:tint="@color/gray_05" />
+            </LinearLayout>
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
@@ -30,12 +60,42 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:layout_marginHorizontal="16dp"/>
-            <TextView
+            <LinearLayout
+                android:id="@+id/currency_container2"
                 android:layout_width="120dp"
                 android:layout_height="32dp"
-                android:text="통화"
+                android:orientation="horizontal"
                 android:layout_gravity="center"
-                android:gravity="center"/>
+                android:gravity="center">
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp">
+                    <Spinner
+                        android:id="@+id/currency_spinner2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:dropDownWidth="72dp"
+                        android:dropDownHeight="80dp"
+                        android:alpha="0"/>
+                    <TextView
+                        android:id="@+id/currency_name2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="통화"
+                        android:textColor="@color/gray_08"
+                        style="@style/TextBodyM_bold"/>
+                </FrameLayout>
+                <ImageView
+                    android:id="@+id/currency_arrow2"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/icon_arrow"
+                    android:rotation="270"
+                    app:tint="@color/gray_05" />
+            </LinearLayout>
         </LinearLayout>
     </FrameLayout>
     <FrameLayout
