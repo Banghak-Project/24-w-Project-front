@@ -15,6 +15,22 @@ object TokenManager {
 
     fun init(context: Context) {
         prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+
+    private var accessToken: String? = null
+    private var refreshToken: String? = null
+    private var userId: Long? = null
+
+    // 액세스 토큰 저장
+    fun saveAccessToken(token: String) {
+        accessToken = token
+    }
+    // 액세스 토큰 가져오기
+    fun getAccessToken(): String? {
+        return accessToken
+    }
+    // 리프레시 토큰 저장
+    fun saveRefreshToken(token: String) {
+        refreshToken = token
     }
 
     // ✅ 액세스 토큰 저장
@@ -52,5 +68,22 @@ object TokenManager {
     // ✅ 모든 토큰 및 사용자 정보 삭제 (로그아웃 시 사용)
     fun clearTokens() {
         prefs.edit().clear().apply()
+
+    // 유저 ID 저장
+    fun saveUserId(id: Long) {
+        userId = id
+    }
+
+    // 유저 ID 가져오기
+    fun getUserId(): Long? {
+        return userId
+    }
+
+    // 모든 토큰 초기화  (로그아웃 시 사용)
+    fun clearTokens() {
+        accessToken = null
+        refreshToken = null
+        userId = null
+
     }
 }
