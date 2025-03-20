@@ -5,6 +5,7 @@ import com.google.firebase.appdistribution.gradle.RefreshToken
 object TokenManager {
     private var accessToken: String? = null
     private var refreshToken: String? = null
+    private var userId: Long? = null
     // 액세스 토큰 저장
     fun saveAccessToken(token: String) {
         accessToken = token
@@ -22,9 +23,21 @@ object TokenManager {
     fun getRefreshToken(): String? {
         return refreshToken
     }
+
+    // 유저 ID 저장
+    fun saveUserId(id: Long) {
+        userId = id
+    }
+
+    // 유저 ID 가져오기
+    fun getUserId(): Long? {
+        return userId
+    }
+
     // 모든 토큰 초기화  (로그아웃 시 사용)
     fun clearTokens() {
         accessToken = null
         refreshToken = null
+        userId = null
     }
 }
