@@ -19,6 +19,7 @@ import com.example.moneychanger.etc.BaseActivity
 import com.example.moneychanger.etc.DataProvider
 import com.example.moneychanger.onboarding.find.FindIdPwActivity
 import com.example.moneychanger.onboarding.LoginSelectActivity
+import com.example.moneychanger.onboarding.find.NewPwActivity
 
 class MainActivity : BaseActivity() {
     private lateinit var binding:  ActivityMainBinding
@@ -63,7 +64,7 @@ class MainActivity : BaseActivity() {
             startActivity(intent)
         }
         binding.b2.setOnClickListener{
-            val intent = Intent(this, FindIdPwActivity::class.java)
+            val intent = Intent(this, NewPwActivity::class.java)
             startActivity(intent)
         }
 //        binding.listPlace.root.setOnClickListener{

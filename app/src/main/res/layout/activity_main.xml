@@ -66,7 +66,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="임시버튼"
-                        android:text="달력 화면으로 이동" />
+                        android:text="새 비밀번호 설정 화면으로 이동" />
                     <TextView
                         android:id="@+id/sampletext"
                         android:layout_width="match_parent"
