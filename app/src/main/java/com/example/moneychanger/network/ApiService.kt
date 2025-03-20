@@ -7,6 +7,7 @@ import com.example.moneychanger.network.list.ListsResponseDto
 import com.example.moneychanger.network.product.ImageProductResponseDto
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductRequestDto
+import com.example.moneychanger.network.product.ProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
 import com.example.moneychanger.network.user.EmailRequest
 import com.example.moneychanger.network.user.FindPasswordRequest
@@ -26,6 +27,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
@@ -56,7 +58,10 @@ interface ApiService {
     @GET("/api/lists")
     fun getAllLists(): Call<ApiResponse<List<ListsResponseDto?>>>
 
-    @DELETE("/api/lists/delete/{id}")
+    @GET("/api/lists/{id}")
+    fun getListsById(@Path("id") id:Long): Call<ApiResponse<ListsResponseDto?>>
+
+    @PATCH("/api/lists/delete/{id}")
     fun deleteList(@Path("id") id: Long): Call<ApiResponse<Void>>
 
     //Product
@@ -64,7 +69,7 @@ interface ApiService {
     fun createProduct(@Body requestDto: ProductRequestDto): Response<ApiResponse<Call<ProductModel>>>
     //아이디에 맞는 상품 갖고옴
     @GET("/api/products/{id}")
-    fun getProductByListsId(@Path("id") productId:Long): Response<ApiResponse<Call<ProductModel>>>
+    fun getProductByListsId(@Path("id") productId:Long): Call<ApiResponse<List<ProductResponseDto?>>>
     //모든 상품 조회
     @GET("/api/products")
     fun getAllProducts(): Response<ApiResponse<Call<List<ProductModel>>>>

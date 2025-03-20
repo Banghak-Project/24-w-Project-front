@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.moneychanger.databinding.ListPlaceBinding
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.list.ListModel
+import com.example.moneychanger.network.user.ApiResponse
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -65,10 +66,28 @@ class ListAdapter(
     fun deleteItem(position: Int) {
         if (position in items.indices) {
             val listId = items[position].listId
-            apiService.deleteList(listId)
-            items.removeAt(position)
-            notifyItemRemoved(position)
-            notifyItemRangeChanged(position, items.size)
+
+            apiService.deleteList(listId).enqueue(object : retrofit2.Callback<ApiResponse<Void>> {
+                override fun onResponse(
+                    call: retrofit2.Call<ApiResponse<Void>>,
+                    response: retrofit2.Response<ApiResponse<Void>>
+                ) {
+                    if (response.isSuccessful) {
+                        // 서버에서 삭제 성공한 경우, UI에서도 삭제
+                        items.removeAt(position)
+                        notifyItemRemoved(position)
+                        notifyItemRangeChanged(position, items.size)
+                    } else {
+                        // 서버에서 삭제 실패한 경우 로그 출력
+                        android.util.Log.e("DeleteItem", "삭제 실패: ${response.errorBody()?.string()}")
+                    }
+                }
+
+                override fun onFailure(call: retrofit2.Call<ApiResponse<Void>>, t: Throwable) {
+                    // 네트워크 요청 실패 시 로그 출력
+                    android.util.Log.e("DeleteItem", "API 호출 실패", t)
+                }
+            })
         }
     }
 

@@ -93,6 +93,7 @@ class MainActivity : BaseActivity() {
                 startActivity(intent)
                 true
             }
+
             R.id.button_delete -> {
                 adapter.toggledeleteMode()
                 true
@@ -136,15 +137,19 @@ class MainActivity : BaseActivity() {
                     val responseBody = response.body()
                     if (responseBody?.status == "success") {
                         val dtoLists: List<Any?> = responseBody.data as List<Any?>
-                        for (dtoList in dtoLists){
-                            if (dtoList is Map<*,*>){
+                        for (dtoList in dtoLists) {
+                            if (dtoList is Map<*, *>) {
                                 // `ListsResponseDto`를 `ListModel`로 변환
                                 val updatedLists = ListModel(
-                                    listId = (dtoList["listId"] as? Number)?.toLong() ?:0L,
-                                    name = (dtoList["name"] as? String)?.toString() ?:"",
-                                    createdAt = (dtoList["now"] as? String)?.toString() ?:"",
-                                    location = (dtoList["location"] as? String)?.toString() ?:"",
-                                    deletedYn = (dtoList["deletedYn"] as? Boolean) ?:false
+                                    listId = (dtoList["listId"] as? Number)?.toLong() ?: 0L,
+                                    name = (dtoList["name"] as? String)?.toString() ?: "",
+                                    createdAt = (dtoList["createdAt"] as? String)?.toString() ?: "",
+                                    location = (dtoList["location"] as? String)?.toString() ?: "",
+                                    deletedYn = (dtoList["deletedYn"] as? Boolean) ?: false,
+                                    currencyFrom = 1,
+                                    currencyTo = 1,
+                                    userId = 1
+                                    // TODO: 로그인 되어있는 user의 아이디 가져와서 저장해야함
                                 )
 
                                 if (!updatedLists.deletedYn) {
