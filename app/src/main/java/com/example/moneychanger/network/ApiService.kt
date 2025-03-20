@@ -1,6 +1,7 @@
 package com.example.moneychanger.network
 
 import com.example.moneychanger.network.currency.CurrencyModel
+import com.example.moneychanger.network.currency.CurrencyResponseDto
 import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.network.list.ListsRequestDto
 import com.example.moneychanger.network.list.ListsResponseDto
@@ -17,6 +18,8 @@ import com.example.moneychanger.network.user.SignInRequest
 import com.example.moneychanger.network.user.SignInResponse
 import com.example.moneychanger.network.user.SignUpRequest
 import com.example.moneychanger.network.user.SignUpResponse
+import com.example.moneychanger.network.user.UpdateUserInfoRequest
+import com.example.moneychanger.network.user.UserInfoResponse
 import com.google.android.gms.common.api.Api
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -91,7 +94,7 @@ interface ApiService {
     fun importCurrency(): Response<ApiResponse<Call<List<CurrencyModel>>>>
 
     @GET("/api/currency")
-    fun findAll(): Call<List<CurrencyModel>>
+    fun findAll(): Call<ApiResponse<List<CurrencyResponseDto>>>
 
 
     // ID 찾기 API
@@ -105,4 +108,11 @@ interface ApiService {
     @POST("/api/auth/find-password")
     suspend fun findPassword(@Body request: FindPasswordRequest): Response<ApiResponse<String>>
 
+    //  회원정보 조회
+    @GET("/api/auth/user-info")
+    suspend fun getUserInfo(@Query("userEmail") userEmail: String): Response<ApiResponse<UserInfoResponse>>
+
+    //  회원정보 수정
+    @POST("/api/auth/update-user-info")
+    suspend fun updateUserInfo(@Body request: UpdateUserInfoRequest): Response<ApiResponse<String>>
 }
