@@ -91,7 +91,7 @@ interface ApiService {
     fun importCurrency(): Response<ApiResponse<Call<List<CurrencyModel>>>>
 
     @GET("/api/currency")
-    fun findAll(): Call<List<CurrencyModel>>
+    fun findAll(): Call<ApiResponse<List<CurrencyResponseDto>>>
 
 
     // ID 찾기 API
