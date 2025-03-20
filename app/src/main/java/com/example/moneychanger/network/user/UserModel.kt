@@ -30,7 +30,18 @@ data class SignInResponse(  @SerializedName("userId") val userId: Long,
                             @SerializedName("refreshToken") val refreshToken: String? = null,
                             @SerializedName("kakaoAccessToken") val kakaoAccessToken: String? = null)
 
-
+data class UserInfoResponse(
+    @SerializedName("userId") val userId: Long,
+    @SerializedName("userName") val userName: String,
+    @SerializedName("userEmail") val userEmail: String,
+    @SerializedName("userDateOfBirth") val userDateOfBirth: String? // Timestamp (밀리초)
+)
+data class UpdateUserInfoRequest(
+    @SerializedName("userEmail") val userEmail: String,
+    @SerializedName("userDateOfBirth") val userDateOfBirth: String? , // Timestamp (밀리초)
+    @SerializedName("userName") val userName: String?,
+    @SerializedName("userPassword") val userPassword: String? // 선택사항
+)
 
 data class EmailRequest(val email: String)
 data class OtpRequest(val email: String, val otp: String)
