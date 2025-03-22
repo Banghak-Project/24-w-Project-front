@@ -5,4 +5,8 @@ data class CurrencyModel(
     val curUnit: String,
     val dealBasR: Double,
     val curNm: String
-)
+) {
+    override fun toString(): String {
+        return "$curUnit ($curNm)"
+    }
+}

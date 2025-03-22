@@ -18,13 +18,13 @@ import com.example.moneychanger.R
 import com.example.moneychanger.adapter.ProductAdapter
 import com.example.moneychanger.etc.SlideEdit
 import com.example.moneychanger.databinding.ActivityListBinding
-import com.example.moneychanger.etc.DataProvider
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.network.list.ListsResponseDto
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,17 +34,14 @@ import java.time.format.DateTimeFormatter
 class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
     private lateinit var binding: ActivityListBinding
     private lateinit var viewModel: CurrencyViewModel
-//    private lateinit var product: MutableList<ProductModel>
-//    private lateinit var selectedList: ListModel
+
+    private var productList: MutableList<ProductModel> = mutableListOf()
+    private var selectedList: ListModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityListBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        //product 리스트 초기화
-//        product = mutableListOf()
-
         viewModel = ViewModelProvider(this)[CurrencyViewModel::class.java]
 
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
@@ -112,25 +109,25 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         }
 
         // 카메라 버튼 클릭 이벤트 설정
-        binding.buttonCamera.setOnClickListener{
+        binding.buttonCamera.setOnClickListener {
             // 카메라 api와 연결하여 동작할 내용
             val intent = Intent(this, CameraActivity::class.java)
             startActivity(intent)
         }
-
-        // 더미 데이터 - 임시
-        val listData = DataProvider.listDummyModel
-        val productData = DataProvider.productDummyModel
-
         // 인텐트에서 list_id 받아오기
         val selectedListId = intent.getLongExtra("list_id", 0L)
-
-//        product = fetchProductsFromApi(selectedListId)
-//        selectedList = fetchListByIdFromApi(selectedListId)
-        // 선택된 list_id에 맞는 list 데이터 찾기
-        val selectedList = listData.find { it.listId == selectedListId }
-        // 선택된 list_id에 맞는 product 데이터 필터링
-        val productList = productData.filter { product -> product.listId == selectedListId }
+        fetchListByIdFromApi(selectedListId) { list ->
+            if (list != null) {
+                selectedList = list // selectedList 초기화
+                updateUI(list) // UI 업데이트
+                binding.productContainer.layoutManager = LinearLayoutManager(this)
+                binding.productContainer.adapter = ProductAdapter(productList.toMutableList())
+                fetchProductsByListId(selectedListId)
+            } else {
+                Toast.makeText(this, "리스트 데이터를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+        }
 
         // 삭제하기 버튼 클릭 이벤트 처리
         binding.buttonMoveToDelete.setOnClickListener {
@@ -138,123 +135,111 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             intent.putExtra("list_id", selectedListId)
             startActivity(intent)
         }
+    }
 
-        // 아답터 사용하여 데이터 바인딩
-        selectedList?.let {
-            binding.placeName.text = it.name
-            binding.locationName.text = it.location
-            val dateTime = LocalDateTime.parse(it.createdAt, DateTimeFormatter.ISO_DATE_TIME)
-            binding.createdDate.text = dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
-            binding.createdTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+    private fun fetchProductsByListId(listId: Long){
+        val apiService = RetrofitClient.apiService
 
-            // 디버깅 로그
-            //Log.d("ListActivity", "Filtered products: $productList")
+        apiService.getProductByListsId(listId).enqueue(object : Callback<ApiResponse<List<ProductResponseDto>>> {
+            override fun onResponse(
+                call: Call<ApiResponse<List<ProductResponseDto>>>,
+                response: Response<ApiResponse<List<ProductResponseDto>>>
+            ) {
+                if (response.isSuccessful && response.body()?.status == "success") {
+                    val gson = Gson()
+                    val jsonElement = gson.toJsonTree(response.body()?.data)
+                    val productDtoList = gson.fromJson(jsonElement, Array<ProductResponseDto>::class.java).toList()
 
-            // 하단(상품 부분 리사이클 뷰) 데이터 연결
-            binding.productContainer.layoutManager = LinearLayoutManager(this)
-            binding.productContainer.adapter = ProductAdapter(productList.toMutableList())
-//            binding.productContainer.adapter = ProductAdapter(product.toMutableList())
-        } ?: run {
-            // Log.e("ListActivity", "No list found for listId: $selectedListId")
-            Toast.makeText(this, "리스트 데이터를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
-            finish()
-        }
+                    val products = productDtoList.map {
+                        ProductModel(
+                            productId = it.productId,
+                            name = it.name,
+                            originPrice = it.originPrice,
+                            listId = it.listId,
+                            deletedYn = it.deletedYn
+                        )
+                    }
 
+                    Log.d("ListActivity", "상품 불러오기 성공: $products")
+
+                    productList = products.toMutableList()
+                    binding.productContainer.layoutManager = LinearLayoutManager(this@ListActivity)
+                    binding.productContainer.adapter = ProductAdapter(productList)
+                } else {
+                    Toast.makeText(this@ListActivity, "상품 불러오기 실패", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(p0: Call<ApiResponse<List<ProductResponseDto>>>, p1: Throwable) {
+                Log.e("ListActivity", "API 실패", p1)
+                Toast.makeText(this@ListActivity, "네트워크 오류", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     override fun onStoreNameUpdated(storeName: String) {
         // SlideEdit에서 받은 데이터를 placeName TextView에 업데이트
         binding.placeName.text = storeName
     }
-}
+    private fun fetchListByIdFromApi(id: Long, callback: (ListModel?) -> Unit) {
+        val apiService = RetrofitClient.apiService
 
-    // list와 관련있는 product만 걸러서 가져오기 위한 함수
-//    fun getProductsByListId(listId: Int): List<ProductModel> {
-//        return DataProvider.productDummyModel.filter { it.productId == listId }
-//    }
-//
-//    private fun fetchProductsFromApi(id:Long): MutableList<ProductModel> {
-//        val apiService = RetrofitClient.apiService
-//
-//        apiService.getProductByListsId(id).enqueue(object : Callback<ApiResponse<List<ProductResponseDto?>>>{
-//            override fun onResponse(
-//                call: Call<ApiResponse<List<ProductResponseDto?>>>,
-//                response: Response<ApiResponse<List<ProductResponseDto?>>>
-//            ) {
-//                if (response.isSuccessful) {
-//                    val responseBody = response.body()
-//                    if (responseBody?.status == "success") {
-//                        val dtoProducts: List<Any?> = responseBody.data as List<Any?>
-//                        for (dtoProduct in dtoProducts){
-//                            if (dtoProduct is Map<*,*>){
-//                                val updatedProduct = ProductModel(
-//                                    productId = (dtoProduct["productId"] as? Number)?.toLong() ?:0L,
-//                                    name = (dtoProduct["name"] as? String)?.toString() ?:"",
-//                                    originPrice = (dtoProduct["originPrice"] as? Number)?.toDouble() ?:0.0,
-//                                    listId = (dtoProduct["listId"] as? Number)?.toLong() ?:0L,
-//                                    deletedYn = (dtoProduct["deletedYn"] as? Boolean) ?:false
-//                                )
-//
-//                                if (!updatedProduct.deletedYn) {
-//                                    Log.i("Retrofit", "추가된 데이터: $updatedProduct")
-//                                    product.add(updatedProduct)
-//                                } else {
-//                                    continue // true면 리스트에서 제외
-//                                }
-//                            }
-//                        }
-//                    } else {
-//                        Log.e("Retrofit", "응답이 null입니다.")
-//                    }
-//                } else {
-//                    Log.e("Retrofit", "응답 실패: ${response.errorBody()?.string()}")
-//                }
-//            } override fun onFailure(
-//                call: Call<ApiResponse<List<ProductResponseDto?>>>,
-//                t: Throwable
-//            ) {
-//                Log.e("Retrofit", "API 호출 실패", t)
-//            }
-//        })
-//        return product
-//    }
-//
-//    private fun fetchListByIdFromApi(id:Long): ListModel {
-//        val apiService = RetrofitClient.apiService
-//        lateinit var updatedList:ListModel
-//        apiService.getListsById(id).enqueue(object : Callback<ApiResponse<ListsResponseDto?>>{
-//            override fun onResponse(
-//                call: Call<ApiResponse<ListsResponseDto?>>,
-//                response: Response<ApiResponse<ListsResponseDto?>>
-//            ) {
-//            if (response.isSuccessful) {
-//                val responseBody = response.body()
-//                if (responseBody?.status == "success") {
-//                    val dtoList: ListsResponseDto = responseBody.data as ListsResponseDto
-//                    updatedList = ListModel(
-//                        listId = dtoList.listId,
-//                        name = dtoList.name,
-//                        userId = dtoList.userId,
-//                        location = dtoList.location,
-//                        createdAt = dtoList.createdAt,
-//                        currencyFrom = dtoList.currencyFrom,
-//                        currencyTo = dtoList.currencyTo,
-//                        deletedYn = dtoList.deletedYn
-//                    )
-//                    Log.i("Retrofit", "추가된 데이터: $updatedList")
-//                } else {
-//                    Log.e("Retrofit", "응답이 null입니다.")
-//                }
-//            } else {
-//                Log.e("Retrofit", "응답 실패: ${response.errorBody()?.string()}")
-//            }}
-//            override fun onFailure(call: Call<ApiResponse<ListsResponseDto?>>, response: Throwable) {
-//                TODO("Not yet implemented")
-//            }
-//        })
-//        return updatedList
-//    }
-//}
+        apiService.getListsById(id).enqueue(object : Callback<ApiResponse<ListsResponseDto?>> {
+            override fun onResponse(
+                call: Call<ApiResponse<ListsResponseDto?>>,
+                response: Response<ApiResponse<ListsResponseDto?>>
+            ) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody?.status == "success" && responseBody.data != null) {
+                        val gson = Gson()
+                        val json = gson.toJson(responseBody.data)  // data를 JSON 문자열로 변환
+                        try {
+                            val dtoList = gson.fromJson(json, ListsResponseDto::class.java)
+                            Log.d("DEBUG", "파싱된 리스트: $dtoList")
+
+                            val currencyFrom = dtoList.currencyFrom
+                            val currencyTo = dtoList.currencyTo
+
+                            val listModel = ListModel(
+                                listId = dtoList.listId,
+                                name = dtoList.name,
+                                userId = dtoList.userId,
+                                location = dtoList.location,
+                                createdAt = dtoList.createdAt,
+                                currencyFrom = currencyFrom,
+                                currencyTo = currencyTo,
+                                deletedYn = dtoList.deletedYn
+                            )
+                            callback(listModel) // 데이터를 받은 후 콜백 실행
+                        } catch (e: Exception) {
+                            Log.e("GSON_ERROR", "파싱 실패", e)
+                        }
+                    } else {
+                        Log.e("Retrofit", "응답이 null입니다.")
+                        callback(null)
+                    }
+                } else {
+                    Log.e("Retrofit", "응답 실패: ${response.errorBody()?.string()}")
+                    callback(null)
+                }
+            }
+
+            override fun onFailure(call: Call<ApiResponse<ListsResponseDto?>>, t: Throwable) {
+                Log.e("Retrofit", "API 호출 실패", t)
+                callback(null)
+            }
+        })
+    }
+    private fun updateUI(list: ListModel) {
+        binding.placeName.text = list.name
+        binding.locationName.text = list.location
+        val dateTime = LocalDateTime.parse(list.createdAt, DateTimeFormatter.ISO_DATE_TIME)
+        binding.createdDate.text = dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+        binding.createdTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+    }
+
+}
 
 // list_product recylcerview에 통화 기호 전달하기 위한 클래스
 class CurrencyViewModel : ViewModel() {

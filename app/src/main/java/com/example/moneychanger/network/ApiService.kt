@@ -34,6 +34,7 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+
 interface ApiService {
     //User
     @POST("/api/auth/signin")
@@ -64,12 +65,16 @@ interface ApiService {
     @PATCH("/api/lists/delete/{id}")
     fun deleteList(@Path("id") id: Long): Call<ApiResponse<Void>>
 
+    //총금액표시
+    @GET("/api/lists/total/{id}")
+    fun getTotal(@Path("id") id: Long): Call<ApiResponse<Double>>
+
     //Product
     @POST("/api/products")
     fun createProduct(@Body requestDto: ProductRequestDto): Response<ApiResponse<Call<ProductModel>>>
     //아이디에 맞는 상품 갖고옴
     @GET("/api/products/{id}")
-    fun getProductByListsId(@Path("id") productId:Long): Call<ApiResponse<List<ProductResponseDto?>>>
+    fun getProductByListsId(@Path("id") productId:Long): Call<ApiResponse<List<ProductResponseDto>>>
     //모든 상품 조회
     @GET("/api/products")
     fun getAllProducts(): Response<ApiResponse<Call<List<ProductModel>>>>

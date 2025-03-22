@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.moneychanger.camera.CameraActivity
 import com.example.moneychanger.list.ListActivity
@@ -17,7 +18,10 @@ import com.example.moneychanger.R
 import com.example.moneychanger.setting.SettingActivity
 import com.example.moneychanger.databinding.ActivityMainBinding
 import com.example.moneychanger.etc.BaseActivity
+import com.example.moneychanger.list.CurrencyViewModel
 import com.example.moneychanger.network.RetrofitClient
+import com.example.moneychanger.network.currency.CurrencyManager
+import com.example.moneychanger.network.currency.CurrencyModel
 import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.network.list.ListsResponseDto
 import com.example.moneychanger.network.user.ApiResponse
@@ -30,12 +34,16 @@ import retrofit2.Response
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: ListAdapter
+    private lateinit var currencyViewModel: CurrencyViewModel
     private var lists: MutableList<ListModel> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        currencyViewModel = ViewModelProvider(this)[CurrencyViewModel::class.java]
+        fetchAndStoreCurrencyData()
 
         val toolbar: Toolbar = findViewById(R.id.main_toolbar)
         setSupportActionBar(toolbar)
@@ -48,8 +56,6 @@ class MainActivity : BaseActivity() {
             startActivity(intent)
         }
 
-        // 더미 데이터 - 임시
-//        val data = DataProvider.listDummyModel
         // recyclerView 연결 (초기 빈 리스트)
         adapter = ListAdapter(lists.toMutableList()) { item ->
             val intent = Intent(this, ListActivity::class.java)
@@ -80,6 +86,28 @@ class MainActivity : BaseActivity() {
         // delete
 
     }
+    private fun fetchAndStoreCurrencyData() {
+        RetrofitClient.apiService.findAll().enqueue(object : Callback<List<CurrencyModel>> {
+            override fun onResponse(
+                call: Call<List<CurrencyModel>>,
+                response: Response<List<CurrencyModel>>
+            ) {
+                if (response.isSuccessful) {
+                    response.body()?.let { currencyList ->
+                        CurrencyManager.setCurrencies(currencyList)
+                        Log.d("CurrencyManager", "환율 데이터 저장 완료 (${currencyList.size}개)")
+                    }
+                } else {
+                    Log.e("CurrencyManager", "환율 응답 실패: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<List<CurrencyModel>>, t: Throwable) {
+                Log.e("CurrencyManager", "환율 API 호출 실패", t)
+            }
+        })
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
@@ -146,10 +174,9 @@ class MainActivity : BaseActivity() {
                                     createdAt = (dtoList["createdAt"] as? String)?.toString() ?: "",
                                     location = (dtoList["location"] as? String)?.toString() ?: "",
                                     deletedYn = (dtoList["deletedYn"] as? Boolean) ?: false,
-                                    currencyFrom = 1,
-                                    currencyTo = 1,
+                                    currencyFrom = (dtoList["currencyFrom"] as? CurrencyModel),
+                                    currencyTo = (dtoList["currencyTo"] as? CurrencyModel),
                                     userId = 1
-                                    // TODO: 로그인 되어있는 user의 아이디 가져와서 저장해야함
                                 )
 
                                 if (!updatedLists.deletedYn) {
