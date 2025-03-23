@@ -28,8 +28,8 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
     private lateinit var binding: ActivityListBinding
     private lateinit var viewModel: CurrencyViewModel
 
-    private var currencyIdFrom = 23L
-    private var currencyIdTo = 14L
+    private var currencyIdFrom = 23L // 더미 데이터 (리스트 정보 가져와야 함)
+    private var currencyIdTo = 14L // 더미 데이터 (리스트 정보 가져와야 함)
     private val userId = TokenManager.getUserId() ?: -1L
     private val location = "Seoul"
 
