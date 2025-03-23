@@ -31,7 +31,9 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.camera.core.AspectRatio
+import androidx.lifecycle.ViewModelProvider
 import com.example.moneychanger.R
+import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.etc.DataProvider
 import com.example.moneychanger.etc.OnProductAddedListener
 import com.example.moneychanger.etc.SlideCameraList
@@ -44,6 +46,7 @@ import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import com.example.moneychanger.list.CurrencyViewModel
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
@@ -55,6 +58,7 @@ import retrofit2.Response
 
 class CameraActivity : AppCompatActivity(), OnProductAddedListener {
     private lateinit var binding: ActivityCameraBinding
+    private lateinit var viewModel: CurrencyViewModel
     private lateinit var previewView: PreviewView
     private lateinit var captureButton: FrameLayout
     private lateinit var cameraExecutor: ExecutorService
@@ -75,17 +79,19 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         binding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        viewModel = ViewModelProvider(this)[CurrencyViewModel::class.java]
+
         previewView = binding.previewView
         captureButton = binding.cameraButton
 
-        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
+//        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
+//        setSupportActionBar(toolbar)
+//        supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
 
-        val backButton : ImageView = toolbar.findViewById(R.id.button_back)
-        backButton.setOnClickListener{
-            finish()
-        }
+//        val backButton : ImageView = toolbar.findViewById(R.id.button_back)
+//        backButton.setOnClickListener{
+//            finish()
+//        }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
@@ -103,6 +109,37 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
         captureButton.setOnClickListener {
             takePicture()
+        }
+
+        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
+
+        // 뒤로 가기
+        val backButton: ImageView = toolbar.findViewById(R.id.button_back)
+        backButton.setOnClickListener {
+            finish()
+        }
+
+        // 통화 Spinner 데이터 설정
+        val currencyItems = listOf("KRW", "JPY", "USD", "THB", "ITL", "UTC", "FRF", "GBP", "CHF", "VND", "AUD")
+        val customSpinner1 = CustomSpinner(this, currencyItems)
+        val customSpinner2 = CustomSpinner(this, currencyItems)
+
+        // 바꿀 통화 Spinner 항목 선택 이벤트
+        binding.currencyContainer1.setOnClickListener {
+            customSpinner1.show(binding.currencyContainer1) { selected ->
+                binding.currencyName1.text = selected
+                viewModel.updateCurrency(selected)
+            }
+        }
+
+        // 바뀐 통화 Spinner 항목 선택 이벤트
+        binding.currencyContainer2.setOnClickListener {
+            customSpinner2.show(binding.currencyContainer2) { selected ->
+                binding.currencyName2.text = selected
+                viewModel.updateCurrency(selected)
+            }
         }
 
     }

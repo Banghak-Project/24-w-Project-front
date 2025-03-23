@@ -2,6 +2,7 @@ package com.example.moneychanger.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
@@ -17,10 +18,17 @@ import com.example.moneychanger.setting.SettingActivity
 import com.example.moneychanger.databinding.ActivityMainBinding
 import com.example.moneychanger.etc.BaseActivity
 import com.example.moneychanger.etc.DataProvider
-import com.example.moneychanger.onboarding.find.FindIdPwActivity
+import com.example.moneychanger.etc.OnStoreNameUpdatedListener
+import com.example.moneychanger.etc.SlideEdit
+import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.onboarding.LoginSelectActivity
+import com.example.moneychanger.onboarding.find.NewPwActivity
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
+import java.util.UUID
+import kotlin.math.absoluteValue
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
     private lateinit var binding:  ActivityMainBinding
     private lateinit var adapter: ListAdapter
 
@@ -32,6 +40,12 @@ class MainActivity : BaseActivity() {
         val toolbar: Toolbar = findViewById(R.id.main_toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
+
+        // list 직접 추가하기 버튼 클릭 이벤트 설정
+        binding.buttonAdd.setOnClickListener{
+            val slideEdit = SlideEdit()
+            slideEdit.show(supportFragmentManager, slideEdit.tag)
+        }
 
         // 카메라 버튼 클릭 이벤트 설정
         binding.buttonCamera.setOnClickListener{
@@ -63,19 +77,36 @@ class MainActivity : BaseActivity() {
             startActivity(intent)
         }
         binding.b2.setOnClickListener{
-            val intent = Intent(this, FindIdPwActivity::class.java)
+            val intent = Intent(this, NewPwActivity::class.java)
             startActivity(intent)
         }
-//        binding.listPlace.root.setOnClickListener{
-//            val intent = Intent(this, ListActivity::class.java)
-//            startActivity(intent)
-//        }
-
-        // delete
 
 
 
     }
+
+    // 직접 리스트 추가하기 관련 함수
+    // 콜백: SlideEdit에서 storeName을 전달받으면 실행됨
+    override fun onStoreNameUpdated(storeName: String) {
+        val listId = UUID.randomUUID().mostSignificantBits.absoluteValue // 아이디 임시 생성 -> UUID
+
+        val newItem = ListModel(
+            listId = listId,
+            name = storeName,
+            createdAt = getCurrentDateTime(),  // "yyyy-MM-dd HH:mm:ss"
+            location = "", // 위치는 일단 공백으로 들어가게
+            deletedYn = false
+        )
+        // 나중에 여기에 db에 추가하는 부분 넣으면 됨.
+        adapter.addItem(newItem)
+    }
+
+    // 현재 시간으로 created At 생성 함수
+    fun getCurrentDateTime(): String {
+        return LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString()
+    }
+
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu,menu)

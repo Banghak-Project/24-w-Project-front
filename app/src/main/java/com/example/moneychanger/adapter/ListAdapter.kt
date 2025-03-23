@@ -29,7 +29,7 @@ class ListAdapter(
 
             val dateTime = LocalDateTime.parse(item.createdAt, DateTimeFormatter.ISO_DATE_TIME)
             binding.createdDate.text = dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
-            binding.createdTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+            binding.createdTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH시 mm분 ss초"))
 
             itemView.setOnClickListener {
                 if (!isDeleteMode) onItemClick(item) // 삭제 모드가 아닐 때만 클릭 가능
@@ -90,6 +90,11 @@ class ListAdapter(
         items.clear()
         items.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun addItem(item: ListModel) {
+        items.add(item)
+        notifyItemInserted(items.size - 1)
     }
 }
 

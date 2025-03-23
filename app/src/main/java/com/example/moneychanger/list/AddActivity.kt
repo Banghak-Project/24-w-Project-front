@@ -25,7 +25,6 @@ import java.util.Locale
 
 class AddActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddBinding
-    private lateinit var viewModel: CurrencyViewModel
 
     private var currencyIdFrom: Long = 23L  // 기본값: USD
     private var currencyIdTo: Long = 14L    // 기본값: KRW
@@ -34,8 +33,6 @@ class AddActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        viewModel = ViewModelProvider(this)[CurrencyViewModel::class.java]
 
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
         setSupportActionBar(toolbar)
