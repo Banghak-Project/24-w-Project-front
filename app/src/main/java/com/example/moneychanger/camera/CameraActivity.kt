@@ -47,6 +47,7 @@ import com.example.moneychanger.network.user.ApiResponse
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.example.moneychanger.list.CurrencyViewModel
+import com.example.moneychanger.network.CurrencyStoreManager
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
@@ -69,8 +70,8 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
     private var selectedProductPrice: String? = null
     private var isSelectingPrice = false // 현재 상품 가격 선택 중인지 확인하는 플래그
 
-    private var currencyIdFrom = 23L
-    private var currencyIdTo = 14L
+    private var currencyIdFrom = -1L
+    private var currencyIdTo = -1L
     private val userId = TokenManager.getUserId() ?: -1L
     private val location = "Seoul"
 
@@ -83,15 +84,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
         previewView = binding.previewView
         captureButton = binding.cameraButton
-
-//        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
-//        setSupportActionBar(toolbar)
-//        supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
-
-//        val backButton : ImageView = toolbar.findViewById(R.id.button_back)
-//        backButton.setOnClickListener{
-//            finish()
-//        }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
@@ -121,16 +113,29 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             finish()
         }
 
+        // 통화 정보 가져오기
+        val currencyList = CurrencyStoreManager.getCurrencyList()
+
+        if (currencyList.isNullOrEmpty()) {
+            Toast.makeText(this, "로그인 후 이용해주세요.", Toast.LENGTH_LONG).show()
+            finish()  // 👉 종료하지 않고 onCreate 나감
+            return
+        }
+
         // 통화 Spinner 데이터 설정
-        val currencyItems = listOf("KRW", "JPY", "USD", "THB", "ITL", "UTC", "FRF", "GBP", "CHF", "VND", "AUD")
-        val customSpinner1 = CustomSpinner(this, currencyItems)
-        val customSpinner2 = CustomSpinner(this, currencyItems)
+        val currencyUnits: List<String> = currencyList?.mapNotNull { it.curUnit } ?: emptyList()
+        val customSpinner1 = CustomSpinner(this, currencyUnits)
+        val customSpinner2 = CustomSpinner(this, currencyUnits)
 
         // 바꿀 통화 Spinner 항목 선택 이벤트
         binding.currencyContainer1.setOnClickListener {
             customSpinner1.show(binding.currencyContainer1) { selected ->
                 binding.currencyName1.text = selected
                 viewModel.updateCurrency(selected)
+                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
+                if (selectedCurrency != null) {
+                    currencyIdFrom = selectedCurrency.currentId
+                }
             }
         }
 
@@ -139,6 +144,10 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             customSpinner2.show(binding.currencyContainer2) { selected ->
                 binding.currencyName2.text = selected
                 viewModel.updateCurrency(selected)
+                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
+                if (selectedCurrency != null) {
+                    currencyIdTo = selectedCurrency.currentId
+                }
             }
         }
 
@@ -152,7 +161,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             cameraProvider.unbindAll()
 
             val preview = Preview.Builder()
-                .setTargetAspectRatio(AspectRatio.RATIO_16_9) // 📌 화면 비율을 16:9로 설정
+                .setTargetAspectRatio(AspectRatio.RATIO_16_9) // 화면 비율을 16:9로 설정
                 .build()
                 .also {
                     it.setSurfaceProvider(previewView.surfaceProvider)
@@ -160,7 +169,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
             imageCapture = ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                .setTargetAspectRatio(AspectRatio.RATIO_16_9) // 📌 사진 촬영 비율을 16:9로 설정
+                .setTargetAspectRatio(AspectRatio.RATIO_16_9) // 사진 촬영 비율을 16:9로 설정
                 .build()
 
 
@@ -178,6 +187,11 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
     }
 
     private fun takePicture() {
+        if (currencyIdFrom == -1L || currencyIdTo == -1L) {
+            Toast.makeText(this, "두 통화를 모두 선택해주세요.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val imageCapture = imageCapture ?: return
         val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis())
 
@@ -211,7 +225,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                     val bitmap = loadBitmapWithRotation(savedUri)
 
                     runOnUiThread {
-                        binding.capturedImageView.setImageBitmap(bitmap) // 올바르게 회전된 이미지 표시
+                        binding.capturedImageView.setImageBitmap(bitmap)
                         binding.previewView.visibility = View.INVISIBLE
                         binding.capturedImageView.visibility = View.VISIBLE
                     }
@@ -292,7 +306,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             val originalWidth = bitmap.width.toFloat()
             val originalHeight = bitmap.height.toFloat()
 
-            // OCR 박스 크기 조정 (이미지의 실제 비율에 맞춰 보정)
             val scaleX = displayedWidth / originalWidth
             val scaleY = displayedHeight / originalHeight
 
@@ -479,6 +492,8 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                             if (productResponse != null) {
                                 Toast.makeText(this@CameraActivity, "상품 추가 완료!", Toast.LENGTH_SHORT).show()
                                 Log.d("CameraActivity", "✅ 상품 추가 성공: ${productResponse.name}")
+
+                                finish() // 상품 추가 후 액티비티 종료
                             } else {
                                 Log.e("CameraActivity", "🚨 상품 응답 데이터 변환 실패")
                             }

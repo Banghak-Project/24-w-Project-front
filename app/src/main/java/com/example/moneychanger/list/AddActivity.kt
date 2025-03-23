@@ -26,13 +26,14 @@ import java.util.Locale
 class AddActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddBinding
 
-    private var currencyIdFrom: Long = 23L  // 기본값: USD
-    private var currencyIdTo: Long = 14L    // 기본값: KRW
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val currencyIdFrom = intent.getLongExtra("currencyIdFrom", -1L)
+        val currencyIdTo = intent.getLongExtra("currencyIdTo", -1L)
+        val listId = intent.getLongExtra("listId", -1L)
 
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
         setSupportActionBar(toolbar)
@@ -45,12 +46,6 @@ class AddActivity : AppCompatActivity() {
         }
 
         binding.loginToolbar.pageText.text = "추가하기"
-
-        // 통화 Spinner 데이터 설정
-        val currencyUnits: List<String> = CurrencyStoreManager.getCurrencyList()
-            ?.mapNotNull { it.curUnit } ?: emptyList()
-        val customSpinner1 = CustomSpinner(this, currencyUnits)
-        val customSpinner2 = CustomSpinner(this, currencyUnits)
 
 //        // 바꿀 통화 Spinner 항목 선택 이벤트 (From 통화)
 //        binding.currencyContainer1.setOnClickListener {
@@ -98,34 +93,34 @@ class AddActivity : AppCompatActivity() {
 //            }
 //        }
 //
-//        binding.inputField.addTextChangedListener(object : TextWatcher {
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-//
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                val inputText = s.toString().replace(",", "")  // 쉼표 제거
-//                val amount = inputText.toDoubleOrNull() ?: 0.0
-//
-//                if (amount > 0) {
-//                    val convertedAmount = calculateExchangeRate(currencyIdFrom,currencyIdTo,amount)
-//                    binding.changedText.text = String.format(Locale.US, "%,.2f", convertedAmount)
-//                } else {
-//                    binding.changedText.text = "0.00"
-//                }
-//            }
-//
-//            override fun afterTextChanged(s: Editable?) {}
-//        })
+        binding.inputField.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-//        binding.buttonAdd.setOnClickListener {
-//            val inputText = binding.inputField.text.toString().replace(",", "")
-//            val amount = inputText.toDoubleOrNull() ?: 0.0
-//
-//            if (amount > 0) {
-//                val convertedAmount = calculateExchangeRate(currencyIdFrom, currencyIdTo, amount)
-//                addProductToList(currencyIdFrom, currencyIdTo, amount, convertedAmount)
-//                finish()
-//            }
-//        }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val inputText = s.toString().replace(",", "")  // 쉼표 제거
+                val amount = inputText.toDoubleOrNull() ?: 0.0
+
+                if (amount > 0) {
+                    val convertedAmount = calculateExchangeRate(currencyIdFrom,currencyIdTo,amount)
+                    binding.changedText.text = String.format(Locale.US, "%,.2f", convertedAmount)
+                } else {
+                    binding.changedText.text = "0.00"
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        binding.buttonAdd.setOnClickListener {
+            val inputText = binding.inputField.text.toString().replace(",", "")
+            val amount = inputText.toDoubleOrNull() ?: 0.0
+
+            if (amount > 0) {
+                val convertedAmount = calculateExchangeRate(currencyIdFrom, currencyIdTo, amount)
+                addProductToList(listId, "", amount)
+                finish()
+            }
+        }
     }
 
 
