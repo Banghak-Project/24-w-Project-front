@@ -111,16 +111,16 @@ class AddActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-//        binding.buttonAdd.setOnClickListener {
-//            val inputText = binding.inputField.text.toString().replace(",", "")
-//            val amount = inputText.toDoubleOrNull() ?: 0.0
-//
-//            if (amount > 0) {
-//                val convertedAmount = calculateExchangeRate(currencyIdFrom, currencyIdTo, amount)
-//                addProductToList(currencyIdFrom, currencyIdTo, amount, convertedAmount)
-//                finish()
-//            }
-//        }
+        binding.buttonAdd.setOnClickListener {
+            val inputText = binding.inputField.text.toString().replace(",", "")
+            val amount = inputText.toDoubleOrNull() ?: 0.0
+
+            if (amount > 0) {
+                val convertedAmount = calculateExchangeRate(currencyIdFrom, currencyIdTo, amount)
+                addProductToList(listId, "", amount)
+                finish()
+            }
+        }
     }
 
 
