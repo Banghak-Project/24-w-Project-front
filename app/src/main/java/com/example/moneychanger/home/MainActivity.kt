@@ -20,6 +20,7 @@ import com.example.moneychanger.etc.BaseActivity
 import com.example.moneychanger.etc.DataProvider
 import com.example.moneychanger.etc.OnStoreNameUpdatedListener
 import com.example.moneychanger.etc.SlideEdit
+import com.example.moneychanger.etc.SlideNewList
 import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.onboarding.LoginSelectActivity
 import com.example.moneychanger.onboarding.find.NewPwActivity
@@ -43,8 +44,8 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
 
         // list 직접 추가하기 버튼 클릭 이벤트 설정
         binding.buttonAdd.setOnClickListener{
-            val slideEdit = SlideEdit()
-            slideEdit.show(supportFragmentManager, slideEdit.tag)
+            val slideNewList = SlideNewList()
+            slideNewList.show(supportFragmentManager, slideNewList.tag)
         }
 
         // 카메라 버튼 클릭 이벤트 설정
