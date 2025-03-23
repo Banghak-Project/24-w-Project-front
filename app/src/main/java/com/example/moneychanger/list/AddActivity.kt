@@ -52,69 +52,69 @@ class AddActivity : AppCompatActivity() {
         val customSpinner1 = CustomSpinner(this, currencyUnits)
         val customSpinner2 = CustomSpinner(this, currencyUnits)
 
-        // 바꿀 통화 Spinner 항목 선택 이벤트 (From 통화)
-        binding.currencyContainer1.setOnClickListener {
-            customSpinner1.show(binding.currencyContainer1) { selected ->
-                binding.currencyName1.text = selected
-                binding.currencyText1.text = selected
-                val cleanedSelected = selected.replace(Regex("\\(.*\\)"), "")
-                val resourceId = resources.getIdentifier(cleanedSelected, "string", packageName)
-                binding.currencySymbol1.text = getString(resourceId)
-                viewModel.updateCurrency(selected)
-
-                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
-                if (selectedCurrency != null) {
-                    currencyIdFrom = selectedCurrency.currentId
-
-                    val inputAmount = binding.inputField.text.toString().replace(",", "").toDoubleOrNull()
-                    if (currencyIdTo != 0L && inputAmount != null && inputAmount > 0) {
-                        val result = calculateExchangeRate(currencyIdFrom, currencyIdTo, inputAmount)
-                        binding.changedText.text = String.format(Locale.US, "%,.2f", result)
-                    }
-                }
-            }
-        }
-
-        // 바뀐 통화 Spinner 항목 선택 이벤트 (To 통화)
-        binding.currencyContainer2.setOnClickListener {
-            customSpinner2.show(binding.currencyContainer2) { selected ->
-                binding.currencyName2.text = selected
-                binding.currencyText2.text = selected
-                val cleanedSelected = selected.replace(Regex("\\(.*\\)"), "")
-                val resourceId = resources.getIdentifier(cleanedSelected, "string", packageName)
-                binding.currencySymbol2.text = getString(resourceId)
-                viewModel.updateCurrency(selected)
-
-                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
-                if (selectedCurrency != null) {
-                    currencyIdTo = selectedCurrency.currentId
-
-                    val inputAmount = binding.inputField.text.toString().replace(",", "").toDoubleOrNull()
-                    if (currencyIdFrom != 0L && inputAmount != null && inputAmount > 0) {
-                        val result = calculateExchangeRate(currencyIdFrom, currencyIdTo, inputAmount)
-                        binding.changedText.text = String.format(Locale.US, "%,.2f", result)
-                    }
-                }
-            }
-        }
-
-        binding.inputField.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val inputText = s.toString().replace(",", "")  // 쉼표 제거
-                val amount = inputText.toDoubleOrNull() ?: 0.0
-
-                if (amount > 0) {
-                    val convertedAmount = calculateExchangeRate(currencyIdFrom,currencyIdTo,amount)
-                    binding.changedText.text = String.format(Locale.US, "%,.2f", convertedAmount)
-                } else {
-                    binding.changedText.text = "0.00"
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
+//        // 바꿀 통화 Spinner 항목 선택 이벤트 (From 통화)
+//        binding.currencyContainer1.setOnClickListener {
+//            customSpinner1.show(binding.currencyContainer1) { selected ->
+//                binding.currencyName1.text = selected
+//                binding.currencyText1.text = selected
+//                val cleanedSelected = selected.replace(Regex("\\(.*\\)"), "")
+//                val resourceId = resources.getIdentifier(cleanedSelected, "string", packageName)
+//                binding.currencySymbol1.text = getString(resourceId)
+//                viewModel.updateCurrency(selected)
+//
+//                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
+//                if (selectedCurrency != null) {
+//                    currencyIdFrom = selectedCurrency.currentId
+//
+//                    val inputAmount = binding.inputField.text.toString().replace(",", "").toDoubleOrNull()
+//                    if (currencyIdTo != 0L && inputAmount != null && inputAmount > 0) {
+//                        val result = calculateExchangeRate(currencyIdFrom, currencyIdTo, inputAmount)
+//                        binding.changedText.text = String.format(Locale.US, "%,.2f", result)
+//                    }
+//                }
+//            }
+//        }
+//
+//        // 바뀐 통화 Spinner 항목 선택 이벤트 (To 통화)
+//        binding.currencyContainer2.setOnClickListener {
+//            customSpinner2.show(binding.currencyContainer2) { selected ->
+//                binding.currencyName2.text = selected
+//                binding.currencyText2.text = selected
+//                val cleanedSelected = selected.replace(Regex("\\(.*\\)"), "")
+//                val resourceId = resources.getIdentifier(cleanedSelected, "string", packageName)
+//                binding.currencySymbol2.text = getString(resourceId)
+//                viewModel.updateCurrency(selected)
+//
+//                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
+//                if (selectedCurrency != null) {
+//                    currencyIdTo = selectedCurrency.currentId
+//
+//                    val inputAmount = binding.inputField.text.toString().replace(",", "").toDoubleOrNull()
+//                    if (currencyIdFrom != 0L && inputAmount != null && inputAmount > 0) {
+//                        val result = calculateExchangeRate(currencyIdFrom, currencyIdTo, inputAmount)
+//                        binding.changedText.text = String.format(Locale.US, "%,.2f", result)
+//                    }
+//                }
+//            }
+//        }
+//
+//        binding.inputField.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+//
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//                val inputText = s.toString().replace(",", "")  // 쉼표 제거
+//                val amount = inputText.toDoubleOrNull() ?: 0.0
+//
+//                if (amount > 0) {
+//                    val convertedAmount = calculateExchangeRate(currencyIdFrom,currencyIdTo,amount)
+//                    binding.changedText.text = String.format(Locale.US, "%,.2f", convertedAmount)
+//                } else {
+//                    binding.changedText.text = "0.00"
+//                }
+//            }
+//
+//            override fun afterTextChanged(s: Editable?) {}
+//        })
 
 //        binding.buttonAdd.setOnClickListener {
 //            val inputText = binding.inputField.text.toString().replace(",", "")
