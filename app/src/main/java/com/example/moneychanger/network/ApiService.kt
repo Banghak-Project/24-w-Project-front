@@ -2,9 +2,11 @@ package com.example.moneychanger.network
 
 import com.example.moneychanger.network.currency.CurrencyModel
 import com.example.moneychanger.network.currency.CurrencyResponseDto
-import com.example.moneychanger.network.list.ListModel
-import com.example.moneychanger.network.list.ListsRequestDto
+import com.example.moneychanger.network.list.CreateListRequestDto
+import com.example.moneychanger.network.list.CreateListResponseDto
 import com.example.moneychanger.network.list.ListsResponseDto
+import com.example.moneychanger.network.product.CreateProductRequestDto
+import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.product.ImageProductResponseDto
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductRequestDto
@@ -55,7 +57,7 @@ interface ApiService {
 
     //List
     @POST("/api/lists/add")
-    fun createList(@Body requestDto: ListsRequestDto): Response<ApiResponse<Call<ListModel>>>
+    fun createList(@Body requestDto: CreateListRequestDto): Call<ApiResponse<CreateListResponseDto>>
 
     @GET("/api/lists")
     fun getAllLists(): Response<ApiResponse<Call<List<ListsResponseDto>>>>
@@ -65,7 +67,7 @@ interface ApiService {
 
     //Product
     @POST("/api/products")
-    fun createProduct(@Body requestDto: ProductRequestDto): Response<ApiResponse<Call<ProductModel>>>
+    fun createProduct(@Body requestDto: CreateProductRequestDto): Call<ApiResponse<CreateProductResponseDto>>
     //아이디에 맞는 상품 갖고옴
     @GET("/api/products/{id}")
     fun getProductByListsId(@Path("id") productId:Long): Response<ApiResponse<Call<ProductModel>>>

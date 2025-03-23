@@ -169,14 +169,14 @@
             <Space
                 android:layout_width="126dp"
                 android:layout_height="match_parent"/>
-<!--            <Button-->
-<!--                android:id="@+id/confirmButton"-->
-<!--                android:layout_width="60dp"-->
-<!--                android:layout_height="60dp"-->
-<!--                android:background="@drawable/round_button"-->
-<!--                android:backgroundTint="@color/main"-->
-<!--                android:layout_gravity="center">-->
-<!--            </Button>-->
+            <Button
+                android:id="@+id/confirmButton"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/round_button"
+                android:backgroundTint="@color/main"
+                android:layout_gravity="center">
+            </Button>
         </LinearLayout>
     </FrameLayout>
 

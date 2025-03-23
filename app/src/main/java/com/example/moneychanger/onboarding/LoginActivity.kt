@@ -170,8 +170,9 @@ class LoginActivity : AppCompatActivity() {
                             Log.d("LoginActivity", "✅ 통화 정보 가져오기 성공: ${apiResponse.data}")
                             val jsonData = Gson().toJson(apiResponse.data)
                             val currencyList: List<CurrencyResponseDto> = Gson().fromJson(
-                                jsonData, Array<CurrencyResponseDto>::class.java
-                            ).toList()
+                                jsonData,
+                                object : com.google.gson.reflect.TypeToken<List<CurrencyResponseDto>>() {}.type
+                            )
 
                             CurrencyStoreManager.saveCurrencyList(currencyList)
                             Log.d("LoginActivity", "📌 저장된 통화 리스트: ${CurrencyStoreManager.getCurrencyList()}")

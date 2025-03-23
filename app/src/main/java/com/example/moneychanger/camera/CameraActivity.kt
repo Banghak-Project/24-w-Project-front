@@ -37,11 +37,24 @@ import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.etc.DataProvider
 import com.example.moneychanger.etc.OnProductAddedListener
 import com.example.moneychanger.etc.SlideCameraList
+import com.example.moneychanger.network.RetrofitClient
+import com.example.moneychanger.network.TokenManager
+import com.example.moneychanger.network.list.CreateListRequestDto
+import com.example.moneychanger.network.list.CreateListResponseDto
+import com.example.moneychanger.network.product.CreateProductRequestDto
+import com.example.moneychanger.network.product.CreateProductResponseDto
+import com.example.moneychanger.network.user.ApiResponse
+import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.example.moneychanger.list.CurrencyViewModel
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
+
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class CameraActivity : AppCompatActivity(), OnProductAddedListener {
     private lateinit var binding: ActivityCameraBinding
@@ -56,6 +69,11 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
     private var selectedProductPrice: String? = null
     private var isSelectingPrice = false // 현재 상품 가격 선택 중인지 확인하는 플래그
 
+    private var currencyIdFrom = 23L
+    private var currencyIdTo = 14L
+    private val userId = TokenManager.getUserId() ?: -1L
+    private val location = "Seoul"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCameraBinding.inflate(layoutInflater)
@@ -65,6 +83,15 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
         previewView = binding.previewView
         captureButton = binding.cameraButton
+
+//        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
+//        setSupportActionBar(toolbar)
+//        supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
+
+//        val backButton : ImageView = toolbar.findViewById(R.id.button_back)
+//        backButton.setOnClickListener{
+//            finish()
+//        }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
@@ -179,7 +206,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = output.savedUri ?: return
                     Log.d("CameraActivity", "사진 저장됨: $savedUri")
-//                    Toast.makeText(baseContext, "Photo : ${output.savedUri}", Toast.LENGTH_SHORT).show()
 
                     // 비트맵 불러오면서 EXIF 회전 적용
                     val bitmap = loadBitmapWithRotation(savedUri)
@@ -302,6 +328,14 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             }
 
             binding.textOverlay.visibility = View.VISIBLE
+            // 선택 완료 버튼 클릭 시, 새로운 리스트 생성 및 상품 추가
+            binding.confirmButton.setOnClickListener {
+                if (selectedProductName != null && selectedProductPrice != null) {
+                    addNewList(userId, currencyIdFrom, currencyIdTo, location)
+                } else {
+                    Toast.makeText(this@CameraActivity, "상품명과 상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
+                }
+            }
             Toast.makeText(this@CameraActivity, "상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
         }
     }
@@ -330,7 +364,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
         if (selectedProductName == null) {
             // 상품명을 선택하는 단계 (숫자가 포함된 텍스트는 상품명이 아닐 확률이 높음)
-            if (text.any { it.isDigit() }) {
+            if (!text.any { it.isLetter() }) {
                 Toast.makeText(this, "잘못된 선택입니다. 상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
                 return
             }
@@ -358,7 +392,8 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
     private fun cleanPriceText(priceText: String): String {
         val cleaned = priceText.replace(Regex("[^0-9.]"), "") // 숫자와 소수점만 남김
-        return if (cleaned.matches(Regex("\\d+(\\.\\d+)?"))) cleaned else ""
+        val price = if (cleaned.matches(Regex("\\d+(\\.\\d+)?"))) cleaned else ""
+        return price
     }
 
     private fun updateSelectedText() {
@@ -369,6 +404,98 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             Toast.makeText(this, "선택 완료: $resultText", Toast.LENGTH_SHORT).show()
         }
     }
+
+    private fun addNewList(userId: Long, currencyIdFrom: Long, currencyIdTo: Long, location: String) {
+        val createRequest = CreateListRequestDto(userId, currencyIdFrom, currencyIdTo, location)
+        Log.d("CameraActivity", "🚀 리스트 생성 요청 데이터: userId=$userId, currencyIdFrom=$currencyIdFrom, currencyIdTo=$currencyIdTo, location=$location")
+
+        // 리스트 추가 API 호출 (비동기 방식)
+        RetrofitClient.apiService.createList(createRequest)
+            .enqueue(object : Callback<ApiResponse<CreateListResponseDto>> {
+                override fun onResponse(
+                    call: Call<ApiResponse<CreateListResponseDto>>,
+                    response: Response<ApiResponse<CreateListResponseDto>>
+                ) {
+                    if (response.isSuccessful) {
+                        val apiResponse = response.body()
+                        if (apiResponse != null && apiResponse.status == "success") {
+                            val jsonData = Gson().toJson(apiResponse.data)
+                            val createListResponse: CreateListResponseDto? = try {
+                                Gson().fromJson(jsonData, CreateListResponseDto::class.java)
+                            } catch (e: JsonSyntaxException) {
+                                Log.e("CameraActivity", "🚨 JSON 변환 오류: ${e.message}")
+                                null
+                            }
+
+                            if (createListResponse != null) {
+                                val listId = createListResponse.listId ?: -1L
+                                if (listId != -1L) {
+                                    Toast.makeText(this@CameraActivity, "리스트 추가 완료!", Toast.LENGTH_SHORT).show()
+                                    Log.d("CameraActivity", "✅ 리스트 생성 성공: ID=$listId")
+
+                                    // 리스트 추가 성공 후 상품 추가
+                                    addProductToList(listId, selectedProductName!!, selectedProductPrice!!)
+                                } else {
+                                    Log.e("CameraActivity", "🚨 리스트 ID 오류 발생")
+                                }
+                            } else {
+                                Log.e("CameraActivity", "🚨 리스트 응답 데이터 변환 실패")
+                            }
+                        } else {
+                            Log.e("CameraActivity", "🚨 리스트 추가 실패: ${apiResponse?.message ?: "알 수 없는 오류"}")
+                        }
+                    } else {
+                        Log.e("CameraActivity", "🚨 응답 실패: ${response.errorBody()?.string()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<ApiResponse<CreateListResponseDto>>, t: Throwable) {
+                    Log.e("CameraActivity", "🚨 서버 요청 실패: ${t.message}")
+                }
+            })
+    }
+
+    private fun addProductToList(listId: Long, productName: String, price: String) {
+        val cleanPrice = cleanPriceText(price!!).toDouble()
+        val productRequest = CreateProductRequestDto(listId, productName, cleanPrice)
+
+        RetrofitClient.apiService.createProduct(productRequest)
+            .enqueue(object : Callback<ApiResponse<CreateProductResponseDto>> {
+                override fun onResponse(
+                    call: Call<ApiResponse<CreateProductResponseDto>>,
+                    response: Response<ApiResponse<CreateProductResponseDto>>
+                ) {
+                    if (response.isSuccessful) {
+                        val apiResponse = response.body()
+                        if (apiResponse != null && apiResponse.status == "success") {
+                            val jsonData = Gson().toJson(apiResponse.data)
+                            val productResponse: CreateProductResponseDto? = try {
+                                Gson().fromJson(jsonData, CreateProductResponseDto::class.java)
+                            } catch (e: JsonSyntaxException) {
+                                Log.e("CameraActivity", "🚨 JSON 변환 오류: ${e.message}")
+                                null
+                            }
+
+                            if (productResponse != null) {
+                                Toast.makeText(this@CameraActivity, "상품 추가 완료!", Toast.LENGTH_SHORT).show()
+                                Log.d("CameraActivity", "✅ 상품 추가 성공: ${productResponse.name}")
+                            } else {
+                                Log.e("CameraActivity", "🚨 상품 응답 데이터 변환 실패")
+                            }
+                        } else {
+                            Log.e("CameraActivity", "🚨 상품 추가 실패: ${apiResponse?.message ?: "알 수 없는 오류"}")
+                        }
+                    } else {
+                        Log.e("CameraActivity", "🚨 응답 실패: ${response.errorBody()?.string()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<ApiResponse<CreateProductResponseDto>>, t: Throwable) {
+                    Log.e("CameraActivity", "🚨 서버 요청 실패: ${t.message}")
+                }
+            })
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()

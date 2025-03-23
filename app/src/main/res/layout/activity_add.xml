@@ -105,6 +105,7 @@
                 android:paddingHorizontal="24dp"
                 android:background="@drawable/round_background">
                 <TextView
+                    android:id="@+id/changed_text"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="N00,000,000"
