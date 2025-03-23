@@ -139,6 +139,9 @@
     <string name="logout">로그아웃</string>
     <string name="delete_account">회원 탈퇴</string>
 
+    <string name="place_name">가게명</string>
+    <string name="place_ex">H MART</string>
+
     <!--list-->
     <string name="dot">•</string>
     <string name="before">분 전</string>

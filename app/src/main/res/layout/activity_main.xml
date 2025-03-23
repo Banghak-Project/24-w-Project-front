@@ -40,6 +40,12 @@
                     android:layout_weight="9"
                     android:text="@string/home_title"
                     style="@style/TextHeadingXL"/>
+                <ImageView
+                    android:id="@id/button_add"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/icon_add"
+                    app:tint="@color/main"/>
             </LinearLayout>
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
