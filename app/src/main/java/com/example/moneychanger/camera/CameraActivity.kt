@@ -187,6 +187,11 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
     }
 
     private fun takePicture() {
+        if (currencyIdFrom == -1L || currencyIdTo == -1L) {
+            Toast.makeText(this, "두 통화를 모두 선택해주세요.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val imageCapture = imageCapture ?: return
         val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis())
 
