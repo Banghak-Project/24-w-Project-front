@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="220dp"
+    android:layout_height="wrap_content"
     android:paddingHorizontal="16dp"
     android:paddingBottom="16dp"
     android:background="@drawable/round_top_background"
@@ -18,6 +19,91 @@
             android:layout_gravity="center"
             android:background="@drawable/round_background"
             android:backgroundTint="@color/gray_06"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="center"
+        android:gravity="center">
+        <LinearLayout
+            android:id="@+id/currency_container1"
+            android:layout_width="120dp"
+            android:layout_height="32dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center">
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp">
+                <Spinner
+                    android:id="@+id/currency_spinner1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:dropDownWidth="72dp"
+                    android:dropDownHeight="80dp"
+                    android:alpha="0"/>
+                <TextView
+                    android:id="@+id/currency_name1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="통화"
+                    android:textColor="@color/gray_08"
+                    style="@style/TextBodyM_bold"/>
+            </FrameLayout>
+            <ImageView
+                android:id="@+id/currency_arrow1"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/icon_arrow"
+                android:rotation="270"
+                app:tint="@color/gray_05" />
+        </LinearLayout>
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/icon_change2"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginHorizontal="16dp"/>
+        <LinearLayout
+            android:id="@+id/currency_container2"
+            android:layout_width="120dp"
+            android:layout_height="32dp"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center">
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp">
+                <Spinner
+                    android:id="@+id/currency_spinner2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:dropDownWidth="72dp"
+                    android:dropDownHeight="80dp"
+                    android:alpha="0"/>
+                <TextView
+                    android:id="@+id/currency_name2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="통화"
+                    android:textColor="@color/gray_08"
+                    style="@style/TextBodyM_bold"/>
+            </FrameLayout>
+            <ImageView
+                android:id="@+id/currency_arrow2"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/icon_arrow"
+                android:rotation="270"
+                app:tint="@color/gray_05" />
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,7 +132,7 @@
 
         <!-- 수정하기 버튼 -->
         <LinearLayout
-            android:id="@+id/button_update"
+            android:id="@+id/button_add"
             android:layout_width="312dp"
             android:layout_height="48dp"
             android:layout_gravity="center|bottom"
