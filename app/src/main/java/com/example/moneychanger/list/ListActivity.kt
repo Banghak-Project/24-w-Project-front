@@ -97,7 +97,8 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             customSpinner2.show(binding.currencyContainer2) { selected ->
                 binding.currencyName2.text = selected
                 // 1 통화 당 00 >$<
-                val resourceId = resources.getIdentifier(selected, "string", packageName)
+                val cleanedSelected = selected.replace(Regex("\\(.*\\)"), "")
+                val resourceId = resources.getIdentifier(cleanedSelected, "string", packageName)
                 binding.currencySymbol1.text = getString(resourceId)
                 // n0000 >$<
                 binding.currencySymbol2.text = getString(resourceId)
