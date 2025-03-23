@@ -47,6 +47,7 @@ import com.example.moneychanger.network.user.ApiResponse
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.example.moneychanger.list.CurrencyViewModel
+import com.example.moneychanger.network.CurrencyStoreManager
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
@@ -69,8 +70,8 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
     private var selectedProductPrice: String? = null
     private var isSelectingPrice = false // 현재 상품 가격 선택 중인지 확인하는 플래그
 
-    private var currencyIdFrom = 23L
-    private var currencyIdTo = 14L
+    private var currencyIdFrom = -1L
+    private var currencyIdTo = -1L
     private val userId = TokenManager.getUserId() ?: -1L
     private val location = "Seoul"
 
@@ -121,16 +122,29 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             finish()
         }
 
+        // 통화 정보 가져오기
+        val currencyList = CurrencyStoreManager.getCurrencyList()
+
+        if (currencyList.isNullOrEmpty()) {
+            Toast.makeText(this, "로그인 후 이용해주세요.", Toast.LENGTH_LONG).show()
+            finish()  // 👉 종료하지 않고 onCreate 나감
+            return
+        }
+
         // 통화 Spinner 데이터 설정
-        val currencyItems = listOf("KRW", "JPY", "USD", "THB", "ITL", "UTC", "FRF", "GBP", "CHF", "VND", "AUD")
-        val customSpinner1 = CustomSpinner(this, currencyItems)
-        val customSpinner2 = CustomSpinner(this, currencyItems)
+        val currencyUnits: List<String> = currencyList?.mapNotNull { it.curUnit } ?: emptyList()
+        val customSpinner1 = CustomSpinner(this, currencyUnits)
+        val customSpinner2 = CustomSpinner(this, currencyUnits)
 
         // 바꿀 통화 Spinner 항목 선택 이벤트
         binding.currencyContainer1.setOnClickListener {
             customSpinner1.show(binding.currencyContainer1) { selected ->
                 binding.currencyName1.text = selected
                 viewModel.updateCurrency(selected)
+                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
+                if (selectedCurrency != null) {
+                    currencyIdFrom = selectedCurrency.currentId
+                }
             }
         }
 
@@ -139,6 +153,10 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             customSpinner2.show(binding.currencyContainer2) { selected ->
                 binding.currencyName2.text = selected
                 viewModel.updateCurrency(selected)
+                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
+                if (selectedCurrency != null) {
+                    currencyIdTo = selectedCurrency.currentId
+                }
             }
         }
 
