@@ -492,6 +492,8 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                             if (productResponse != null) {
                                 Toast.makeText(this@CameraActivity, "상품 추가 완료!", Toast.LENGTH_SHORT).show()
                                 Log.d("CameraActivity", "✅ 상품 추가 성공: ${productResponse.name}")
+
+                                finish() // 상품 추가 후 액티비티 종료
                             } else {
                                 Log.e("CameraActivity", "🚨 상품 응답 데이터 변환 실패")
                             }
