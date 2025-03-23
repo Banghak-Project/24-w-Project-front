@@ -91,5 +91,10 @@ class ListAdapter(
         items.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
     }
+
+    fun addItem(item: ListModel) {
+        items.add(item)
+        notifyItemInserted(items.size - 1)
+    }
 }
 
