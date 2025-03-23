@@ -85,15 +85,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         previewView = binding.previewView
         captureButton = binding.cameraButton
 
-//        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
-//        setSupportActionBar(toolbar)
-//        supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
-
-//        val backButton : ImageView = toolbar.findViewById(R.id.button_back)
-//        backButton.setOnClickListener{
-//            finish()
-//        }
-
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         if (!hasCameraPermission()) {
@@ -170,7 +161,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             cameraProvider.unbindAll()
 
             val preview = Preview.Builder()
-                .setTargetAspectRatio(AspectRatio.RATIO_16_9) // 📌 화면 비율을 16:9로 설정
+                .setTargetAspectRatio(AspectRatio.RATIO_16_9) // 화면 비율을 16:9로 설정
                 .build()
                 .also {
                     it.setSurfaceProvider(previewView.surfaceProvider)
@@ -178,7 +169,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
             imageCapture = ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                .setTargetAspectRatio(AspectRatio.RATIO_16_9) // 📌 사진 촬영 비율을 16:9로 설정
+                .setTargetAspectRatio(AspectRatio.RATIO_16_9) // 사진 촬영 비율을 16:9로 설정
                 .build()
 
 
@@ -229,7 +220,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                     val bitmap = loadBitmapWithRotation(savedUri)
 
                     runOnUiThread {
-                        binding.capturedImageView.setImageBitmap(bitmap) // 올바르게 회전된 이미지 표시
+                        binding.capturedImageView.setImageBitmap(bitmap)
                         binding.previewView.visibility = View.INVISIBLE
                         binding.capturedImageView.visibility = View.VISIBLE
                     }
@@ -310,7 +301,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             val originalWidth = bitmap.width.toFloat()
             val originalHeight = bitmap.height.toFloat()
 
-            // OCR 박스 크기 조정 (이미지의 실제 비율에 맞춰 보정)
             val scaleX = displayedWidth / originalWidth
             val scaleY = displayedHeight / originalHeight
 
