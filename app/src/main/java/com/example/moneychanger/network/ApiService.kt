@@ -112,9 +112,6 @@ interface ApiService {
     suspend fun findPassword(@Body request: FindPasswordRequest): Response<ApiResponse<String>>
 
     //  회원정보 조회
-//    @GET("/api/auth/user-info")
-//    suspend fun getUserInfo(@Query("userEmail") userEmail: String): Response<ApiResponse<UserInfoResponse>>
-
     @GET("/api/auth/user-info")
     suspend fun getUserInfo(@Header("Authorization") token: String): Response<ApiResponse<UserInfoResponse>>
 
