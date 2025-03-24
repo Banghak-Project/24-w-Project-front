@@ -46,12 +46,6 @@ object TokenManager {
         prefs.edit().putString(KEY_SIGN_IN_INFO, json).apply()
     }
 
-    // ✅ 로그인 정보 가져오기
-    fun getSignInInfo(): SignInResponse? {
-        val json = prefs.getString(KEY_SIGN_IN_INFO, null) ?: return null
-        return Gson().fromJson(json, SignInResponse::class.java)
-    }
-
     // ✅ 회원 정보 저장 (UserInfoResponse)
     fun saveUserInfo(userInfo: UserInfoResponse) {
         val json = Gson().toJson(userInfo)
