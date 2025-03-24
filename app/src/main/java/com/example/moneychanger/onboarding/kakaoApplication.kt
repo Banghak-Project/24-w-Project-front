@@ -11,6 +11,8 @@ class kakaoApplication : Application(){
     override fun onCreate() {
         super.onCreate()
         TokenManager.init(this)
+        TokenManager.init(applicationContext)
+
 
         var keyHash = Utility.getKeyHash(this)
         Log.d("키 확인 : ", keyHash)

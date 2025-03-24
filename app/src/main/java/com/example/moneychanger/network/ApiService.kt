@@ -31,6 +31,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
@@ -112,7 +113,7 @@ interface ApiService {
 
     //  회원정보 조회
     @GET("/api/auth/user-info")
-    suspend fun getUserInfo(@Query("userEmail") userEmail: String): Response<ApiResponse<UserInfoResponse>>
+    suspend fun getUserInfo(@Header("Authorization") token: String): Response<ApiResponse<UserInfoResponse>>
 
     //  회원정보 수정
     @POST("/api/auth/update-user-info")

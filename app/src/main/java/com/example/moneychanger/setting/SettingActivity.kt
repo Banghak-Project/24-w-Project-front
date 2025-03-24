@@ -6,12 +6,20 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivitySettingBinding
 import com.example.moneychanger.etc.BaseActivity
+import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
+import com.example.moneychanger.network.user.UserInfoResponse
 import com.example.moneychanger.onboarding.LoginActivity
+import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SettingActivity : BaseActivity() {
     private lateinit var binding: ActivitySettingBinding
@@ -21,51 +29,68 @@ class SettingActivity : BaseActivity() {
         binding = ActivitySettingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // 🔑 필수: SharedPreferences 초기화
+        TokenManager.init(this)
+
+        // 이후에 getUserInfo 호출
+        fetchUserInfo()
+
         binding.loginToolbar.pageText.text = "프로필 수정"
 
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        // 뒤로 가기
-        val backButton : ImageView = toolbar.findViewById(R.id.button_back)
-        backButton.setOnClickListener{
-            finish()
-        }
+        val backButton: ImageView = toolbar.findViewById(R.id.button_back)
+        backButton.setOnClickListener { finish() }
 
-        // 사용자 정보 업데이트
-        updateUserInfo()
-
-        // 수정 버튼 클릭 이벤트
         binding.buttonEdit.setOnClickListener {
-            // 회원 정보 수정 페이지로 이동
             val intent = Intent(this, EditInfoActivity::class.java)
             startActivity(intent)
         }
 
-        // 공지사항
         binding.buttonNotice.setOnClickListener {
-            // 회원 정보 수정 페이지로 이동
             val intent = Intent(this, NoticeActivity::class.java)
             startActivity(intent)
         }
 
-        // 약관 및 정책
         binding.buttonTerm.setOnClickListener {
-            // 회원 정보 수정 페이지로 이동
             val intent = Intent(this, TermActivity::class.java)
             startActivity(intent)
         }
 
-        // 로그아웃
-        binding.buttonLogout.setOnClickListener {
-            logout()
-        }
+        binding.buttonLogout.setOnClickListener { logout() }
 
-        // 회원 탈퇴 버튼 클릭 이벤트
-        binding.buttonUnsubscribe.setOnClickListener{
-            // 회원 탈퇴 팝업 띄우기
-            showUnsubscribePopup()
+        binding.buttonUnsubscribe.setOnClickListener { showUnsubscribePopup() }
+    }
+
+    // ✅ 사용자 정보 요청
+    private fun fetchUserInfo() {
+        val accessToken = TokenManager.getAccessToken()
+        if (accessToken.isNullOrBlank()) return
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = RetrofitClient.apiService.getUserInfo("Bearer $accessToken")
+
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful && response.body()?.status == "success") {
+                        val rawData = response.body()?.data
+                        val jsonData = Gson().toJson(rawData)
+                        val userInfo = Gson().fromJson(jsonData, UserInfoResponse::class.java)
+                        if (userInfo != null) {
+                            TokenManager.saveUserInfo(userInfo)
+                            updateUserInfo() // UI 반영
+                        }
+                    } else {
+                        Toast.makeText(this@SettingActivity, "회원 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@SettingActivity, "네트워크 오류 발생", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -73,7 +98,6 @@ class SettingActivity : BaseActivity() {
         val userInfo = TokenManager.getUserInfo()
 
         if (userInfo != null) {
-            // ✅ UI 업데이트: 사용자 이름 & 이메일 설정
             binding.textUserName.text = userInfo.userName ?: "사용자"
             binding.textUserEmail.text = userInfo.userEmail ?: "이메일 없음"
         } else {
@@ -81,7 +105,6 @@ class SettingActivity : BaseActivity() {
             binding.textUserEmail.text = "이메일 없음"
         }
     }
-
 
     private fun logout() {
         TokenManager.clearTokens()
@@ -92,25 +115,20 @@ class SettingActivity : BaseActivity() {
     }
 
     private fun showUnsubscribePopup() {
-        val dialogView = layoutInflater.inflate(R.layout.unsubscribe_popup, null) // 팝업 레이아웃 inflate
-        val dialog = AlertDialog.Builder(this, R.style.PopupDialogTheme) // 팝업 테마 적용
+        val dialogView = layoutInflater.inflate(R.layout.unsubscribe_popup, null)
+        val dialog = AlertDialog.Builder(this, R.style.PopupDialogTheme)
             .setView(dialogView)
             .create()
 
-        // 버튼 클릭 이벤트
-        val buttonSubmitNo = dialogView.findViewById<TextView>(R.id.button_no)
-        buttonSubmitNo.setOnClickListener {
-            dialog.dismiss() // 아니오 -> 팝업 닫기
+        dialogView.findViewById<TextView>(R.id.button_no).setOnClickListener {
+            dialog.dismiss()
         }
-        val buttonSubmitYes = dialogView.findViewById<TextView>(R.id.button_yes)
-        buttonSubmitYes.setOnClickListener {
+        dialogView.findViewById<TextView>(R.id.button_yes).setOnClickListener {
             val intent = Intent(this, UnsubscribeActivity::class.java)
-            startActivity(intent) // 예 -> 비밀번호 입력 페이지로 이동
+            startActivity(intent)
         }
 
         dialog.show()
-
-        // 팝업 크기 설정
         dialog.window?.setLayout(
             (resources.displayMetrics.widthPixels * 0.8).toInt(),
             ViewGroup.LayoutParams.WRAP_CONTENT
