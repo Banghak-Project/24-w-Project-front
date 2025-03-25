@@ -13,6 +13,7 @@ import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
 import com.example.moneychanger.network.list.CreateListRequestDto
 import com.example.moneychanger.network.list.CreateListResponseDto
+import com.example.moneychanger.network.list.CreateListWithNameRequestDto
 import com.example.moneychanger.network.user.ApiResponse
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.gson.Gson
@@ -97,7 +98,7 @@ class SlideNewList : BottomSheetDialogFragment() {
 
             val storeName = binding.textStoreName.text.toString()
 
-            addNewList(userId, currencyIdFrom, currencyIdTo, location)
+            addNewList(userId, storeName, currencyIdFrom, currencyIdTo, location)
 
             // ListActivity로 데이터 전달
             listener?.onStoreNameUpdated(storeName)
@@ -106,12 +107,12 @@ class SlideNewList : BottomSheetDialogFragment() {
         }
     }
 
-    private fun addNewList(userId: Long, currencyIdFrom: Long, currencyIdTo: Long, location: String) {
-        val createRequest = CreateListRequestDto(userId, currencyIdFrom, currencyIdTo, location)
+    private fun addNewList(userId: Long, storeName: String,currencyIdFrom: Long, currencyIdTo: Long, location: String) {
+        val createRequest = CreateListWithNameRequestDto(userId, storeName, currencyIdFrom, currencyIdTo, location)
         Log.d("CameraActivity", "🚀 리스트 생성 요청 데이터: userId=$userId, currencyIdFrom=$currencyIdFrom, currencyIdTo=$currencyIdTo, location=$location")
 
         // 리스트 추가 API 호출 (비동기 방식)
-        RetrofitClient.apiService.createList(createRequest)
+        RetrofitClient.apiService.createListWithName(createRequest)
             .enqueue(object : Callback<ApiResponse<CreateListResponseDto>> {
                 override fun onResponse(
                     call: Call<ApiResponse<CreateListResponseDto>>,

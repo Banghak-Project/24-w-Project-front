@@ -4,6 +4,7 @@ import com.example.moneychanger.network.currency.CurrencyModel
 import com.example.moneychanger.network.currency.CurrencyResponseDto
 import com.example.moneychanger.network.list.CreateListRequestDto
 import com.example.moneychanger.network.list.CreateListResponseDto
+import com.example.moneychanger.network.list.CreateListWithNameRequestDto
 import com.example.moneychanger.network.list.ListsResponseDto
 import com.example.moneychanger.network.product.CreateProductRequestDto
 import com.example.moneychanger.network.product.CreateProductResponseDto
@@ -59,6 +60,9 @@ interface ApiService {
     //List
     @POST("/api/lists/add")
     fun createList(@Body requestDto: CreateListRequestDto): Call<ApiResponse<CreateListResponseDto>>
+
+    @POST("/api/lists/add/name")
+    fun createListWithName(@Body requestDto: CreateListWithNameRequestDto): Call<ApiResponse<CreateListResponseDto>>
 
     @GET("/api/lists")
     fun getAllLists(): Response<ApiResponse<Call<List<ListsResponseDto>>>>

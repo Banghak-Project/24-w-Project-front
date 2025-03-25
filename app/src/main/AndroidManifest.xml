@@ -69,6 +69,9 @@
             android:name=".camera.CameraActivity"
             android:exported="false" />
         <activity
+            android:name=".camera.CameraActivity2"
+            android:exported="false" />
+        <activity
             android:name=".list.DeleteActivity"
             android:exported="false" />
         <activity

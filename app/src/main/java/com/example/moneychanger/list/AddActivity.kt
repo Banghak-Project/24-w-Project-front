@@ -117,7 +117,7 @@ class AddActivity : AppCompatActivity() {
 
             if (amount > 0) {
                 val convertedAmount = calculateExchangeRate(currencyIdFrom, currencyIdTo, amount)
-                addProductToList(listId, "", amount)
+                addProductToList(listId, "", amount) // 상품 이름 자동 count
                 finish()
             }
         }
