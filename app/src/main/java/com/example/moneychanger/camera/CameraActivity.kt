@@ -68,6 +68,8 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
     private var selectedProductName: String? = null
     private var selectedProductPrice: String? = null
+    private var selectedProductNameView: View? = null
+    private var selectedProductPriceView: View? = null
     private var isSelectingPrice = false // 현재 상품 가격 선택 중인지 확인하는 플래그
 
     private var currencyIdFrom = -1L
@@ -355,50 +357,52 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
     private fun toggleSelection(view: View, text: String) {
         if (selectedTexts.contains(text)) {
-            // 이미 선택된 항목을 클릭하면 선택 해제
             selectedTexts.remove(text)
-            view.setBackgroundResource(R.drawable.ocr_border) // 기본 테두리로 변경
+            view.setBackgroundResource(R.drawable.ocr_border)
 
             if (selectedProductName == text) {
                 selectedProductName = null
+                selectedProductNameView = null
                 isSelectingPrice = false
                 Toast.makeText(this, "상품명이 선택 해제되었습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
             } else if (selectedProductPrice == text) {
                 selectedProductPrice = null
-                isSelectingPrice = true // 가격 선택 상태를 다시 활성화
+                selectedProductPriceView = null
+                isSelectingPrice = true
                 Toast.makeText(this, "상품 가격이 선택 해제되었습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
             }
             return
         }
 
-        // 선택되지 않은 항목을 클릭한 경우
         selectedTexts.add(text)
-        view.setBackgroundResource(R.drawable.ocr_border_selected) // 선택된 상태
+        view.setBackgroundResource(R.drawable.ocr_border_selected)
 
         if (selectedProductName == null) {
-            // 상품명을 선택하는 단계 (숫자가 포함된 텍스트는 상품명이 아닐 확률이 높음)
             if (!text.any { it.isLetter() }) {
                 Toast.makeText(this, "잘못된 선택입니다. 상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
                 return
             }
+
+            // 기존 선택한 뷰가 있으면 초기화
+            selectedProductNameView?.setBackgroundResource(R.drawable.ocr_border)
+
             selectedProductName = text
+            selectedProductNameView = view
             isSelectingPrice = true
             Toast.makeText(this, "상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
-        } else {
-            // 상품 가격을 선택하는 단계
-            val cleanPrice = cleanPriceText(text)
 
+        } else {
+            val cleanPrice = cleanPriceText(text)
             if (cleanPrice.isEmpty()) {
                 Toast.makeText(this, "잘못된 선택입니다. 숫자로 된 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
                 return
             }
 
-            // 기존에 선택된 가격이 있으면 해제하고 새로운 가격 선택
-            if (selectedProductPrice != null) {
-                selectedTexts.remove(selectedProductPrice) // UI에서 선택 해제
-            }
+            // 기존 가격 선택 뷰 초기화
+            selectedProductPriceView?.setBackgroundResource(R.drawable.ocr_border)
 
             selectedProductPrice = text
+            selectedProductPriceView = view
             updateSelectedText()
         }
     }
@@ -411,8 +415,8 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
     private fun updateSelectedText() {
         if (selectedProductName != null && selectedProductPrice != null) {
-            val cleanPrice = cleanPriceText(selectedProductPrice!!)
-            val resultText = "상품명: ${selectedProductName}, 상품가격: ${cleanPrice}"
+            val cleanPrice = cleanPriceText(selectedProductPrice!!).toDouble()
+            val resultText = "상품명: ${selectedProductName}, 상품가격: ${cleanPrice} -> ${calculateExchangeRate(currencyIdFrom, currencyIdTo, cleanPrice)}"
             binding.cameraText.text = resultText
             Toast.makeText(this, "선택 완료: $resultText", Toast.LENGTH_SHORT).show()
         }
@@ -509,6 +513,36 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                     Log.e("CameraActivity", "🚨 서버 요청 실패: ${t.message}")
                 }
             })
+    }
+
+    private fun calculateExchangeRate(fromId: Long, toId: Long, amount: Double): Double {
+        val fromCurrency = CurrencyStoreManager.findCurrencyById(fromId)
+        val toCurrency = CurrencyStoreManager.findCurrencyById(toId)
+
+        if (fromCurrency == null || toCurrency == null) {
+            Log.e("ExchangeRate", "🚨 환율 계산 오류: 선택한 통화를 찾을 수 없음")
+            return 0.0
+        }
+
+        val rateFrom = fromCurrency.dealBasR?.replace(",", "")?.toDoubleOrNull()
+        val rateTo = toCurrency.dealBasR?.replace(",", "")?.toDoubleOrNull()
+
+        if (rateFrom == null || rateTo == null || rateFrom == 0.0 || rateTo == 0.0) {
+            Log.e("ExchangeRate", "🚨 환율 값이 유효하지 않습니다: rateFrom=$rateFrom, rateTo=$rateTo")
+            return 0.0
+        }
+
+        // 👇 (100) 단위를 가진 통화는 보정값 설정
+        val fromDivisor = if (fromCurrency.curUnit?.contains("(100)") == true) 100.0 else 1.0
+        val toDivisor = if (toCurrency.curUnit?.contains("(100)") == true) 100.0 else 1.0
+
+        val adjustedRateFrom = rateFrom / fromDivisor
+        val adjustedRateTo = rateTo / toDivisor
+
+        val exchangedAmount = (amount * adjustedRateFrom) / adjustedRateTo
+
+        Log.d("ExchangeRate", "✅ ${fromCurrency.curUnit} -> ${toCurrency.curUnit} 환율 적용: $amount -> $exchangedAmount")
+        return exchangedAmount
     }
 
 
