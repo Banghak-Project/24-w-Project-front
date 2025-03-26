@@ -15,6 +15,7 @@ import com.example.moneychanger.etc.OnStoreNameUpdatedListener
 import com.example.moneychanger.camera.CameraActivity
 import com.example.moneychanger.R
 import com.example.moneychanger.adapter.ProductAdapter
+import com.example.moneychanger.camera.CameraActivity2
 import com.example.moneychanger.etc.SlideEdit
 import com.example.moneychanger.databinding.ActivityListBinding
 import com.example.moneychanger.etc.DataProvider
@@ -134,7 +135,10 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         // 카메라 버튼 클릭 이벤트 설정
         binding.buttonCamera.setOnClickListener{
             // 카메라 api와 연결하여 동작할 내용
-            val intent = Intent(this, CameraActivity::class.java)
+            val intent = Intent(this, CameraActivity2::class.java)
+            intent.putExtra("listId", selectedListId)
+            intent.putExtra("currencyIdFrom", currencyIdFrom)
+            intent.putExtra("currencyIdTo", currencyIdTo)
             startActivity(intent)
         }
 

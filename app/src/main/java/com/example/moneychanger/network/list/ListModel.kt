@@ -31,6 +31,14 @@ data class CreateListRequestDto(
     @SerializedName("location") val location: String
 )
 
+data class CreateListWithNameRequestDto(
+    @SerializedName("userId") val userId: Long,
+    @SerializedName("name") val name: String,
+    @SerializedName("currencyIdFrom") val currencyIdFrom: Long,
+    @SerializedName("currencyIdTo") val currencyIdTo: Long,
+    @SerializedName("location") val location: String
+)
+
 data class CreateListResponseDto(
     @SerializedName("listId") val listId: Long,
     @SerializedName("name") val name: String,
