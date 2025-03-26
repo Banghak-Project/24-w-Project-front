@@ -23,9 +23,9 @@ class DeleteAdapter(
             binding.productName.text = product.name
             binding.perNumber.text = "${position + 1}"
             binding.allNumber.text = "${productList.size}"
-            binding.checkBox.isChecked = selectedItems.contains(product)
+            binding.checkbox.isChecked = selectedItems.contains(product)
 
-            binding.checkBox.setOnCheckedChangeListener { _, isChecked ->
+            binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
                     selectedItems.add(product)
                     if (selectedItems.size == productList.size) {

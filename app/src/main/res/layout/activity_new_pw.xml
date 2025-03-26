@@ -11,6 +11,7 @@
         layout="@layout/login_toolbar" />
 
     <LinearLayout
+        android:id="@+id/layout_findID"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -23,16 +24,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/personal_info_title1"
-                style="@style/TextHeadingXL"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/personal_info_title2"
+                android:text="@string/new_pw_title"
                 style="@style/TextHeadingXL"/>
             <Space
                 android:layout_width="wrap_content"
                 android:layout_height="28dp"/>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -43,37 +40,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:layout_marginBottom="4dp"
-                    android:text="@string/birth_kor"
+                    android:text="@string/new_pw"
                     style="@style/TextBodyS"/>
                 <EditText
-                    android:id="@+id/date_text"
+                    android:id="@+id/editTextName"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:paddingHorizontal="24dp"
-                    android:hint="@string/birth_eng"
+                    android:hint="@string/pw_kor"
                     android:background="@drawable/round_background"
-                    style="@style/TextBodyL"
-                    android:focusable="false"
-                    android:clickable="true" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="8dp" >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/name"
-                    style="@style/TextBodyS"/>
-                <EditText
-                    android:id="@+id/editUserName"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:paddingHorizontal="24dp"
-                    android:hint="@string/name"
-                    android:background="@drawable/round_background"
+                    android:inputType="textPassword"
+                    android:importantForAutofill="no"
                     style="@style/TextBodyL"/>
             </LinearLayout>
             <LinearLayout
@@ -85,37 +62,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:layout_marginBottom="4dp"
-                    android:text="@string/email"
-                    style="@style/TextBodyS"/>
-                <TextView
-                    android:id="@+id/textUserEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:gravity="center_vertical"
-                    android:background="@drawable/round_background"
-                    android:backgroundTint="@color/gray_01"
-                    android:textColor="@color/gray_06"
-                    android:padding="10dp"
-                    android:text="@string/ex_email"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="8dp" >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/pw_kor"
+                    android:text="@string/new_pw_again"
                     style="@style/TextBodyS"/>
                 <EditText
+                    android:id="@+id/date_text"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:paddingHorizontal="24dp"
-                    android:hint="@string/pw_eng"
-                    android:inputType="textPassword"
+                    android:hint="@string/pw_kor"
                     android:background="@drawable/round_background"
+                    android:inputType="textPassword"
+                    android:importantForAutofill="no"
                     style="@style/TextBodyL"/>
             </LinearLayout>
         </LinearLayout>
@@ -126,9 +83,9 @@
             android:layout_weight="1" />
 
         <Button
-            android:id="@+id/button_edit"
+            android:id="@+id/button_to_Login"
             android:layout_marginBottom="24dp"
-            android:text="@string/edit_long"
+            android:text="@string/new_pw_button"
             style="@style/NextButtonStyle" />
     </LinearLayout>
 </LinearLayout>

@@ -17,12 +17,42 @@
             android:layout_height="56dp"
             android:layout_gravity="center"
             android:gravity="center">
-            <TextView
+            <LinearLayout
+                android:id="@+id/currency_container1"
                 android:layout_width="120dp"
                 android:layout_height="32dp"
-                android:text="통화"
+                android:orientation="horizontal"
                 android:layout_gravity="center"
-                android:gravity="center"/>
+                android:gravity="center">
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp">
+                    <Spinner
+                        android:id="@+id/currency_spinner1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:dropDownWidth="72dp"
+                        android:dropDownHeight="80dp"
+                        android:alpha="0"/>
+                    <TextView
+                        android:id="@+id/currency_name1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="통화"
+                        android:textColor="@color/gray_08"
+                        style="@style/TextBodyM_bold"/>
+                </FrameLayout>
+                <ImageView
+                    android:id="@+id/currency_arrow1"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/icon_arrow"
+                    android:rotation="270"
+                    app:tint="@color/gray_05" />
+            </LinearLayout>
             <ImageView
                 android:layout_width="32dp"
                 android:layout_height="32dp"
@@ -30,12 +60,42 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:layout_marginHorizontal="16dp"/>
-            <TextView
+            <LinearLayout
+                android:id="@+id/currency_container2"
                 android:layout_width="120dp"
                 android:layout_height="32dp"
-                android:text="통화"
+                android:orientation="horizontal"
                 android:layout_gravity="center"
-                android:gravity="center"/>
+                android:gravity="center">
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp">
+                    <Spinner
+                        android:id="@+id/currency_spinner2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:dropDownWidth="72dp"
+                        android:dropDownHeight="80dp"
+                        android:alpha="0"/>
+                    <TextView
+                        android:id="@+id/currency_name2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="통화"
+                        android:textColor="@color/gray_08"
+                        style="@style/TextBodyM_bold"/>
+                </FrameLayout>
+                <ImageView
+                    android:id="@+id/currency_arrow2"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/icon_arrow"
+                    android:rotation="270"
+                    app:tint="@color/gray_05" />
+            </LinearLayout>
         </LinearLayout>
     </FrameLayout>
     <FrameLayout
@@ -72,10 +132,11 @@
             android:visibility="gone"/>
 
         <LinearLayout
-            android:layout_width="312dp"
+            android:layout_width="match_parent"
             android:layout_height="76dp"
             android:layout_gravity="bottom|center_horizontal"
             android:gravity="center"
+            android:paddingHorizontal="24dp"
             android:layout_marginBottom="24dp">
             <FrameLayout
                 android:id="@+id/list_button"
@@ -91,8 +152,9 @@
                     android:layout_gravity="center" />
             </FrameLayout>
             <Space
-                android:layout_width="86dp"
-                android:layout_height="match_parent"/>
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
             <FrameLayout
                 android:id="@+id/cameraButton"
                 android:layout_width="60dp"
@@ -107,16 +169,17 @@
                     android:layout_gravity="center" />
             </FrameLayout>
             <Space
-                android:layout_width="126dp"
-                android:layout_height="match_parent"/>
-<!--            <Button-->
-<!--                android:id="@+id/confirmButton"-->
-<!--                android:layout_width="60dp"-->
-<!--                android:layout_height="60dp"-->
-<!--                android:background="@drawable/round_button"-->
-<!--                android:backgroundTint="@color/main"-->
-<!--                android:layout_gravity="center">-->
-<!--            </Button>-->
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+            <Button
+                android:id="@+id/confirmButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/round_button"
+                android:backgroundTint="@color/white"
+                android:layout_gravity="center">
+            </Button>
         </LinearLayout>
     </FrameLayout>
 

@@ -38,9 +38,6 @@ import com.example.moneychanger.etc.DataProvider
 import com.example.moneychanger.etc.OnProductAddedListener
 import com.example.moneychanger.etc.SlideCameraList
 import com.example.moneychanger.network.RetrofitClient
-import com.example.moneychanger.network.TokenManager
-import com.example.moneychanger.network.list.CreateListRequestDto
-import com.example.moneychanger.network.list.CreateListResponseDto
 import com.example.moneychanger.network.product.CreateProductRequestDto
 import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
@@ -57,25 +54,20 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CameraActivity : AppCompatActivity(), OnProductAddedListener {
+class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
     private lateinit var binding: ActivityCameraBinding
     private lateinit var viewModel: CurrencyViewModel
     private lateinit var previewView: PreviewView
     private lateinit var captureButton: FrameLayout
     private lateinit var cameraExecutor: ExecutorService
     private var imageCapture: ImageCapture? = null
-    private val selectedTexts = mutableListOf<String>() // 사용자가 선택한 텍스트 저장
+    private val selectedTexts = mutableListOf<String>()
 
     private var selectedProductName: String? = null
     private var selectedProductPrice: String? = null
     private var selectedProductNameView: View? = null
     private var selectedProductPriceView: View? = null
-    private var isSelectingPrice = false // 현재 상품 가격 선택 중인지 확인하는 플래그
-
-    private var currencyIdFrom = -1L
-    private var currencyIdTo = -1L
-    private val userId = TokenManager.getUserId() ?: -1L
-    private val location = "Seoul"
+    private var isSelectingPrice = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,6 +81,11 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
+        // 리스트에서 가져온 정보들
+        var currencyIdFrom = intent.getLongExtra("currencyIdFrom", -1L)
+        var currencyIdTo = intent.getLongExtra("currencyIdTo", -1L)
+        val listId = intent.getLongExtra("listId", -1L)
+
         if (!hasCameraPermission()) {
             requestCameraPermission()
         } else {
@@ -96,40 +93,43 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         }
 
         binding.listButton.setOnClickListener {
-            val productList = DataProvider.productDummyModel  // 더미 데이터 가져오기
-            val slideCameraList = SlideCameraList.newInstance(productList)  // newInstance() 사용
+            val productList = DataProvider.productDummyModel
+            val slideCameraList = SlideCameraList.newInstance(productList)
             slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
         }
 
         captureButton.setOnClickListener {
-            takePicture()
+            takePicture(currencyIdFrom,currencyIdTo,listId)
         }
 
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        // 뒤로 가기
         val backButton: ImageView = toolbar.findViewById(R.id.button_back)
         backButton.setOnClickListener {
             finish()
         }
 
-        // 통화 정보 가져오기
         val currencyList = CurrencyStoreManager.getCurrencyList()
-
-        if (currencyList.isNullOrEmpty()) {
-            Toast.makeText(this, "로그인 후 이용해주세요.", Toast.LENGTH_LONG).show()
-            finish()  // 👉 종료하지 않고 onCreate 나감
-            return
-        }
-
-        // 통화 Spinner 데이터 설정
         val currencyUnits: List<String> = currencyList?.mapNotNull { it.curUnit } ?: emptyList()
         val customSpinner1 = CustomSpinner(this, currencyUnits)
         val customSpinner2 = CustomSpinner(this, currencyUnits)
 
-        // 바꿀 통화 Spinner 항목 선택 이벤트
+        // 리스트에서 전달받은 통화 ID를 기반으로 초기값 설정
+        val initialCurrencyFrom = CurrencyStoreManager.findCurrencyById(currencyIdFrom)?.curUnit
+        val initialCurrencyTo = CurrencyStoreManager.findCurrencyById(currencyIdTo)?.curUnit
+
+        if (!initialCurrencyFrom.isNullOrEmpty()) {
+            binding.currencyName1.text = initialCurrencyFrom
+            viewModel.updateCurrency(initialCurrencyFrom)
+        }
+
+        if (!initialCurrencyTo.isNullOrEmpty()) {
+            binding.currencyName2.text = initialCurrencyTo
+            viewModel.updateCurrency(initialCurrencyTo)
+        }
+
         binding.currencyContainer1.setOnClickListener {
             customSpinner1.show(binding.currencyContainer1) { selected ->
                 binding.currencyName1.text = selected
@@ -141,7 +141,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             }
         }
 
-        // 바뀐 통화 Spinner 항목 선택 이벤트
         binding.currencyContainer2.setOnClickListener {
             customSpinner2.show(binding.currencyContainer2) { selected ->
                 binding.currencyName2.text = selected
@@ -163,7 +162,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             cameraProvider.unbindAll()
 
             val preview = Preview.Builder()
-                .setTargetAspectRatio(AspectRatio.RATIO_16_9) // 화면 비율을 16:9로 설정
+                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
                 .build()
                 .also {
                     it.setSurfaceProvider(previewView.surfaceProvider)
@@ -171,7 +170,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
             imageCapture = ImageCapture.Builder()
                 .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                .setTargetAspectRatio(AspectRatio.RATIO_16_9) // 사진 촬영 비율을 16:9로 설정
+                .setTargetAspectRatio(AspectRatio.RATIO_16_9)
                 .build()
 
 
@@ -188,7 +187,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         }, ContextCompat.getMainExecutor(this))
     }
 
-    private fun takePicture() {
+    private fun takePicture(currencyIdFrom : Long, currencyIdTo : Long, listId: Long) {
         if (currencyIdFrom == -1L || currencyIdTo == -1L) {
             Toast.makeText(this, "두 통화를 모두 선택해주세요.", Toast.LENGTH_SHORT).show()
             return
@@ -223,7 +222,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                     val savedUri = output.savedUri ?: return
                     Log.d("CameraActivity", "사진 저장됨: $savedUri")
 
-                    // 비트맵 불러오면서 EXIF 회전 적용
                     val bitmap = loadBitmapWithRotation(savedUri)
 
                     runOnUiThread {
@@ -232,8 +230,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                         binding.capturedImageView.visibility = View.VISIBLE
                     }
 
-                    // OCR 실행
-                    recognizeTextFromBitmap(bitmap)
+                    recognizeTextFromBitmap(bitmap, currencyIdFrom, currencyIdTo, listId)
                 }
             }
         )
@@ -243,7 +240,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         val inputStream = contentResolver.openInputStream(uri)
         val bitmap = BitmapFactory.decodeStream(inputStream)
 
-        // ExifInterface를 사용해 원본 이미지의 회전 정보를 가져오기
         val exif = ExifInterface(contentResolver.openInputStream(uri)!!)
         val rotation = when (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
             ExifInterface.ORIENTATION_ROTATE_90 -> 90
@@ -283,13 +279,13 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         }
     }
 
-    private fun recognizeTextFromBitmap(bitmap: Bitmap) {
+    private fun recognizeTextFromBitmap(bitmap: Bitmap, currencyIdFrom : Long, currencyIdTo : Long,listId: Long) {
         val image = InputImage.fromBitmap(bitmap, 0)
         val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
 
         recognizer.process(image)
             .addOnSuccessListener { visionText ->
-                displayRecognizedText(visionText, bitmap) // 비트맵 기준으로 OCR 박스 생성
+                displayRecognizedText(visionText, bitmap, currencyIdFrom, currencyIdTo, listId)
             }
             .addOnFailureListener { e ->
                 Log.e("OCR", "텍스트 인식 실패: ${e.localizedMessage}")
@@ -297,7 +293,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             }
     }
 
-    private fun displayRecognizedText(visionText: Text, bitmap: Bitmap) {
+    private fun displayRecognizedText(visionText: Text, bitmap: Bitmap, currencyIdFrom : Long, currencyIdTo : Long, listId: Long) {
         binding.textOverlay.removeAllViews()
         selectedTexts.clear()
 
@@ -319,18 +315,17 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             for (block in visionText.textBlocks) {
                 for (line in block.lines) {
                     val rect = line.boundingBox ?: continue
-                    val angle = line.angle  // ML Kit이 감지한 회전 각도 (기울어진 텍스트)
+                    val angle = line.angle
 
-                    // 박스 크기 보정 (약간의 padding 추가)
-                    val boxPadding = 4  // 4px 패딩 추가
+                    val boxPadding = 4
                     val adjustedWidth = (rect.width() * scaleX + boxPadding).toInt()
                     val adjustedHeight = (rect.height() * scaleY + boxPadding).toInt()
 
-                    val borderView = View(this@CameraActivity).apply {
+                    val borderView = View(this@CameraActivity2).apply {
                         setBackgroundResource(R.drawable.ocr_border)
                         isClickable = true
-                        rotation = angle  // 기울어진 텍스트 각도를 OCR 박스에 적용
-                        setOnClickListener { toggleSelection(this, line.text) }
+                        rotation = angle
+                        setOnClickListener { toggleSelection(this, line.text, currencyIdFrom, currencyIdTo) }
                     }
 
                     val layoutParams = FrameLayout.LayoutParams(adjustedWidth, adjustedHeight).apply {
@@ -343,19 +338,19 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             }
 
             binding.textOverlay.visibility = View.VISIBLE
-            // 선택 완료 버튼 클릭 시, 새로운 리스트 생성 및 상품 추가
+            // 선택 완료 버튼 클릭 시, 새로운 상품 추가
             binding.confirmButton.setOnClickListener {
                 if (selectedProductName != null && selectedProductPrice != null) {
-                    addNewList(userId, currencyIdFrom, currencyIdTo, location)
+                    addProductToList(listId , selectedProductName!!, selectedProductPrice!!)
                 } else {
-                    Toast.makeText(this@CameraActivity, "상품명과 상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@CameraActivity2, "상품명과 상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
                 }
             }
-            Toast.makeText(this@CameraActivity, "상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@CameraActivity2, "상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun toggleSelection(view: View, text: String) {
+    private fun toggleSelection(view: View, text: String, currencyIdFrom : Long, currencyIdTo : Long) {
         if (selectedTexts.contains(text)) {
             selectedTexts.remove(text)
             view.setBackgroundResource(R.drawable.ocr_border)
@@ -403,73 +398,23 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
             selectedProductPrice = text
             selectedProductPriceView = view
-            updateSelectedText()
+            updateSelectedText(currencyIdFrom, currencyIdTo)
         }
     }
 
     private fun cleanPriceText(priceText: String): String {
-        val cleaned = priceText.replace(Regex("[^0-9.]"), "") // 숫자와 소수점만 남김
+        val cleaned = priceText.replace(Regex("[^0-9.]"), "")
         val price = if (cleaned.matches(Regex("\\d+(\\.\\d+)?"))) cleaned else ""
         return price
     }
 
-    private fun updateSelectedText() {
+    private fun updateSelectedText(currencyIdFrom : Long, currencyIdTo : Long) {
         if (selectedProductName != null && selectedProductPrice != null) {
             val cleanPrice = cleanPriceText(selectedProductPrice!!).toDouble()
             val resultText = "상품명: ${selectedProductName}, 상품가격: ${cleanPrice} -> ${calculateExchangeRate(currencyIdFrom, currencyIdTo, cleanPrice)}"
             binding.cameraText.text = resultText
             Toast.makeText(this, "선택 완료: $resultText", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun addNewList(userId: Long, currencyIdFrom: Long, currencyIdTo: Long, location: String) {
-        val createRequest = CreateListRequestDto(userId, currencyIdFrom, currencyIdTo, location)
-        Log.d("CameraActivity", "🚀 리스트 생성 요청 데이터: userId=$userId, currencyIdFrom=$currencyIdFrom, currencyIdTo=$currencyIdTo, location=$location")
-
-        // 리스트 추가 API 호출 (비동기 방식)
-        RetrofitClient.apiService.createList(createRequest)
-            .enqueue(object : Callback<ApiResponse<CreateListResponseDto>> {
-                override fun onResponse(
-                    call: Call<ApiResponse<CreateListResponseDto>>,
-                    response: Response<ApiResponse<CreateListResponseDto>>
-                ) {
-                    if (response.isSuccessful) {
-                        val apiResponse = response.body()
-                        if (apiResponse != null && apiResponse.status == "success") {
-                            val jsonData = Gson().toJson(apiResponse.data)
-                            val createListResponse: CreateListResponseDto? = try {
-                                Gson().fromJson(jsonData, CreateListResponseDto::class.java)
-                            } catch (e: JsonSyntaxException) {
-                                Log.e("CameraActivity", "🚨 JSON 변환 오류: ${e.message}")
-                                null
-                            }
-
-                            if (createListResponse != null) {
-                                val listId = createListResponse.listId ?: -1L
-                                if (listId != -1L) {
-                                    Toast.makeText(this@CameraActivity, "리스트 추가 완료!", Toast.LENGTH_SHORT).show()
-                                    Log.d("CameraActivity", "✅ 리스트 생성 성공: ID=$listId")
-
-                                    // 리스트 추가 성공 후 상품 추가
-                                    addProductToList(listId, selectedProductName!!, selectedProductPrice!!)
-                                } else {
-                                    Log.e("CameraActivity", "🚨 리스트 ID 오류 발생")
-                                }
-                            } else {
-                                Log.e("CameraActivity", "🚨 리스트 응답 데이터 변환 실패")
-                            }
-                        } else {
-                            Log.e("CameraActivity", "🚨 리스트 추가 실패: ${apiResponse?.message ?: "알 수 없는 오류"}")
-                        }
-                    } else {
-                        Log.e("CameraActivity", "🚨 응답 실패: ${response.errorBody()?.string()}")
-                    }
-                }
-
-                override fun onFailure(call: Call<ApiResponse<CreateListResponseDto>>, t: Throwable) {
-                    Log.e("CameraActivity", "🚨 서버 요청 실패: ${t.message}")
-                }
-            })
     }
 
     private fun addProductToList(listId: Long, productName: String, price: String) {
@@ -494,7 +439,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                             }
 
                             if (productResponse != null) {
-                                Toast.makeText(this@CameraActivity, "상품 추가 완료!", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@CameraActivity2, "상품 추가 완료!", Toast.LENGTH_SHORT).show()
                                 Log.d("CameraActivity", "✅ 상품 추가 성공: ${productResponse.name}")
 
                                 finish() // 상품 추가 후 액티비티 종료
@@ -532,7 +477,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             return 0.0
         }
 
-        // 👇 (100) 단위를 가진 통화는 보정값 설정
         val fromDivisor = if (fromCurrency.curUnit?.contains("(100)") == true) 100.0 else 1.0
         val toDivisor = if (toCurrency.curUnit?.contains("(100)") == true) 100.0 else 1.0
 

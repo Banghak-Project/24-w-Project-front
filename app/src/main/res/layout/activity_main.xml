@@ -40,6 +40,12 @@
                     android:layout_weight="9"
                     android:text="@string/home_title"
                     style="@style/TextHeadingXL"/>
+                <ImageView
+                    android:id="@id/button_add"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/icon_add"
+                    app:tint="@color/main"/>
             </LinearLayout>
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
@@ -66,7 +72,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="임시버튼"
-                        android:text="달력 화면으로 이동" />
+                        android:text="새 비밀번호 설정 화면으로 이동" />
                     <TextView
                         android:id="@+id/sampletext"
                         android:layout_width="match_parent"

@@ -16,11 +16,15 @@ import com.example.moneychanger.etc.OnStoreNameUpdatedListener
 import com.example.moneychanger.camera.CameraActivity
 import com.example.moneychanger.R
 import com.example.moneychanger.adapter.ProductAdapter
+import com.example.moneychanger.camera.CameraActivity2
 import com.example.moneychanger.etc.SlideEdit
 import com.example.moneychanger.databinding.ActivityListBinding
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.network.list.ListsResponseDto
+import com.example.moneychanger.etc.DataProvider
+import com.example.moneychanger.network.CurrencyStoreManager
+import com.example.moneychanger.network.TokenManager
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
@@ -34,6 +38,11 @@ import java.time.format.DateTimeFormatter
 class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
     private lateinit var binding: ActivityListBinding
     private lateinit var viewModel: CurrencyViewModel
+
+    private var currencyIdFrom = 23L // 더미 데이터 (리스트 정보 가져와야 함)
+    private var currencyIdTo = 14L // 더미 데이터 (리스트 정보 가져와야 함)
+    private val userId = TokenManager.getUserId() ?: -1L
+    private val location = "Seoul"
 
     private var productList: MutableList<ProductModel> = mutableListOf()
     private var selectedList: ListModel? = null
@@ -67,10 +76,19 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             }
         }
 
+        // 통화 정보 가져오기
+        val currencyList = CurrencyStoreManager.getCurrencyList()
+
+        if (currencyList.isNullOrEmpty()) {
+            Toast.makeText(this, "로그인 후 이용해주세요.", Toast.LENGTH_LONG).show()
+            finish()  // 👉 종료하지 않고 onCreate 나감
+            return
+        }
+
         // 통화 Spinner 데이터 설정
-        val currencyItems = listOf("KRW", "JPY", "USD", "THB", "ITL", "UTC", "FRF", "GBP", "CHF", "VND", "AUD")
-        val customSpinner1 = CustomSpinner(this, currencyItems)
-        val customSpinner2 = CustomSpinner(this, currencyItems)
+        val currencyUnits: List<String> = currencyList?.mapNotNull { it.curUnit } ?: emptyList()
+        val customSpinner1 = CustomSpinner(this, currencyUnits)
+        val customSpinner2 = CustomSpinner(this, currencyUnits)
 
         // 바꿀 통화 Spinner 항목 선택 이벤트
         binding.currencyContainer1.setOnClickListener {
@@ -79,6 +97,11 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                 // 1 >통화< 당 00 $
                 binding.currencyName3.text = selected
                 viewModel.updateCurrency(selected)
+
+                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
+                if (selectedCurrency != null) {
+                    currencyIdFrom = selectedCurrency.currentId
+                }
             }
         }
 
@@ -87,11 +110,17 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             customSpinner2.show(binding.currencyContainer2) { selected ->
                 binding.currencyName2.text = selected
                 // 1 통화 당 00 >$<
-                val resourceId = resources.getIdentifier(selected, "string", packageName)
+                val cleanedSelected = selected.replace(Regex("\\(.*\\)"), "")
+                val resourceId = resources.getIdentifier(cleanedSelected, "string", packageName)
                 binding.currencySymbol1.text = getString(resourceId)
                 // n0000 >$<
                 binding.currencySymbol2.text = getString(resourceId)
                 viewModel.updateCurrency(selected)
+
+                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
+                if (selectedCurrency != null) {
+                    currencyIdTo = selectedCurrency.currentId
+                }
             }
         }
 
@@ -105,13 +134,19 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         // 직접 추가하기 버튼 클릭 이벤트 처리
         binding.buttonAdd.setOnClickListener {
             val intent = Intent(this, AddActivity::class.java)
+            intent.putExtra("currencyIdFrom", currencyIdFrom)
+            intent.putExtra("currencyIdTo", currencyIdTo)
+            intent.putExtra("listId", selectedListId)
             startActivity(intent)
         }
 
         // 카메라 버튼 클릭 이벤트 설정
         binding.buttonCamera.setOnClickListener {
             // 카메라 api와 연결하여 동작할 내용
-            val intent = Intent(this, CameraActivity::class.java)
+            val intent = Intent(this, CameraActivity2::class.java)
+            intent.putExtra("listId", selectedListId)
+            intent.putExtra("currencyIdFrom", currencyIdFrom)
+            intent.putExtra("currencyIdTo", currencyIdTo)
             startActivity(intent)
         }
         // 인텐트에서 list_id 받아오기

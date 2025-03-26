@@ -33,6 +33,7 @@
                 android:padding="10dp"
                 android:layout_marginStart="10dp">
                 <TextView
+                    android:id="@+id/textUserName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="홍길동"
@@ -49,6 +50,7 @@
                         android:text="@string/id_eng"
                         style="@style/TextBodyS"/>
                     <TextView
+                        android:id="@+id/textUserEmail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="ghdrlfehd"
@@ -117,37 +119,6 @@
                 android:src="@drawable/ic_right_arrow"/>
         </LinearLayout>
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:padding="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/round_background"
-            android:backgroundTint="@color/white">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/ver_info"
-                style="@style/TextBodyM_medium"/>
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/ver"
-                android:layout_gravity="center_vertical"
-                style="@style/TextBodyXS"
-                android:textColor="@color/gray_05"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1.0.0."
-                android:layout_gravity="center_vertical"
-                style="@style/TextBodyXS"
-                android:textColor="@color/gray_05"/>
-        </LinearLayout>
-        <LinearLayout
             android:id="@+id/button_logout"
             android:layout_width="match_parent"
             android:layout_height="40dp"
@@ -179,6 +150,38 @@
                 android:text="@string/delete_account"
                 android:textColor="@color/point"
                 style="@style/TextBodyM_medium"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:padding="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/round_background"
+            android:backgroundTint="@color/white">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ver_info"
+                style="@style/TextBodyM_medium"
+                android:textColor="@color/gray_05"/>
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ver"
+                android:layout_gravity="center_vertical"
+                style="@style/TextBodyXS"
+                android:textColor="@color/gray_05"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1.0.0."
+                android:layout_gravity="center_vertical"
+                style="@style/TextBodyXS"
+                android:textColor="@color/gray_05"/>
         </LinearLayout>
     </LinearLayout>
 

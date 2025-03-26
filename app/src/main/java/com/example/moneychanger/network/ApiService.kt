@@ -1,9 +1,13 @@
 package com.example.moneychanger.network
 
 import com.example.moneychanger.network.currency.CurrencyModel
-import com.example.moneychanger.network.list.ListModel
-import com.example.moneychanger.network.list.ListsRequestDto
+import com.example.moneychanger.network.currency.CurrencyResponseDto
+import com.example.moneychanger.network.list.CreateListRequestDto
+import com.example.moneychanger.network.list.CreateListResponseDto
+import com.example.moneychanger.network.list.CreateListWithNameRequestDto
 import com.example.moneychanger.network.list.ListsResponseDto
+import com.example.moneychanger.network.product.CreateProductRequestDto
+import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.product.ImageProductResponseDto
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductRequestDto
@@ -18,6 +22,9 @@ import com.example.moneychanger.network.user.SignInRequest
 import com.example.moneychanger.network.user.SignInResponse
 import com.example.moneychanger.network.user.SignUpRequest
 import com.example.moneychanger.network.user.SignUpResponse
+import com.example.moneychanger.network.user.UpdateUserInfoRequest
+import com.example.moneychanger.network.user.UserInfoResponse
+import com.google.android.gms.common.api.Api
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -26,6 +33,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -54,7 +62,10 @@ interface ApiService {
 
     //List
     @POST("/api/lists/add")
-    fun createList(@Body requestDto: ListsRequestDto): Response<ApiResponse<Call<ListModel>>>
+    fun createList(@Body requestDto: CreateListRequestDto): Call<ApiResponse<CreateListResponseDto>>
+
+    @POST("/api/lists/add/name")
+    fun createListWithName(@Body requestDto: CreateListWithNameRequestDto): Call<ApiResponse<CreateListResponseDto>>
 
     @GET("/api/lists")
     fun getAllLists(): Call<ApiResponse<List<ListsResponseDto?>>>
@@ -71,7 +82,7 @@ interface ApiService {
 
     //Product
     @POST("/api/products")
-    fun createProduct(@Body requestDto: ProductRequestDto): Response<ApiResponse<Call<ProductModel>>>
+    fun createProduct(@Body requestDto: CreateProductRequestDto): Call<ApiResponse<CreateProductResponseDto>>
     //아이디에 맞는 상품 갖고옴
     @GET("/api/products/{id}")
     fun getProductByListsId(@Path("id") productId:Long): Call<ApiResponse<List<ProductResponseDto>>>
@@ -100,7 +111,7 @@ interface ApiService {
     fun importCurrency(): Response<ApiResponse<Call<List<CurrencyModel>>>>
 
     @GET("/api/currency")
-    fun findAll(): Call<List<CurrencyModel>>
+    fun findAll(): Call<ApiResponse<List<CurrencyResponseDto>>>
 
 
     // ID 찾기 API
@@ -114,4 +125,11 @@ interface ApiService {
     @POST("/api/auth/find-password")
     suspend fun findPassword(@Body request: FindPasswordRequest): Response<ApiResponse<String>>
 
+    //  회원정보 조회
+    @GET("/api/auth/user-info")
+    suspend fun getUserInfo(@Header("Authorization") token: String): Response<ApiResponse<UserInfoResponse>>
+
+    //  회원정보 수정
+    @POST("/api/auth/update-user-info")
+    suspend fun updateUserInfo(@Body request: UpdateUserInfoRequest): Response<ApiResponse<String>>
 }
