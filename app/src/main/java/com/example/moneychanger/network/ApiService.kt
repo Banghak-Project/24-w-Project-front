@@ -73,18 +73,26 @@ interface ApiService {
     //Product
     @POST("/api/products")
     fun createProduct(@Body requestDto: CreateProductRequestDto): Call<ApiResponse<CreateProductResponseDto>>
+
     //아이디에 맞는 상품 갖고옴
     @GET("/api/products/{id}")
-    fun getProductByListsId(@Path("id") productId:Long): Response<ApiResponse<Call<ProductModel>>>
+    fun getProductByListsId(@Path("id") productId: Long): Response<ApiResponse<Call<ProductModel>>>
+
     //모든 상품 조회
     @GET("/api/products")
     fun getAllProducts(): Response<ApiResponse<Call<List<ProductModel>>>>
+
     //아이디에 맞는 상품 수정
     @PUT("/api/products/{id}")
-    fun updateProduct(@Path("id") productId: Long, @Body requestDto: ProductRequestDto): Response<ApiResponse<Call<ProductModel>>>
+    fun updateProduct(
+        @Path("id") productId: Long,
+        @Body requestDto: ProductRequestDto
+    ): Response<ApiResponse<Call<ProductModel>>>
+
     //아이디에 맞는 상품 삭제
     @DELETE("/api/products/{id}")
     fun deleteProduct(@Path("id") productId: Long): Response<ApiResponse<Call<Void>>>
+
     //이미지 분석
     @Multipart
     @POST("/api/products/image")
@@ -121,5 +129,9 @@ interface ApiService {
 
     //  회원정보 수정
     @POST("/api/auth/update-user-info")
-    suspend fun updateUserInfo(@Body request: UpdateUserInfoRequest): Response<ApiResponse<String>>
+    suspend fun updateUserInfo(
+        @Header("Authorization") token: String,
+        @Body request: UpdateUserInfoRequest
+    ): Response<ApiResponse<UserInfoResponse>>
+
 }
