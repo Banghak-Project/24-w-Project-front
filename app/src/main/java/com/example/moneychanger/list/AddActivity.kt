@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityAddBinding
-import com.example.moneychanger.network.CurrencyStoreManager
 import com.example.moneychanger.network.RetrofitClient
+import com.example.moneychanger.network.currency.CurrencyManager
 import com.example.moneychanger.network.product.CreateProductRequestDto
 import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
@@ -22,6 +22,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.Locale
+import com.example.moneychanger.network.currency.CurrencyViewModel
 
 class AddActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddBinding
@@ -125,25 +126,24 @@ class AddActivity : AppCompatActivity() {
 
 
     private fun calculateExchangeRate(fromId: Long, toId: Long, amount: Double): Double {
-        val fromCurrency = CurrencyStoreManager.findCurrencyById(fromId)
-        val toCurrency = CurrencyStoreManager.findCurrencyById(toId)
-
+        val fromCurrency = CurrencyManager.getById(fromId)
+        val toCurrency = CurrencyManager.getById(toId)
         if (fromCurrency == null || toCurrency == null) {
-            Log.e("ExchangeRate", "🚨 환율 계산 오류: 선택한 통화를 찾을 수 없음")
+            Log.e("MainActivity", "⚠️ 통화 정보 매핑 실패:")
             return 0.0
         }
 
-        val rateFrom = fromCurrency.dealBasR?.replace(",", "")?.toDoubleOrNull()
-        val rateTo = toCurrency.dealBasR?.replace(",", "")?.toDoubleOrNull()
+        val rateFrom = fromCurrency.dealBasR
+        val rateTo = toCurrency.dealBasR
 
-        if (rateFrom == null || rateTo == null || rateFrom == 0.0 || rateTo == 0.0) {
+        if (rateFrom == 0.0 || rateTo == 0.0) {
             Log.e("ExchangeRate", "🚨 환율 값이 유효하지 않습니다: rateFrom=$rateFrom, rateTo=$rateTo")
             return 0.0
         }
 
         // 👇 (100) 단위를 가진 통화는 보정값 설정
-        val fromDivisor = if (fromCurrency.curUnit?.contains("(100)") == true) 100.0 else 1.0
-        val toDivisor = if (toCurrency.curUnit?.contains("(100)") == true) 100.0 else 1.0
+        val fromDivisor = if (fromCurrency.curUnit.contains("(100)") == true) 100.0 else 1.0
+        val toDivisor = if (toCurrency.curUnit.contains("(100)") == true) 100.0 else 1.0
 
         val adjustedRateFrom = rateFrom / fromDivisor
         val adjustedRateTo = rateTo / toDivisor

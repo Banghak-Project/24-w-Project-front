@@ -1,7 +1,6 @@
 package com.example.moneychanger.adapter
 
-import androidx.recyclerview.widget.RecyclerView
-import com.example.moneychanger.list.CurrencyViewModel
+//import androidx.recyclerview.widget.RecyclerView
 
 // 차후 list_product에 사용할수도 있는 임시 adapter 코드.
 //class CurrencyAdapter(private val viewModel: CurrencyViewModel) : RecyclerView.Adapter<CurrencyAdapter.CurrencyViewHolder>() {

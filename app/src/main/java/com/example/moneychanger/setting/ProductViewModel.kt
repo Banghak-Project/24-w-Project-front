@@ -1,16 +1,13 @@
-package com.example.moneychanger
-
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.RetrofitClient
+import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.user.ApiResponse
 import kotlinx.coroutines.launch
 import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 
 class ProductViewModel : ViewModel() {

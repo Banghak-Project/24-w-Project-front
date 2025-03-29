@@ -5,12 +5,15 @@ import com.example.moneychanger.network.currency.CurrencyResponseDto
 import com.example.moneychanger.network.list.CreateListRequestDto
 import com.example.moneychanger.network.list.CreateListResponseDto
 import com.example.moneychanger.network.list.CreateListWithNameRequestDto
+import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.network.list.ListsResponseDto
+import com.example.moneychanger.network.list.UpdateRequestDto
 import com.example.moneychanger.network.product.CreateProductRequestDto
 import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.product.ImageProductResponseDto
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductRequestDto
+import com.example.moneychanger.network.product.ProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
 import com.example.moneychanger.network.user.EmailRequest
 import com.example.moneychanger.network.user.FindPasswordRequest
@@ -34,11 +37,13 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
+
 
 interface ApiService {
     //User
@@ -65,10 +70,17 @@ interface ApiService {
     fun createListWithName(@Body requestDto: CreateListWithNameRequestDto): Call<ApiResponse<CreateListResponseDto>>
 
     @GET("/api/lists")
-    fun getAllLists(): Response<ApiResponse<Call<List<ListsResponseDto>>>>
+    fun getAllLists(): Call<ApiResponse<List<ListsResponseDto>>>
 
-    @DELETE("/api/lists/delete/{id}")
-    fun deleteList(@Path("id") id: Long): Response<ApiResponse<Call<Void>>>
+    @GET("/api/lists/{id}")
+    fun getListsById(@Path("id") id:Long): Call<ApiResponse<ListsResponseDto?>>
+
+    @PATCH("/api/lists/delete/{id}")
+    fun deleteList(@Path("id") id: Long): Call<ApiResponse<Void>>
+
+    //총금액표시
+    @GET("/api/lists/total/{id}")
+    fun getTotal(@Path("id") id: Long): Call<ApiResponse<Double>>
 
     //Product
     @POST("/api/products")
@@ -76,8 +88,7 @@ interface ApiService {
 
     //아이디에 맞는 상품 갖고옴
     @GET("/api/products/{id}")
-    fun getProductByListsId(@Path("id") productId: Long): Response<ApiResponse<Call<ProductModel>>>
-
+    fun getProductByListsId(@Path("id") productId:Long): Call<ApiResponse<List<ProductResponseDto>>>
     //모든 상품 조회
     @GET("/api/products")
     fun getAllProducts(): Response<ApiResponse<Call<List<ProductModel>>>>
@@ -104,13 +115,14 @@ interface ApiService {
     //Notice
     //추후에 추가
 
-    //Currency
     @POST("/api/currency/import")
     fun importCurrency(): Response<ApiResponse<Call<List<CurrencyModel>>>>
 
     @GET("/api/currency")
     fun findAll(): Call<ApiResponse<List<CurrencyResponseDto>>>
 
+    @PATCH("/api/currency/update/{id}")
+    fun updateCurrency(@Path("id") id:Long, @Body request: UpdateRequestDto) : Call<ApiResponse<ListModel>>
 
     // ID 찾기 API
     @GET("/api/auth/find-id")

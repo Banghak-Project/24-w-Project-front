@@ -17,6 +17,7 @@ object RetrofitClient {
     // 애뮬레이터에서 실행하는 거면 이거 사용
     //실제 기기에서 돌릴때는 PC의 로컬 IP 주소 사용해야한다고 함.
     private val client = OkHttpClient.Builder()
+        .addInterceptor(AuthInterceptor())
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }) // 📌 Retrofit API 요청/응답 로그 확인 가능
@@ -28,7 +29,7 @@ object RetrofitClient {
 
     private val gson = GsonBuilder()
         .serializeNulls() // null 값도 JSON에 포함
-        .setLenient()  // ✅ JSON 파싱 오류 방지
+        .setLenient()  // JSON 파싱 오류 방지
         .setDateFormat("yyyy-MM-dd") // 날짜 포맷 설정
         .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES) // ✅ 백엔드 JSON 구조 맞추기
         .create()

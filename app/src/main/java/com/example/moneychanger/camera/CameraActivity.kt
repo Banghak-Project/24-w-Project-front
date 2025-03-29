@@ -39,6 +39,7 @@ import com.example.moneychanger.etc.OnProductAddedListener
 import com.example.moneychanger.etc.SlideCameraList
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
+import com.example.moneychanger.network.currency.CurrencyManager
 import com.example.moneychanger.network.list.CreateListRequestDto
 import com.example.moneychanger.network.list.CreateListResponseDto
 import com.example.moneychanger.network.product.CreateProductRequestDto
@@ -46,8 +47,8 @@ import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import com.example.moneychanger.list.CurrencyViewModel
-import com.example.moneychanger.network.CurrencyStoreManager
+import com.example.moneychanger.network.currency.CurrencyViewModel
+//import com.example.moneychanger.network.CurrencyStoreManager
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
@@ -116,16 +117,16 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         }
 
         // 통화 정보 가져오기
-        val currencyList = CurrencyStoreManager.getCurrencyList()
+        val currencyList = CurrencyManager.getCurrencies()
 
-        if (currencyList.isNullOrEmpty()) {
-            Toast.makeText(this, "로그인 후 이용해주세요.", Toast.LENGTH_LONG).show()
+        if (currencyList.isEmpty()) {
+            Toast.makeText(this, "로그인 후 이용해주세요.2", Toast.LENGTH_LONG).show()
             finish()  // 👉 종료하지 않고 onCreate 나감
             return
         }
 
         // 통화 Spinner 데이터 설정
-        val currencyUnits: List<String> = currencyList?.mapNotNull { it.curUnit } ?: emptyList()
+        val currencyUnits: List<String> = currencyList.map { it.curUnit } ?: emptyList()
         val customSpinner1 = CustomSpinner(this, currencyUnits)
         val customSpinner2 = CustomSpinner(this, currencyUnits)
 
@@ -134,9 +135,9 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             customSpinner1.show(binding.currencyContainer1) { selected ->
                 binding.currencyName1.text = selected
                 viewModel.updateCurrency(selected)
-                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
+                val selectedCurrency = CurrencyManager.getByUnit(selected)
                 if (selectedCurrency != null) {
-                    currencyIdFrom = selectedCurrency.currentId
+                    currencyIdFrom = selectedCurrency.currencyId
                 }
             }
         }
@@ -146,9 +147,9 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             customSpinner2.show(binding.currencyContainer2) { selected ->
                 binding.currencyName2.text = selected
                 viewModel.updateCurrency(selected)
-                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
+                val selectedCurrency = CurrencyManager.getByUnit(selected)
                 if (selectedCurrency != null) {
-                    currencyIdTo = selectedCurrency.currentId
+                    currencyIdTo = selectedCurrency.currencyId
                 }
             }
         }
@@ -516,25 +517,25 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
     }
 
     private fun calculateExchangeRate(fromId: Long, toId: Long, amount: Double): Double {
-        val fromCurrency = CurrencyStoreManager.findCurrencyById(fromId)
-        val toCurrency = CurrencyStoreManager.findCurrencyById(toId)
+        val fromCurrency = CurrencyManager.getById(fromId)
+        val toCurrency = CurrencyManager.getById(toId)
 
         if (fromCurrency == null || toCurrency == null) {
-            Log.e("ExchangeRate", "🚨 환율 계산 오류: 선택한 통화를 찾을 수 없음")
+            Log.e("MainActivity", "⚠️ 통화 정보 매핑 실패:")
             return 0.0
         }
 
-        val rateFrom = fromCurrency.dealBasR?.replace(",", "")?.toDoubleOrNull()
-        val rateTo = toCurrency.dealBasR?.replace(",", "")?.toDoubleOrNull()
+        val rateFrom = fromCurrency.dealBasR
+        val rateTo = toCurrency.dealBasR
 
-        if (rateFrom == null || rateTo == null || rateFrom == 0.0 || rateTo == 0.0) {
+        if (rateFrom == 0.0 || rateTo == 0.0) {
             Log.e("ExchangeRate", "🚨 환율 값이 유효하지 않습니다: rateFrom=$rateFrom, rateTo=$rateTo")
             return 0.0
         }
 
         // 👇 (100) 단위를 가진 통화는 보정값 설정
-        val fromDivisor = if (fromCurrency.curUnit?.contains("(100)") == true) 100.0 else 1.0
-        val toDivisor = if (toCurrency.curUnit?.contains("(100)") == true) 100.0 else 1.0
+        val fromDivisor = if (fromCurrency.curUnit.contains("(100)")) 100.0 else 1.0
+        val toDivisor = if (toCurrency.curUnit.contains("(100)")) 100.0 else 1.0
 
         val adjustedRateFrom = rateFrom / fromDivisor
         val adjustedRateTo = rateTo / toDivisor

@@ -24,6 +24,7 @@ object TokenManager {
         prefs.edit().putString(KEY_ACCESS_TOKEN, token).apply()
     }
 
+    // 액세스 토큰 가져오기
     fun getAccessToken(): String? {
         return prefs.getString(KEY_ACCESS_TOKEN, null)
     }

@@ -2,26 +2,44 @@ package com.example.moneychanger.network.list
 
 import com.google.gson.annotations.SerializedName
 
+import com.example.moneychanger.network.currency.CurrencyModel
+import com.example.moneychanger.network.currency.CurrencyResponseDto
+
 data class ListModel(
     val listId: Long,
     val name: String,
-    val createdAt: String,
+    val userId: Long,
+    val createdAt: String?,
     val location: String,
+    val currencyFrom: CurrencyModel,
+    val currencyTo: CurrencyModel,
     val deletedYn: Boolean
-    // created_at이 없음 임시로 만들어둠 -유빈
 )
 
 data class ListsRequestDto(
-    val name: String,
     val userId : Long,
-    val currencyId : Long,
-    val location : String // location은 추후 api 개발되면 requestdto에서 뺌
+    val currencyIdFrom : Long,
+    val currencyIdTo: Long,
+    val location : String //location은 추후 api 개발되면 requestdto에서 뺌
 )
 
 data class ListsResponseDto(
-    val listId: Long,
-    val name: String,
-    val location: String
+    @SerializedName("listId") val listId: Long,
+    @SerializedName("name") val name: String,
+    @SerializedName("userId") val userId: Long,
+    @SerializedName("location") val location: String,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("currencyFromId") val currencyFromId: Long,
+    @SerializedName("currencyToId") val currencyToId: Long,
+    @SerializedName("deletedYn") val deletedYn: Boolean
+)
+
+
+data class UpdateRequestDto(
+    val currencyIdFrom: Long?,
+    val currencyIdTo: Long?,
+    val location: String?,
+    val name:String?
 )
 
 data class CreateListRequestDto(

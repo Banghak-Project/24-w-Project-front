@@ -43,8 +43,8 @@ import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import com.example.moneychanger.list.CurrencyViewModel
-import com.example.moneychanger.network.CurrencyStoreManager
+import com.example.moneychanger.network.currency.CurrencyManager
+import com.example.moneychanger.network.currency.CurrencyViewModel
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
@@ -111,33 +111,39 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             finish()
         }
 
-        val currencyList = CurrencyStoreManager.getCurrencyList()
-        val currencyUnits: List<String> = currencyList?.mapNotNull { it.curUnit } ?: emptyList()
+        val currencyList = CurrencyManager.getCurrencies()
+        val currencyUnits: List<String> = currencyList.map { it.curUnit } ?: emptyList()
         val customSpinner1 = CustomSpinner(this, currencyUnits)
         val customSpinner2 = CustomSpinner(this, currencyUnits)
 
-        // 리스트에서 전달받은 통화 ID를 기반으로 초기값 설정
-        val initialCurrencyFrom = CurrencyStoreManager.findCurrencyById(currencyIdFrom)?.curUnit
-        val initialCurrencyTo = CurrencyStoreManager.findCurrencyById(currencyIdTo)?.curUnit
+        val currencyFrom = CurrencyManager.getById(currencyIdFrom)
+        val currencyTo = CurrencyManager.getById(currencyIdTo)
 
-        if (!initialCurrencyFrom.isNullOrEmpty()) {
-            binding.currencyName1.text = initialCurrencyFrom
-            viewModel.updateCurrency(initialCurrencyFrom)
+        if (currencyFrom == null || currencyTo == null) {
+            Log.e("MainActivity", "⚠️ 통화 정보 매핑 실패:")
+        }else{
+            // 리스트에서 전달받은 통화 ID를 기반으로 초기값 설정
+            val initialCurrencyFrom = currencyFrom.curUnit
+            val initialCurrencyTo = currencyTo.curUnit
+
+            if (initialCurrencyFrom.isNotEmpty()) {
+                binding.currencyName1.text = initialCurrencyFrom
+                viewModel.updateCurrency(initialCurrencyFrom)
+            }
+
+            if (initialCurrencyTo.isNotEmpty()) {
+                binding.currencyName2.text = initialCurrencyTo
+                viewModel.updateCurrency(initialCurrencyTo)
+            }
         }
 
-        if (!initialCurrencyTo.isNullOrEmpty()) {
-            binding.currencyName2.text = initialCurrencyTo
-            viewModel.updateCurrency(initialCurrencyTo)
-        }
 
         binding.currencyContainer1.setOnClickListener {
             customSpinner1.show(binding.currencyContainer1) { selected ->
                 binding.currencyName1.text = selected
                 viewModel.updateCurrency(selected)
-                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
-                if (selectedCurrency != null) {
-                    currencyIdFrom = selectedCurrency.currentId
-                }
+                val selectedCurrency = CurrencyManager.getByUnit(selected)
+                currencyIdFrom = selectedCurrency.currencyId
             }
         }
 
@@ -145,10 +151,8 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             customSpinner2.show(binding.currencyContainer2) { selected ->
                 binding.currencyName2.text = selected
                 viewModel.updateCurrency(selected)
-                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
-                if (selectedCurrency != null) {
-                    currencyIdTo = selectedCurrency.currentId
-                }
+                val selectedCurrency = CurrencyManager.getByUnit(selected)
+                currencyIdTo = selectedCurrency.currencyId
             }
         }
 
@@ -461,19 +465,17 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
     }
 
     private fun calculateExchangeRate(fromId: Long, toId: Long, amount: Double): Double {
-        val fromCurrency = CurrencyStoreManager.findCurrencyById(fromId)
-        val toCurrency = CurrencyStoreManager.findCurrencyById(toId)
-
+        val fromCurrency = CurrencyManager.getById(fromId)
+        val toCurrency = CurrencyManager.getById(toId)
         if (fromCurrency == null || toCurrency == null) {
-            Log.e("ExchangeRate", "🚨 환율 계산 오류: 선택한 통화를 찾을 수 없음")
+            Log.e("MainActivity", "⚠️ 통화 정보 매핑 실패:")
             return 0.0
         }
+        val rateFrom = fromCurrency.dealBasR
+        val rateTo = toCurrency.dealBasR
 
-        val rateFrom = fromCurrency.dealBasR?.replace(",", "")?.toDoubleOrNull()
-        val rateTo = toCurrency.dealBasR?.replace(",", "")?.toDoubleOrNull()
-
-        if (rateFrom == null || rateTo == null || rateFrom == 0.0 || rateTo == 0.0) {
-            Log.e("ExchangeRate", "🚨 환율 값이 유효하지 않습니다: rateFrom=$rateFrom, rateTo=$rateTo")
+        if (rateFrom == 0.0 || rateTo == 0.0) {
+            Log.e("ExchangeRate", "환율 값이 유효하지 않습니다: rateFrom=$rateFrom, rateTo=$rateTo")
             return 0.0
         }
 

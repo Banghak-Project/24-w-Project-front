@@ -22,7 +22,7 @@ object CurrencyStoreManager {
 
     // 통화 ID로 찾기
     fun findCurrencyById(id: Long): CurrencyResponseDto? {
-        return currencyList?.find { it.currentId == id }
+        return currencyList?.find { it.currencyId == id }
     }
 
     // 통화 정보 초기화 (로그아웃 시)
