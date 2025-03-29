@@ -20,60 +20,52 @@ object TokenManager {
         prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
     }
 
-    // ✅ 액세스 토큰 저장
     fun saveAccessToken(token: String) {
         prefs.edit().putString(KEY_ACCESS_TOKEN, token).apply()
     }
 
-    // ✅ 액세스 토큰 가져오기
     fun getAccessToken(): String? {
         return prefs.getString(KEY_ACCESS_TOKEN, null)
     }
 
-    // ✅ 리프레시 토큰 저장
     fun saveRefreshToken(token: String) {
         prefs.edit().putString(KEY_REFRESH_TOKEN, token).apply()
     }
 
-    // ✅ 리프레시 토큰 가져오기
     fun getRefreshToken(): String? {
         return prefs.getString(KEY_REFRESH_TOKEN, null)
     }
 
-    // ✅ 로그인 정보 저장 (SignInResponse)
     fun saveSignInInfo(signInResponse: SignInResponse) {
         val json = Gson().toJson(signInResponse)
         prefs.edit().putString(KEY_SIGN_IN_INFO, json).apply()
     }
 
-    // ✅ 회원 정보 저장 (UserInfoResponse)
-    fun saveUserInfo(userInfo: UserInfoResponse) {
-        val json = Gson().toJson(userInfo)
-        prefs.edit().putString(KEY_USER_INFO, json).apply()
+    // ✅ 회원 정보 저장 (null 방지)
+    fun saveUserInfo(userInfo: UserInfoResponse?) {
+        if (userInfo != null) {
+            val json = Gson().toJson(userInfo)
+            prefs.edit().putString(KEY_USER_INFO, json).apply()
+        }
     }
 
-    // ✅ 회원 정보 가져오기
     fun getUserInfo(): UserInfoResponse? {
         val json = prefs.getString(KEY_USER_INFO, null) ?: return null
         return Gson().fromJson(json, UserInfoResponse::class.java)
     }
 
-    // ✅ 유저 ID 저장
     fun saveUserId(id: Long) {
         prefs.edit().putLong(KEY_USER_ID, id).apply()
     }
 
-    // ✅ 유저 ID 가져오기
     fun getUserId(): Long {
-        return prefs.getLong(KEY_USER_ID, -1) // 기본값 -1 (존재하지 않으면)
+        return prefs.getLong(KEY_USER_ID, -1)
     }
 
-    // ✅ 모든 토큰 및 정보 삭제 (로그아웃 시 사용)
     fun clearTokens() {
         prefs.edit().clear().apply()
     }
 
-    // ✅ 사용자 이름 업데이트
     fun updateUserName(newName: String) {
         val userInfo = getUserInfo()
         if (userInfo != null) {
@@ -82,13 +74,17 @@ object TokenManager {
         }
     }
 
-    // ✅ 생년월일 업데이트
     fun updateUserBirth(newBirth: String?) {
         val userInfo = getUserInfo()
         if (userInfo != null) {
-            val updatedBirth = newBirth ?: userInfo.userDateOfBirth // 기존 값 유지
+            val updatedBirth = newBirth ?: userInfo.userDateOfBirth
             val updatedUser = userInfo.copy(userDateOfBirth = updatedBirth)
             saveUserInfo(updatedUser)
         }
+    }
+
+    // ✅ 전체 사용자 정보 업데이트 (null 방지)
+    fun updateUserInfo(newInfo: UserInfoResponse?) {
+        saveUserInfo(newInfo)
     }
 }
