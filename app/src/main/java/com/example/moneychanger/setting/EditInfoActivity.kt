@@ -12,13 +12,14 @@ import com.example.moneychanger.databinding.ActivityEditInfoBinding
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
 import com.example.moneychanger.network.user.UpdateUserInfoRequest
+import com.example.moneychanger.network.user.UserInfoResponse
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 
 class EditInfoActivity : AppCompatActivity() {
@@ -52,15 +53,7 @@ class EditInfoActivity : AppCompatActivity() {
         val userInfo = TokenManager.getUserInfo()
 
         if (userInfo != null) {
-            val birthDate = userInfo.userDateOfBirth?.let {
-                try {
-                    dateFormat.format(Date(it.toLong())) // Long -> Date -> String 변환
-                } catch (e: Exception) {
-                    Log.e("EditInfoActivity", "❌ 생년월일 변환 오류: ${e.message}")
-                    ""
-                }
-            } ?: ""
-
+            val birthDate = userInfo.userDateOfBirth ?: ""
             binding.dateText.setText(birthDate)
             binding.editUserName.setText(userInfo.userName ?: "")
             binding.textUserEmail.text = userInfo.userEmail ?: "이메일 없음"
@@ -99,37 +92,53 @@ class EditInfoActivity : AppCompatActivity() {
             return
         }
 
-        // ✅ 기존 생년월일 유지 또는 변환
         val finalUserBirth = if (newUserBirth.isEmpty()) {
             userInfo?.userDateOfBirth ?: ""
         } else {
-            newUserBirth // ✅ yyyy-MM-dd 포맷 유지
+            newUserBirth
         }
 
         val updateRequest = UpdateUserInfoRequest(
             userEmail = userEmail,
-            userDateOfBirth = finalUserBirth, // ✅ String 값 전달 (Long → yyyy-MM-dd)
+            userDateOfBirth = finalUserBirth,
             userName = newUserName,
             userPassword = null
         )
 
         CoroutineScope(Dispatchers.IO).launch {
+            val accessToken = TokenManager.getAccessToken()
+            if (accessToken.isNullOrEmpty()) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@EditInfoActivity, "로그인 토큰이 없습니다. 다시 로그인해주세요.", Toast.LENGTH_SHORT).show()
+                }
+                return@launch
+            }
+
             try {
-                val response = RetrofitClient.apiService.updateUserInfo(updateRequest)
+                val response = RetrofitClient.apiService.updateUserInfo("Bearer $accessToken", updateRequest)
+                val apiResponse = response.body()
 
                 withContext(Dispatchers.Main) {
-                    if (response.isSuccessful && response.body()?.status == "success") {
-                        Toast.makeText(this@EditInfoActivity, "정보가 수정되었습니다.", Toast.LENGTH_SHORT).show()
+                    if (response.isSuccessful && apiResponse?.status == "success") {
+                        val data = apiResponse.data
+                        if (data != null) {
+                            val jsonData = Gson().toJson(data)
+                            val updatedUserInfo = Gson().fromJson(jsonData, UserInfoResponse::class.java)
+                            TokenManager.saveUserInfo(updatedUserInfo)
+                            Toast.makeText(this@EditInfoActivity, "정보가 수정되었습니다.", Toast.LENGTH_SHORT).show()
 
-                        // ✅ 변경된 정보 저장
-                        TokenManager.updateUserName(newUserName)
-                        TokenManager.updateUserBirth(finalUserBirth) // ✅ yyyy-MM-dd 형식으로 저장
-
-                        val intent = Intent(this@EditInfoActivity, SettingActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(intent)
+                            startActivity(Intent(this@EditInfoActivity, SettingActivity::class.java).apply {
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            })
+                        } else {
+                            Toast.makeText(this@EditInfoActivity, "수정 성공했지만 사용자 정보가 반환되지 않았습니다.", Toast.LENGTH_SHORT).show()
+                        }
                     } else {
-                        Toast.makeText(this@EditInfoActivity, "수정 실패: ${response.body()?.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@EditInfoActivity,
+                            "수정 실패: ${apiResponse?.message ?: "서버 응답 없음"}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             } catch (e: Exception) {
