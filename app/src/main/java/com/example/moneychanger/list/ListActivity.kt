@@ -6,9 +6,6 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.moneychanger.etc.CustomSpinner
@@ -20,14 +17,16 @@ import com.example.moneychanger.camera.CameraActivity2
 import com.example.moneychanger.etc.SlideEdit
 import com.example.moneychanger.databinding.ActivityListBinding
 import com.example.moneychanger.network.RetrofitClient
+import com.example.moneychanger.network.RetrofitClient.apiService
+import com.example.moneychanger.network.currency.CurrencyManager
+import com.example.moneychanger.network.currency.CurrencyViewModel
 import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.network.list.ListsResponseDto
-import com.example.moneychanger.etc.DataProvider
-import com.example.moneychanger.network.CurrencyStoreManager
 import com.example.moneychanger.network.TokenManager
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
+import com.google.android.gms.common.api.Api
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -77,16 +76,16 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         }
 
         // 통화 정보 가져오기
-        val currencyList = CurrencyStoreManager.getCurrencyList()
-
-        if (currencyList.isNullOrEmpty()) {
-            Toast.makeText(this, "로그인 후 이용해주세요.", Toast.LENGTH_LONG).show()
-            finish()  // 👉 종료하지 않고 onCreate 나감
+        val currencyList = CurrencyManager.getCurrencies()
+        Log.i("ListActivity","hi2 $currencyList")
+        if (currencyList.isEmpty()) {
+            Toast.makeText(this, "통화를 불러오는데 실패했습니다.여기 확인", Toast.LENGTH_LONG).show()
+            finish()
             return
         }
 
         // 통화 Spinner 데이터 설정
-        val currencyUnits: List<String> = currencyList?.mapNotNull { it.curUnit } ?: emptyList()
+        val currencyUnits: List<String> = currencyList?.map { it.curUnit } ?: emptyList()
         val customSpinner1 = CustomSpinner(this, currencyUnits)
         val customSpinner2 = CustomSpinner(this, currencyUnits)
 
@@ -98,10 +97,8 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                 binding.currencyName3.text = selected
                 viewModel.updateCurrency(selected)
 
-                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
-                if (selectedCurrency != null) {
-                    currencyIdFrom = selectedCurrency.currentId
-                }
+                val selectedCurrency = CurrencyManager.getByUnit(selected)
+                currencyIdFrom = selectedCurrency.currencyId
             }
         }
 
@@ -116,14 +113,10 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                 // n0000 >$<
                 binding.currencySymbol2.text = getString(resourceId)
                 viewModel.updateCurrency(selected)
-
-                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
-                if (selectedCurrency != null) {
-                    currencyIdTo = selectedCurrency.currentId
-                }
+                val selectedCurrency = CurrencyManager.getByUnit(selected)
+                currencyIdTo = selectedCurrency.currencyId
             }
         }
-
 
         // 장소 수정하기 버튼 클릭 이벤트 처리
         binding.buttonEdit.setOnClickListener {
@@ -136,7 +129,7 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             val intent = Intent(this, AddActivity::class.java)
             intent.putExtra("currencyIdFrom", currencyIdFrom)
             intent.putExtra("currencyIdTo", currencyIdTo)
-            intent.putExtra("listId", selectedListId)
+            intent.putExtra("listId", selectedList!!.listId)
             startActivity(intent)
         }
 
@@ -144,7 +137,7 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         binding.buttonCamera.setOnClickListener {
             // 카메라 api와 연결하여 동작할 내용
             val intent = Intent(this, CameraActivity2::class.java)
-            intent.putExtra("listId", selectedListId)
+            intent.putExtra("listId", selectedList!!.listId)
             intent.putExtra("currencyIdFrom", currencyIdFrom)
             intent.putExtra("currencyIdTo", currencyIdTo)
             startActivity(intent)
@@ -173,9 +166,7 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
     }
 
     private fun fetchProductsByListId(listId: Long){
-        val apiService = RetrofitClient.apiService
-
-        apiService.getProductByListsId(listId).enqueue(object : Callback<ApiResponse<List<ProductResponseDto>>> {
+       apiService.getProductByListsId(listId).enqueue(object : Callback<ApiResponse<List<ProductResponseDto>>> {
             override fun onResponse(
                 call: Call<ApiResponse<List<ProductResponseDto>>>,
                 response: Response<ApiResponse<List<ProductResponseDto>>>
@@ -211,7 +202,6 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             }
         })
     }
-
     override fun onStoreNameUpdated(storeName: String) {
         // SlideEdit에서 받은 데이터를 placeName TextView에 업데이트
         binding.placeName.text = storeName
@@ -233,20 +223,28 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                             val dtoList = gson.fromJson(json, ListsResponseDto::class.java)
                             Log.d("DEBUG", "파싱된 리스트: $dtoList")
 
-                            val currencyFrom = dtoList.currencyFrom
-                            val currencyTo = dtoList.currencyTo
+                            val currencyFrom = CurrencyManager.getById(dtoList.currencyFromId)
+                            val currencyTo = CurrencyManager.getById(dtoList.currencyToId)
 
-                            val listModel = ListModel(
-                                listId = dtoList.listId,
-                                name = dtoList.name,
-                                userId = dtoList.userId,
-                                location = dtoList.location,
-                                createdAt = dtoList.createdAt,
-                                currencyFrom = currencyFrom,
-                                currencyTo = currencyTo,
-                                deletedYn = dtoList.deletedYn
-                            )
-                            callback(listModel) // 데이터를 받은 후 콜백 실행
+                            if (currencyFrom == null || currencyTo == null) {
+                                Log.e("MainActivity", "⚠️ 통화 정보 매핑 실패: from=${dtoList.currencyFromId}, to=${dtoList.currencyToId}")
+                            }else{
+                                val listModel = ListModel(
+                                    listId = dtoList.listId,
+                                    name = dtoList.name,
+                                    userId = dtoList.userId,
+                                    location = dtoList.location,
+                                    createdAt = dtoList.createdAt,
+                                    currencyFrom = currencyFrom,
+                                    currencyTo = currencyTo,
+                                    deletedYn = dtoList.deletedYn
+                                )
+
+                                callback(listModel)
+                            }
+
+
+                            // 데이터를 받은 후 콜백 실행
                         } catch (e: Exception) {
                             Log.e("GSON_ERROR", "파싱 실패", e)
                         }
@@ -272,19 +270,14 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         val dateTime = LocalDateTime.parse(list.createdAt, DateTimeFormatter.ISO_DATE_TIME)
         binding.createdDate.text = dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
         binding.createdTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+        binding.currencyName1.text = list.currencyFrom.curUnit
+        binding.currencyName2.text = list.currencyTo.curUnit
+        binding.currencyName3.text = list.currencyFrom.curUnit
     }
 
 }
 
-// list_product recylcerview에 통화 기호 전달하기 위한 클래스
-class CurrencyViewModel : ViewModel() {
-    private val _selectedCurrency = MutableLiveData<String>()
-    val selectedCurrency: LiveData<String> get() = _selectedCurrency
 
-    fun updateCurrency(currency: String) {
-        _selectedCurrency.value = currency
-    }
-}
 
 
 

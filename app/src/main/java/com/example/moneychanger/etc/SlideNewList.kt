@@ -8,9 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.example.moneychanger.databinding.SlideNewListBinding
-import com.example.moneychanger.network.CurrencyStoreManager
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
+import com.example.moneychanger.network.currency.CurrencyManager
 import com.example.moneychanger.network.list.CreateListRequestDto
 import com.example.moneychanger.network.list.CreateListResponseDto
 import com.example.moneychanger.network.list.CreateListWithNameRequestDto
@@ -54,37 +54,33 @@ class SlideNewList : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // 통화 정보 가져오기
-        val currencyList = CurrencyStoreManager.getCurrencyList()
+        val currencyList = CurrencyManager.getCurrencies()
 
-        if (currencyList.isNullOrEmpty()) {
+        if (currencyList.isEmpty()) {
             context?.let {
-                Toast.makeText(it, "로그인 후 이용해주세요.", Toast.LENGTH_LONG).show()
+                Toast.makeText(it, "로그인 후 이용해주세요.1", Toast.LENGTH_LONG).show()
             }
             return
         }
 
         // 통화 Spinner 데이터 설정
-        val currencyUnits: List<String> = currencyList?.mapNotNull { it.curUnit } ?: emptyList()
+        val currencyUnits: List<String> = currencyList?.map { it.curUnit } ?: emptyList()
         val customSpinner1 = CustomSpinner(requireContext(), currencyUnits)
         val customSpinner2 = CustomSpinner(requireContext(), currencyUnits)
 
         binding.currencyContainer1.setOnClickListener {
             customSpinner1.show(binding.currencyContainer1) { selected ->
                 binding.currencyName1.text = selected
-                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
-                if (selectedCurrency != null) {
-                    currencyIdFrom = selectedCurrency.currentId
-                }
+                val selectedCurrency = CurrencyManager.getByUnit(selected)
+                currencyIdFrom = selectedCurrency.currencyId
             }
         }
 
         binding.currencyContainer2.setOnClickListener {
             customSpinner2.show(binding.currencyContainer2) { selected ->
                 binding.currencyName2.text = selected
-                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
-                if (selectedCurrency != null) {
-                    currencyIdTo = selectedCurrency.currentId
-                }
+                val selectedCurrency = CurrencyManager.getByUnit(selected)
+                currencyIdTo = selectedCurrency.currencyId
             }
         }
 

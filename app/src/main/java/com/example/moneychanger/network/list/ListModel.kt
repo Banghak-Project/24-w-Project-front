@@ -3,15 +3,16 @@ package com.example.moneychanger.network.list
 import com.google.gson.annotations.SerializedName
 
 import com.example.moneychanger.network.currency.CurrencyModel
+import com.example.moneychanger.network.currency.CurrencyResponseDto
 
 data class ListModel(
     val listId: Long,
     val name: String,
     val userId: Long,
-    val createdAt: String,
+    val createdAt: String?,
     val location: String,
-    val currencyFrom: CurrencyModel?,
-    val currencyTo: CurrencyModel?,
+    val currencyFrom: CurrencyModel,
+    val currencyTo: CurrencyModel,
     val deletedYn: Boolean
 )
 
@@ -23,14 +24,22 @@ data class ListsRequestDto(
 )
 
 data class ListsResponseDto(
-    val listId: Long,
-    val name: String,
-    val userId : Long,
-    val location: String,
-    val createdAt: String,
-    val currencyFrom : CurrencyModel,
-    val currencyTo: CurrencyModel,
-    val deletedYn: Boolean
+    @SerializedName("listId") val listId: Long,
+    @SerializedName("name") val name: String,
+    @SerializedName("userId") val userId: Long,
+    @SerializedName("location") val location: String,
+    @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("currencyFromId") val currencyFromId: Long,
+    @SerializedName("currencyToId") val currencyToId: Long,
+    @SerializedName("deletedYn") val deletedYn: Boolean
+)
+
+
+data class UpdateRequestDto(
+    val currencyIdFrom: Long?,
+    val currencyIdTo: Long?,
+    val location: String?,
+    val name:String?
 )
 
 data class CreateListRequestDto(

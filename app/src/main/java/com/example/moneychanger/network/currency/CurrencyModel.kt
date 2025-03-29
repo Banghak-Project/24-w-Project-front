@@ -12,11 +12,10 @@ data class CurrencyModel(
         return "$curUnit ($curNm)"
     }
 }
-)
 
 data class CurrencyResponseDto(
-    @SerializedName("currentId") val currentId: Long,
-    @SerializedName("curUnit") val curUnit: String,
-    @SerializedName("dealBasR") val dealBasR: String,
-    @SerializedName("curNm") val curNm: String
+    @SerializedName("currencyId") val currencyId: Long,
+    @SerializedName("cur_unit") val curUnit: String,
+    @SerializedName("deal_bas_r") val dealBasR: String,
+    @SerializedName("cur_nm") val curNm: String
 )

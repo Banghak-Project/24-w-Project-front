@@ -84,29 +84,19 @@ class KakaoLoginActivity : AppCompatActivity() {
                         if (responseBody?.status == "success") {
                             val responseData = responseBody.data
 
-                            if (responseData is Map<*, *>) {
-                                // 🛠 Map에서 직접 변환
-                                val signInResponse = SignInResponse(
-                                    userId = (responseData["userId"] as? Number)?.toLong() ?: 0L,
-                                    userName = responseData["userName"] as? String ?: "",
-                                    msg = responseData["msg"] as? String ?: "",
-                                    accessToken = responseData["accessToken"] as? String ?: "",
-                                    refreshToken = responseData["refreshToken"] as? String ?: "",
-                                    kakaoAccessToken = responseData["kakaoAccessToken"] as? String
-                                )
-
+                            if (responseData != null) {
                                 Log.d("KakaoLoginActivity", "✅ 서버 응답: 로그인 성공")
 
                                 // ✅ 토큰 저장
-                                TokenManager.saveAccessToken(signInResponse.accessToken ?: "")
-                                TokenManager.saveRefreshToken(signInResponse.refreshToken ?: "")
+                                responseData.accessToken?.let { TokenManager.saveAccessToken(it) }
+                                responseData.refreshToken?.let { TokenManager.saveRefreshToken(it) }
 
                                 Toast.makeText(this@KakaoLoginActivity, "로그인 성공", Toast.LENGTH_SHORT).show()
                                 startActivity(Intent(this@KakaoLoginActivity, MainActivity::class.java))
                                 finish()
                             } else {
-                                Log.e("KakaoLoginActivity", "🚨 로그인 실패: data 필드가 예상한 형식이 아님. ${responseBody.data}")
-                                Toast.makeText(this@KakaoLoginActivity, "로그인 실패: 서버 응답 형식 오류", Toast.LENGTH_SHORT).show()
+                                Log.e("KakaoLoginActivity", "🚨 로그인 실패: data 필드가 null")
+                                Toast.makeText(this@KakaoLoginActivity, "로그인 실패: 서버 응답 없음", Toast.LENGTH_SHORT).show()
                             }
                         } else {
                             Log.e("KakaoLoginActivity", "🚨 로그인 실패: ${responseBody?.message}")

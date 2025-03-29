@@ -3,7 +3,6 @@ package com.example.moneychanger.home
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
@@ -19,19 +18,16 @@ import com.example.moneychanger.R
 import com.example.moneychanger.setting.SettingActivity
 import com.example.moneychanger.databinding.ActivityMainBinding
 import com.example.moneychanger.etc.BaseActivity
-import com.example.moneychanger.etc.DataProvider
 import com.example.moneychanger.etc.OnStoreNameUpdatedListener
-import com.example.moneychanger.etc.SlideEdit
 import com.example.moneychanger.etc.SlideNewList
 import com.example.moneychanger.network.list.ListModel
-import com.example.moneychanger.list.CurrencyViewModel
-import com.example.moneychanger.network.RetrofitClient
+import com.example.moneychanger.network.RetrofitClient.apiService
 import com.example.moneychanger.network.currency.CurrencyManager
 import com.example.moneychanger.network.currency.CurrencyModel
-import com.example.moneychanger.network.list.ListModel
+import com.example.moneychanger.network.currency.CurrencyViewModel
 import com.example.moneychanger.network.list.ListsResponseDto
+import com.example.moneychanger.network.currency.CurrencyResponseDto
 import com.example.moneychanger.network.user.ApiResponse
-import com.example.moneychanger.onboarding.find.FindIdPwActivity
 import com.example.moneychanger.onboarding.LoginSelectActivity
 import com.example.moneychanger.onboarding.find.NewPwActivity
 import java.time.LocalDateTime
@@ -53,9 +49,6 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        currencyViewModel = ViewModelProvider(this)[CurrencyViewModel::class.java]
-        fetchAndStoreCurrencyData()
-
         val toolbar: Toolbar = findViewById(R.id.main_toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
@@ -73,8 +66,8 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
             startActivity(intent)
         }
 
-        // recyclerView 연결 (초기 빈 리스트)
-        adapter = ListAdapter(lists.toMutableList()) { item ->
+        // recyclerView 연결
+        adapter = ListAdapter(lists) { item ->
             val intent = Intent(this, ListActivity::class.java)
             intent.putExtra("list_id", item.listId)
             startActivity(intent)
@@ -84,7 +77,11 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
 
         //팝업 띄우기
         showAccessPopup()
-        fetchListsFromApi()
+
+        currencyViewModel = ViewModelProvider(this)[CurrencyViewModel::class.java]
+        fetchAndStoreCurrencyData {
+            fetchListsFromApi()
+        }
 
         // 임시 버튼 연결 - 임시
         binding.b1.setOnClickListener {
@@ -99,42 +96,61 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
 
 
     }
-    private fun fetchAndStoreCurrencyData() {
-        RetrofitClient.apiService.findAll().enqueue(object : Callback<List<CurrencyModel>> {
+    private fun fetchAndStoreCurrencyData(onFinished: () -> Unit) {
+        apiService.findAll().enqueue(object : Callback<ApiResponse<List<CurrencyResponseDto>>> {
             override fun onResponse(
-                call: Call<List<CurrencyModel>>,
-                response: Response<List<CurrencyModel>>
+                call: Call<ApiResponse<List<CurrencyResponseDto>>>,
+                response: Response<ApiResponse<List<CurrencyResponseDto>>>
             ) {
                 if (response.isSuccessful) {
-                    response.body()?.let { currencyList ->
+                    val dtoList = response.body()?.data
+                    if (dtoList != null) {
+                        val currencyList = dtoList.map {
+                            CurrencyModel(
+                                currencyId = it.currencyId,
+                                curUnit = it.curUnit,
+                                dealBasR = it.dealBasR.toDoubleOrNull() ?: 0.0,
+                                curNm = it.curNm
+                            )
+                        }
                         CurrencyManager.setCurrencies(currencyList)
                         Log.d("CurrencyManager", "환율 데이터 저장 완료 (${currencyList.size}개)")
                     }
-                } else {
-                    Log.e("CurrencyManager", "환율 응답 실패: ${response.errorBody()?.string()}")
                 }
+                // ★ 반드시 응답 이후에 리스트 가져오기
+                onFinished()
             }
 
-            override fun onFailure(call: Call<List<CurrencyModel>>, t: Throwable) {
-                Log.e("CurrencyManager", "환율 API 호출 실패", t)
+            override fun onFailure(call: Call<ApiResponse<List<CurrencyResponseDto>>>, t: Throwable) {
+                onFinished()
             }
         })
     }
+
 
     // 직접 리스트 추가하기 관련 함수
     // 콜백: SlideEdit에서 storeName을 전달받으면 실행됨
     override fun onStoreNameUpdated(storeName: String) {
         val listId = UUID.randomUUID().mostSignificantBits.absoluteValue // 아이디 임시 생성 -> UUID
 
-        val newItem = ListModel(
-            listId = listId,
-            name = storeName,
-            createdAt = getCurrentDateTime(),  // "yyyy-MM-dd HH:mm:ss"
-            location = "", // 위치는 일단 공백으로 들어가게
-            deletedYn = false
-        )
+        val newItem = CurrencyManager.getById(1)?.let {
+            CurrencyManager.getById(2)?.let { it1 ->
+                ListModel(
+                    userId = 1,
+                    listId = listId,
+                    name = storeName,
+                    createdAt = getCurrentDateTime(),  // "yyyy-MM-dd HH:mm:ss"
+                    location = "", // 위치는 일단 공백으로 들어가게
+                    deletedYn = false,
+                    currencyFrom = it,
+                    currencyTo = it1
+                )
+            }
+        }
         // 나중에 여기에 db에 추가하는 부분 넣으면 됨.
-        adapter.addItem(newItem)
+        if (newItem != null) {
+            adapter.addItem(newItem)
+        }
     }
 
     // 현재 시간으로 created At 생성 함수
@@ -187,55 +203,56 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
-
     private fun fetchListsFromApi() {
-        val apiService = RetrofitClient.apiService
-
-        apiService.getAllLists().enqueue(object : Callback<ApiResponse<List<ListsResponseDto?>>> {
+        apiService.getAllLists().enqueue(object : Callback<ApiResponse<List<ListsResponseDto>>> {
             override fun onResponse(
-                call: Call<ApiResponse<List<ListsResponseDto?>>>,
-                response: Response<ApiResponse<List<ListsResponseDto?>>>
+                call: Call<ApiResponse<List<ListsResponseDto>>>,
+                response: Response<ApiResponse<List<ListsResponseDto>>>
             ) {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody?.status == "success") {
-                        val dtoLists: List<Any?> = responseBody.data as List<Any?>
-                        for (dtoList in dtoLists) {
-                            if (dtoList is Map<*, *>) {
-                                // `ListsResponseDto`를 `ListModel`로 변환
-                                val updatedLists = ListModel(
-                                    listId = (dtoList["listId"] as? Number)?.toLong() ?: 0L,
-                                    name = (dtoList["name"] as? String)?.toString() ?: "",
-                                    createdAt = (dtoList["createdAt"] as? String)?.toString() ?: "",
-                                    location = (dtoList["location"] as? String)?.toString() ?: "",
-                                    deletedYn = (dtoList["deletedYn"] as? Boolean) ?: false,
-                                    currencyFrom = (dtoList["currencyFrom"] as? CurrencyModel),
-                                    currencyTo = (dtoList["currencyTo"] as? CurrencyModel),
-                                    userId = 1
+                        val dtoLists = responseBody.data ?: emptyList()
+
+                        val updatedLists = mutableListOf<ListModel>()
+
+                        dtoLists.forEach { dto ->
+                            val currencyFrom = CurrencyManager.getById(dto.currencyFromId)
+                            val currencyTo = CurrencyManager.getById(dto.currencyToId)
+
+                            if (currencyFrom == null || currencyTo == null) {
+                                Log.e("MainActivity", "⚠️ 통화 정보 매핑 실패: from=${dto.currencyFromId}, to=${dto.currencyToId}")
+                                return@forEach
+                            }
+
+                            if (!dto.deletedYn) {
+                                val updatedList = ListModel(
+                                    listId = dto.listId,
+                                    name = dto.name,
+                                    createdAt = dto.createdAt,
+                                    location = dto.location,
+                                    deletedYn = false,
+                                    currencyFrom = currencyFrom,
+                                    currencyTo = currencyTo,
+                                    userId = dto.userId
                                 )
-
-                                if (!updatedLists.deletedYn) {
-                                    Log.i("Retrofit", "추가된 데이터: $updatedLists")
-                                    lists.add(updatedLists)
-                                } else {
-                                    continue // true면 리스트에서 제외
-                                }
-
+                                updatedLists.add(updatedList)
                             }
                         }
-                        // RecyclerView 업데이트
+
+                        Log.d("MainActivity", "리스트 개수: ${updatedLists.size}")
                         runOnUiThread {
-                            adapter.updateData(lists)
+                            adapter.updateList(updatedLists)
                         }
                     } else {
-                        Log.e("Retrofit", "응답이 null입니다.")
+                        Log.e("Retrofit", "응답 status 실패: ${responseBody?.message}")
                     }
                 } else {
                     Log.e("Retrofit", "응답 실패: ${response.errorBody()?.string()}")
                 }
             }
 
-            override fun onFailure(call: Call<ApiResponse<List<ListsResponseDto?>>>, t: Throwable) {
+            override fun onFailure(call: Call<ApiResponse<List<ListsResponseDto>>>, t: Throwable) {
                 Log.e("Retrofit", "API 호출 실패", t)
             }
         })

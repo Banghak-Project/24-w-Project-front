@@ -109,7 +109,6 @@ class ListAdapter(
                     binding.grossPayment.text = "0.0"
                 }
             }
-
             override fun onFailure(call: Call<ApiResponse<Double>>, t: Throwable) {
                 Log.e("ListAdapter", "총 금액 API 호출 실패", t)
                 binding.grossPayment.text = "0.0"
@@ -117,33 +116,27 @@ class ListAdapter(
         })
     }
 
+    fun addItem(item: ListModel) {
+        items.add(item)
+        notifyItemInserted(items.size - 1)
+    }
     fun updateList(newList: List<ListModel>) {
         val diffCallback = object : DiffUtil.Callback() {
             override fun getOldListSize() = items.size
             override fun getNewListSize() = newList.size
-
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
                 return items[oldItemPosition].listId == newList[newItemPosition].listId
             }
-
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
                 return items[oldItemPosition] == newList[newItemPosition]
             }
         }
-
+        Log.d("ListAdapter", "updateData 호출됨: ${newList.size}개")
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         items.clear()
         items.addAll(newList)
         diffResult.dispatchUpdatesTo(this)
     }
-    fun addItem(item: ListModel) {
-        items.add(item)
-        notifyItemInserted(items.size - 1)
-    }
-    fun updateData(newList: List<ListModel>) {
-        items.clear()
-        items.addAll(newList)
-        notifyDataSetChanged() // UI 갱신
-    }
+
 }
 

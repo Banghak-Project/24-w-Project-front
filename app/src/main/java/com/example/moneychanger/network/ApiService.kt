@@ -5,7 +5,9 @@ import com.example.moneychanger.network.currency.CurrencyResponseDto
 import com.example.moneychanger.network.list.CreateListRequestDto
 import com.example.moneychanger.network.list.CreateListResponseDto
 import com.example.moneychanger.network.list.CreateListWithNameRequestDto
+import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.network.list.ListsResponseDto
+import com.example.moneychanger.network.list.UpdateRequestDto
 import com.example.moneychanger.network.product.CreateProductRequestDto
 import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.product.ImageProductResponseDto
@@ -68,7 +70,7 @@ interface ApiService {
     fun createListWithName(@Body requestDto: CreateListWithNameRequestDto): Call<ApiResponse<CreateListResponseDto>>
 
     @GET("/api/lists")
-    fun getAllLists(): Call<ApiResponse<List<ListsResponseDto?>>>
+    fun getAllLists(): Call<ApiResponse<List<ListsResponseDto>>>
 
     @GET("/api/lists/{id}")
     fun getListsById(@Path("id") id:Long): Call<ApiResponse<ListsResponseDto?>>
@@ -113,13 +115,14 @@ interface ApiService {
     //Notice
     //추후에 추가
 
-    //Currency
     @POST("/api/currency/import")
     fun importCurrency(): Response<ApiResponse<Call<List<CurrencyModel>>>>
 
     @GET("/api/currency")
     fun findAll(): Call<ApiResponse<List<CurrencyResponseDto>>>
 
+    @PATCH("/api/currency/update/{id}")
+    fun updateCurrency(@Path("id") id:Long, @Body request: UpdateRequestDto) : Call<ApiResponse<ListModel>>
 
     // ID 찾기 API
     @GET("/api/auth/find-id")
