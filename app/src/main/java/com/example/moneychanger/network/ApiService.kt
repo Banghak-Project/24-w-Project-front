@@ -26,7 +26,6 @@ import com.example.moneychanger.network.user.SignUpRequest
 import com.example.moneychanger.network.user.SignUpResponse
 import com.example.moneychanger.network.user.UpdateUserInfoRequest
 import com.example.moneychanger.network.user.UserInfoResponse
-import com.google.android.gms.common.api.Api
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -137,7 +136,7 @@ interface ApiService {
 
     //  회원정보 조회
     @GET("/api/auth/user-info")
-    suspend fun getUserInfo(@Header("Authorization") token: String): Response<ApiResponse<UserInfoResponse>>
+    suspend fun getUserInfo(): Response<ApiResponse<UserInfoResponse>>
 
     //  회원정보 수정
     @POST("/api/auth/update-user-info")
