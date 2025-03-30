@@ -74,6 +74,8 @@
                     android:paddingHorizontal="24dp"
                     android:hint="@string/name"
                     android:background="@drawable/round_background"
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"
                     style="@style/TextBodyL"/>
             </LinearLayout>
             <LinearLayout
@@ -115,6 +117,8 @@
                     android:paddingHorizontal="24dp"
                     android:hint="@string/pw_eng"
                     android:inputType="textPassword"
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"
                     android:background="@drawable/round_background"
                     style="@style/TextBodyL"/>
             </LinearLayout>

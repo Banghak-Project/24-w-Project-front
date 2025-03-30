@@ -50,6 +50,8 @@
                     android:hint="@string/pw_kor"
                     android:background="@drawable/round_background"
                     android:inputType="textPassword"
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"
                     android:importantForAutofill="no"
                     style="@style/TextBodyL"/>
             </LinearLayout>
@@ -65,13 +67,15 @@
                     android:text="@string/new_pw_again"
                     style="@style/TextBodyS"/>
                 <EditText
-                    android:id="@+id/date_text"
+                    android:id="@+id/pw_again"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:paddingHorizontal="24dp"
                     android:hint="@string/pw_kor"
                     android:background="@drawable/round_background"
                     android:inputType="textPassword"
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"
                     android:importantForAutofill="no"
                     style="@style/TextBodyL"/>
             </LinearLayout>

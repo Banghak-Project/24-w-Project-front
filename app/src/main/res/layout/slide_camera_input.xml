@@ -54,7 +54,8 @@
                     android:textColor="@color/gray_06"
                     style="@style/TextBodyL"
                     android:inputType="number"
-                    android:imeOptions="actionDone"/>
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"/>
             </FrameLayout>
         </LinearLayout>
         <LinearLayout
