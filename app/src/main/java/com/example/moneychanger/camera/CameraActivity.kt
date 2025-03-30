@@ -35,6 +35,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.moneychanger.R
 import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.etc.DataProvider
+import com.example.moneychanger.etc.ExchangeRateUtil
 import com.example.moneychanger.etc.OnProductAddedListener
 import com.example.moneychanger.etc.SlideCameraList
 import com.example.moneychanger.network.RetrofitClient
@@ -75,7 +76,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
     private var currencyIdFrom = -1L
     private var currencyIdTo = -1L
-    private val userId = TokenManager.getUserId() ?: -1L
+    private val userId = TokenManager.getUserId()
     private val location = "Seoul"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +99,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
         binding.listButton.setOnClickListener {
             val productList = DataProvider.productDummyModel  // 더미 데이터 가져오기
-            val slideCameraList = SlideCameraList.newInstance(productList)  // newInstance() 사용
+            val slideCameraList = SlideCameraList.newInstance(productList, currencyIdFrom, currencyIdTo)  // newInstance() 사용
             slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
         }
 
@@ -126,7 +127,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         }
 
         // 통화 Spinner 데이터 설정
-        val currencyUnits: List<String> = currencyList.map { it.curUnit } ?: emptyList()
+        val currencyUnits: List<String> = currencyList.map { it.curUnit }
         val customSpinner1 = CustomSpinner(this, currencyUnits)
         val customSpinner2 = CustomSpinner(this, currencyUnits)
 
@@ -136,9 +137,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                 binding.currencyName1.text = selected
                 viewModel.updateCurrency(selected)
                 val selectedCurrency = CurrencyManager.getByUnit(selected)
-                if (selectedCurrency != null) {
-                    currencyIdFrom = selectedCurrency.currencyId
-                }
+                currencyIdFrom = selectedCurrency.currencyId
             }
         }
 
@@ -148,9 +147,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                 binding.currencyName2.text = selected
                 viewModel.updateCurrency(selected)
                 val selectedCurrency = CurrencyManager.getByUnit(selected)
-                if (selectedCurrency != null) {
-                    currencyIdTo = selectedCurrency.currencyId
-                }
+                currencyIdTo = selectedCurrency.currencyId
             }
         }
 
@@ -417,7 +414,8 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
     private fun updateSelectedText() {
         if (selectedProductName != null && selectedProductPrice != null) {
             val cleanPrice = cleanPriceText(selectedProductPrice!!).toDouble()
-            val resultText = "상품명: ${selectedProductName}, 상품가격: ${cleanPrice} -> ${calculateExchangeRate(currencyIdFrom, currencyIdTo, cleanPrice)}"
+            val exchangedAmount = ExchangeRateUtil.calculate(currencyIdFrom, currencyIdTo, cleanPrice)
+            val resultText = "상품명: ${selectedProductName}, 상품가격: ${cleanPrice} -> $exchangedAmount"
             binding.cameraText.text = resultText
             Toast.makeText(this, "선택 완료: $resultText", Toast.LENGTH_SHORT).show()
         }
@@ -515,37 +513,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                 }
             })
     }
-
-    private fun calculateExchangeRate(fromId: Long, toId: Long, amount: Double): Double {
-        val fromCurrency = CurrencyManager.getById(fromId)
-        val toCurrency = CurrencyManager.getById(toId)
-
-        if (fromCurrency == null || toCurrency == null) {
-            Log.e("MainActivity", "⚠️ 통화 정보 매핑 실패:")
-            return 0.0
-        }
-
-        val rateFrom = fromCurrency.dealBasR
-        val rateTo = toCurrency.dealBasR
-
-        if (rateFrom == 0.0 || rateTo == 0.0) {
-            Log.e("ExchangeRate", "🚨 환율 값이 유효하지 않습니다: rateFrom=$rateFrom, rateTo=$rateTo")
-            return 0.0
-        }
-
-        // 👇 (100) 단위를 가진 통화는 보정값 설정
-        val fromDivisor = if (fromCurrency.curUnit.contains("(100)")) 100.0 else 1.0
-        val toDivisor = if (toCurrency.curUnit.contains("(100)")) 100.0 else 1.0
-
-        val adjustedRateFrom = rateFrom / fromDivisor
-        val adjustedRateTo = rateTo / toDivisor
-
-        val exchangedAmount = (amount * adjustedRateFrom) / adjustedRateTo
-
-        Log.d("ExchangeRate", "✅ ${fromCurrency.curUnit} -> ${toCurrency.curUnit} 환율 적용: $amount -> $exchangedAmount")
-        return exchangedAmount
-    }
-
 
     override fun onDestroy() {
         super.onDestroy()

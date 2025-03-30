@@ -12,10 +12,12 @@ import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.etc.OnStoreNameUpdatedListener
 import com.example.moneychanger.camera.CameraActivity
 import com.example.moneychanger.R
+import com.example.moneychanger.adapter.ListAdapter
 import com.example.moneychanger.adapter.ProductAdapter
 import com.example.moneychanger.camera.CameraActivity2
 import com.example.moneychanger.etc.SlideEdit
 import com.example.moneychanger.databinding.ActivityListBinding
+import com.example.moneychanger.etc.TotalAmountUtil
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.RetrofitClient.apiService
 import com.example.moneychanger.network.currency.CurrencyManager
@@ -28,6 +30,7 @@ import com.example.moneychanger.network.product.ProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
 import com.google.android.gms.common.api.Api
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -149,7 +152,10 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                 selectedList = list // selectedList 초기화
                 updateUI(list) // UI 업데이트
                 binding.productContainer.layoutManager = LinearLayoutManager(this)
-                binding.productContainer.adapter = ProductAdapter(productList.toMutableList())
+                binding.productContainer.adapter = ProductAdapter(
+                    productList.toMutableList(),
+                    selectedList!!.currencyFrom.currencyId,
+                    selectedList!!.currencyTo.currencyId)
                 fetchProductsByListId(selectedListId)
             } else {
                 Toast.makeText(this, "리스트 데이터를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
@@ -165,16 +171,16 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         }
     }
 
-    private fun fetchProductsByListId(listId: Long){
-       apiService.getProductByListsId(listId).enqueue(object : Callback<ApiResponse<List<ProductResponseDto>>> {
+    private fun fetchProductsByListId(listId: Long) {
+        apiService.getProductByListsId(listId).enqueue(object : Callback<ApiResponse<List<ProductResponseDto>>> {
             override fun onResponse(
                 call: Call<ApiResponse<List<ProductResponseDto>>>,
                 response: Response<ApiResponse<List<ProductResponseDto>>>
             ) {
                 if (response.isSuccessful && response.body()?.status == "success") {
-                    val gson = Gson()
-                    val jsonElement = gson.toJsonTree(response.body()?.data)
-                    val productDtoList = gson.fromJson(jsonElement, Array<ProductResponseDto>::class.java).toList()
+                    val productDtoList = response.body()?.data ?: emptyList()
+
+                    Log.d("ListActivity", "응답 파싱 성공: $productDtoList")
 
                     val products = productDtoList.map {
                         ProductModel(
@@ -186,22 +192,27 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                         )
                     }
 
-                    Log.d("ListActivity", "상품 불러오기 성공: $products")
-
                     productList = products.toMutableList()
+
                     binding.productContainer.layoutManager = LinearLayoutManager(this@ListActivity)
-                    binding.productContainer.adapter = ProductAdapter(productList)
+                    binding.productContainer.adapter = ProductAdapter(productList, currencyIdFrom, currencyIdTo)
+
+                    // 총 금액 계산
+                    val total = productList.sumOf { it.originPrice ?: 0.0 }
+                    binding.totalSum.text = total.toString()
+
                 } else {
                     Toast.makeText(this@ListActivity, "상품 불러오기 실패", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            override fun onFailure(p0: Call<ApiResponse<List<ProductResponseDto>>>, p1: Throwable) {
-                Log.e("ListActivity", "API 실패", p1)
+            override fun onFailure(call: Call<ApiResponse<List<ProductResponseDto>>>, t: Throwable) {
+                Log.e("ListActivity", "API 실패", t)
                 Toast.makeText(this@ListActivity, "네트워크 오류", Toast.LENGTH_SHORT).show()
             }
         })
     }
+
     override fun onStoreNameUpdated(storeName: String) {
         // SlideEdit에서 받은 데이터를 placeName TextView에 업데이트
         binding.placeName.text = storeName
@@ -215,39 +226,27 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                 response: Response<ApiResponse<ListsResponseDto?>>
             ) {
                 if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    if (responseBody?.status == "success" && responseBody.data != null) {
-                        val gson = Gson()
-                        val json = gson.toJson(responseBody.data)  // data를 JSON 문자열로 변환
-                        try {
-                            val dtoList = gson.fromJson(json, ListsResponseDto::class.java)
-                            Log.d("DEBUG", "파싱된 리스트: $dtoList")
+                    val data = response.body()?.data
+                    if (data != null) {
+                            val currencyFrom = CurrencyManager.getById(data.currencyFromId)
+                            val currencyTo = CurrencyManager.getById(data.currencyToId)
 
-                            val currencyFrom = CurrencyManager.getById(dtoList.currencyFromId)
-                            val currencyTo = CurrencyManager.getById(dtoList.currencyToId)
-
-                            if (currencyFrom == null || currencyTo == null) {
-                                Log.e("MainActivity", "⚠️ 통화 정보 매핑 실패: from=${dtoList.currencyFromId}, to=${dtoList.currencyToId}")
-                            }else{
+                            if (currencyFrom != null && currencyTo != null) {
                                 val listModel = ListModel(
-                                    listId = dtoList.listId,
-                                    name = dtoList.name,
-                                    userId = dtoList.userId,
-                                    location = dtoList.location,
-                                    createdAt = dtoList.createdAt,
+                                    listId = data.listId,
+                                    name = data.name,
+                                    userId = data.userId,
+                                    location = data.location,
+                                    createdAt = data.createdAt,
                                     currencyFrom = currencyFrom,
                                     currencyTo = currencyTo,
-                                    deletedYn = dtoList.deletedYn
+                                    deletedYn = data.deletedYn
                                 )
-
                                 callback(listModel)
+                            }else {
+                                Log.e("ListActivity", "통화 정보 매핑 실패")
+                                callback(null)
                             }
-
-
-                            // 데이터를 받은 후 콜백 실행
-                        } catch (e: Exception) {
-                            Log.e("GSON_ERROR", "파싱 실패", e)
-                        }
                     } else {
                         Log.e("Retrofit", "응답이 null입니다.")
                         callback(null)
@@ -273,7 +272,15 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         binding.currencyName1.text = list.currencyFrom.curUnit
         binding.currencyName2.text = list.currencyTo.curUnit
         binding.currencyName3.text = list.currencyFrom.curUnit
+        binding.currencySymbol1.text = list.currencyTo.curUnit
+        binding.currencySymbol2.text = list.currencyTo.curUnit
+        binding.totalSum.text = calculateTotalAmount().toString()
     }
+
+    private fun calculateTotalAmount(): Double {
+        return productList.sumOf { it.originPrice ?: 0.0 }
+    }
+
 
 }
 
