@@ -20,10 +20,16 @@ class SlideCameraList : BottomSheetDialogFragment() {
     companion object {
         const val TAG = "SlideCameraList"
 
-        fun newInstance(productList: MutableList<ProductModel>): SlideCameraList {
+        fun newInstance(
+            productList: MutableList<ProductModel>,
+            currencyIdFrom: Long,
+            currencyIdTo: Long
+        ): SlideCameraList {
             val fragment = SlideCameraList()
             val args = Bundle()
             args.putParcelableArrayList("product_list", ArrayList(productList))
+            args.putLong("currency_id_from", currencyIdFrom)
+            args.putLong("currency_id_to", currencyIdTo)
             fragment.arguments = args
             return fragment
         }
@@ -49,11 +55,11 @@ class SlideCameraList : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // ✅ 전달받은 데이터 가져오기
         val productList = arguments?.getParcelableArrayList<ProductModel>("product_list")?.toMutableList() ?: mutableListOf()
+        val currencyIdFrom = arguments?.getLong("currency_id_from") ?: -1L
+        val currencyIdTo = arguments?.getLong("currency_id_to") ?: -1L
 
-        // ✅ RecyclerView 설정
-        productAdapter = ProductAdapter(productList)
+        productAdapter = ProductAdapter(productList,currencyIdFrom, currencyIdTo)
         binding.productContainer.adapter = productAdapter
 
         // ✅ 추가하기 버튼 클릭 시

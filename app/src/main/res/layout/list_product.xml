@@ -137,6 +137,7 @@
                 android:paddingHorizontal="16dp"
                 android:background="@drawable/round_background2">
                 <TextView
+                    android:id="@+id/converted_price"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"

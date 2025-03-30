@@ -1,9 +1,8 @@
-package com.example.moneychanger.network.product;
+package com.example.moneychanger.network.product
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
-
 
 @Parcelize
 data class ProductModel(
@@ -19,12 +18,13 @@ data class ProductRequestDto(
     val deletedYn : Boolean
 )
 data class ProductResponseDto(
-    val productId: Long,
-    val listId: Long,
-    val name: String,
-    val originPrice: Double,
-    val deletedYn : Boolean
+    @SerializedName("productId") val productId: Long,
+    @SerializedName("listId") val listId: Long,
+    @SerializedName("name") val name: String,
+    @SerializedName("originPrice") val originPrice: Double,
+    @SerializedName("deletedYn") val deletedYn: Boolean
 )
+
 data class ImageProductResponseDto(
     val name: String,
     val price: Double,

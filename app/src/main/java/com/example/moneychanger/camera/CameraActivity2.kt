@@ -94,7 +94,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
 
         binding.listButton.setOnClickListener {
             val productList = DataProvider.productDummyModel
-            val slideCameraList = SlideCameraList.newInstance(productList)
+            val slideCameraList = SlideCameraList.newInstance(productList,currencyIdFrom,currencyIdTo)
             slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
         }
 
@@ -479,8 +479,8 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             return 0.0
         }
 
-        val fromDivisor = if (fromCurrency.curUnit?.contains("(100)") == true) 100.0 else 1.0
-        val toDivisor = if (toCurrency.curUnit?.contains("(100)") == true) 100.0 else 1.0
+        val fromDivisor = if (fromCurrency.curUnit.contains("(100)")) 100.0 else 1.0
+        val toDivisor = if (toCurrency.curUnit.contains("(100)")) 100.0 else 1.0
 
         val adjustedRateFrom = rateFrom / fromDivisor
         val adjustedRateTo = rateTo / toDivisor

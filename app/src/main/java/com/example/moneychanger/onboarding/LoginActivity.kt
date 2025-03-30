@@ -8,13 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityLoginBinding
 import com.example.moneychanger.home.MainActivity
-import com.example.moneychanger.network.CurrencyStoreManager
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
-import com.example.moneychanger.network.currency.CurrencyManager
-import com.example.moneychanger.network.currency.CurrencyModel
-import com.example.moneychanger.network.currency.CurrencyResponseDto
-import com.example.moneychanger.network.user.ApiResponse
 import com.example.moneychanger.network.user.SignInRequest
 import com.example.moneychanger.network.user.SignInResponse
 import com.example.moneychanger.onboarding.find.FindIdPwActivity
@@ -24,9 +19,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.HttpException
 import java.io.IOException
 import java.util.Locale
@@ -139,10 +131,8 @@ class LoginActivity : AppCompatActivity() {
             TokenManager.saveRefreshToken(refreshToken)
             TokenManager.saveSignInInfo(signInResponse) //  사용자 정보 저장
 
-            val userId = signInResponse.userId ?: -1
+            val userId = signInResponse.userId
             TokenManager.saveUserId(userId)
-
-//            fetchCurrencyList()
 
             Log.d("LoginActivity", "토큰 저장 완료: ${TokenManager.getAccessToken()}")
 
@@ -159,48 +149,4 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-//    private fun fetchCurrencyList() {
-//        RetrofitClient.apiService.findAll()
-//            .enqueue(object : Callback<ApiResponse<List<CurrencyResponseDto>>> {
-//                override fun onResponse(
-//                    call: Call<ApiResponse<List<CurrencyResponseDto>>>,
-//                    response: Response<ApiResponse<List<CurrencyResponseDto>>>
-//                ) {
-//                    if (response.isSuccessful) {
-//                        val apiResponse = response.body()
-//
-//                        // `data`를 List<CurrencyResponseDto>로 변환하기
-//                        val dtoList = apiResponse?.data
-//
-//                        if (dtoList != null && dtoList is List<*>) {
-//                            val currencyList = dtoList.filterIsInstance<CurrencyResponseDto>()
-//
-//                            // List<CurrencyResponseDto>를 List<CurrencyModel>로 변환
-//                            val mappedCurrencyList = currencyList.map {
-//                                CurrencyModel(
-//                                    currencyId = it.currencyId,
-//                                    curUnit = it.curUnit,
-//                                    dealBasR = it.dealBasR.toDoubleOrNull() ?: 0.0,
-//                                    curNm = it.curNm
-//                                )
-//                            }
-//
-//                            // CurrencyManager에 변환된 리스트 전달
-//                            CurrencyManager.setCurrencies(mappedCurrencyList)
-//                            Log.d("LoginActivity", "📌 저장된 통화 리스트: ${CurrencyManager.getAll()}")
-//                        } else {
-//                            Log.e("LoginActivity", "🚨 통화 데이터가 비어 있음")
-//                        }
-//                    } else {
-//                        Log.e("LoginActivity", "🚨 서버 오류: ${response.errorBody()?.string()}")
-//                    }
-//                }
-//                override fun onFailure(call: Call<ApiResponse<List<CurrencyResponseDto>>>, t: Throwable) {
-//                    CoroutineScope(Dispatchers.Main).launch {
-//                        Log.e("LoginActivity", "통화 가져오는 상황에서의 네트워크 오류: ${t.message}")
-//                        Toast.makeText(this@LoginActivity, "통화 데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            })
-//    }
 }

@@ -1,7 +1,6 @@
 package com.example.moneychanger.network
 
 import com.google.gson.FieldNamingPolicy
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -31,7 +30,7 @@ object RetrofitClient {
         .serializeNulls() // null 값도 JSON에 포함
         .setLenient()  // JSON 파싱 오류 방지
         .setDateFormat("yyyy-MM-dd") // 날짜 포맷 설정
-        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES) // ✅ 백엔드 JSON 구조 맞추기
+        .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES) // 스네이크 케이스로,, 모두 바꿔야함
         .create()
 
     val apiService: ApiService by lazy {

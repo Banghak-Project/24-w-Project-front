@@ -1,20 +1,28 @@
 package com.example.moneychanger.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ListProductBinding
+import com.example.moneychanger.etc.ExchangeRateUtil
 import com.example.moneychanger.network.product.ProductModel
 
 class ProductAdapter(
-    private val products: MutableList<ProductModel>
+    private val products: MutableList<ProductModel>,
+    private val currencyIdFrom: Long,
+    private val currencyIdTo: Long
 ) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     inner class ProductViewHolder(val binding: ListProductBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(product: ProductModel, position: Int, totalCount: Int) {
+            Log.i("ProductAdapter",product.originPrice.toString())
             binding.productName.text = product.name
             binding.originPrice.text = product.originPrice.toString()
+
+            val converted = ExchangeRateUtil.calculate(currencyIdFrom, currencyIdTo, product.originPrice)
+            binding.convertedPrice.text = String.format("%.2f", converted)
+
             binding.perNumber.text = (position + 1).toString()
             binding.allNumber.text = totalCount.toString()
         }
