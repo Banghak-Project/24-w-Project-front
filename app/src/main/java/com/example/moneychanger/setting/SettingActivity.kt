@@ -1,8 +1,8 @@
 package com.example.moneychanger.setting
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,9 +13,7 @@ import com.example.moneychanger.databinding.ActivitySettingBinding
 import com.example.moneychanger.etc.BaseActivity
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
-import com.example.moneychanger.network.user.UserInfoResponse
 import com.example.moneychanger.onboarding.LoginActivity
-import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -67,20 +65,19 @@ class SettingActivity : BaseActivity() {
     // ✅ 사용자 정보 요청
     private fun fetchUserInfo() {
         val accessToken = TokenManager.getAccessToken()
+        Log.d("SettingActivity", "accessToken = $accessToken")
         if (accessToken.isNullOrBlank()) return
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = RetrofitClient.apiService.getUserInfo("Bearer $accessToken")
+                val response = RetrofitClient.apiService.getUserInfo()
 
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful && response.body()?.status == "success") {
-                        val rawData = response.body()?.data
-                        val jsonData = Gson().toJson(rawData)
-                        val userInfo = Gson().fromJson(jsonData, UserInfoResponse::class.java)
+                        val userInfo = response.body()?.data
                         if (userInfo != null) {
                             TokenManager.saveUserInfo(userInfo)
-                            updateUserInfo() // UI 반영
+                            updateUserInfo()
                         }
                     } else {
                         Toast.makeText(this@SettingActivity, "회원 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
@@ -98,8 +95,8 @@ class SettingActivity : BaseActivity() {
         val userInfo = TokenManager.getUserInfo()
 
         if (userInfo != null) {
-            binding.textUserName.text = userInfo.userName ?: "사용자"
-            binding.textUserEmail.text = userInfo.userEmail ?: "이메일 없음"
+            binding.textUserName.text = userInfo.userName
+            binding.textUserEmail.text = userInfo.userEmail
         } else {
             binding.textUserName.text = "로그인 필요"
             binding.textUserEmail.text = "이메일 없음"
