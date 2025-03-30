@@ -24,9 +24,6 @@
         android:theme="@style/Theme.MoneyChanger"
         tools:targetApi="31">
         <activity
-            android:name=".home.ListAddActivity"
-            android:exported="false" />
-        <activity
             android:name=".onboarding.find.NewPwActivity"
             android:exported="false" />
         <activity
