@@ -38,6 +38,9 @@
                     android:hint="@string/id_eng"
                     android:layout_marginBottom="18dp"
                     android:background="@drawable/round_background"
+                    android:imeOptions="actionDone"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
                     style="@style/TextHeadingXL"/>
                 <EditText
                     android:id="@+id/input_password"
@@ -47,6 +50,10 @@
                     android:hint="@string/pw_eng"
                     android:layout_marginBottom="18dp"
                     android:background="@drawable/round_background"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:importantForAutofill="no"
                     style="@style/TextHeadingXL"/>
                 <TextView
                     android:id="@+id/button_find_id_pw"

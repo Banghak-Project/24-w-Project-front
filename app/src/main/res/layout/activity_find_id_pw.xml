@@ -124,6 +124,9 @@
                     android:layout_height="48dp"
                     android:paddingHorizontal="24dp"
                     android:hint="@string/name"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"
                     android:background="@drawable/round_background"
                     style="@style/TextBodyL"/>
             </LinearLayout>
@@ -199,6 +202,9 @@
                 android:layout_height="48dp"
                 android:paddingHorizontal="24dp"
                 android:hint="@string/name"
+                android:inputType="text"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
                 android:background="@drawable/round_background"
                 style="@style/TextBodyL"/>
         </LinearLayout>
@@ -219,6 +225,9 @@
                 android:layout_height="48dp"
                 android:paddingHorizontal="24dp"
                 android:hint="@string/ex_email"
+                android:inputType="textEmailAddress"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
                 android:background="@drawable/round_background"
                 style="@style/TextBodyL"/>
         </LinearLayout>
