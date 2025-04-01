@@ -1,5 +1,6 @@
 package com.example.moneychanger.list
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -48,52 +49,6 @@ class AddActivity : AppCompatActivity() {
 
         binding.loginToolbar.pageText.text = "추가하기"
 
-//        // 바꿀 통화 Spinner 항목 선택 이벤트 (From 통화)
-//        binding.currencyContainer1.setOnClickListener {
-//            customSpinner1.show(binding.currencyContainer1) { selected ->
-//                binding.currencyName1.text = selected
-//                binding.currencyText1.text = selected
-//                val cleanedSelected = selected.replace(Regex("\\(.*\\)"), "")
-//                val resourceId = resources.getIdentifier(cleanedSelected, "string", packageName)
-//                binding.currencySymbol1.text = getString(resourceId)
-//                viewModel.updateCurrency(selected)
-//
-//                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
-//                if (selectedCurrency != null) {
-//                    currencyIdFrom = selectedCurrency.currentId
-//
-//                    val inputAmount = binding.inputField.text.toString().replace(",", "").toDoubleOrNull()
-//                    if (currencyIdTo != 0L && inputAmount != null && inputAmount > 0) {
-//                        val result = calculateExchangeRate(currencyIdFrom, currencyIdTo, inputAmount)
-//                        binding.changedText.text = String.format(Locale.US, "%,.2f", result)
-//                    }
-//                }
-//            }
-//        }
-//
-//        // 바뀐 통화 Spinner 항목 선택 이벤트 (To 통화)
-//        binding.currencyContainer2.setOnClickListener {
-//            customSpinner2.show(binding.currencyContainer2) { selected ->
-//                binding.currencyName2.text = selected
-//                binding.currencyText2.text = selected
-//                val cleanedSelected = selected.replace(Regex("\\(.*\\)"), "")
-//                val resourceId = resources.getIdentifier(cleanedSelected, "string", packageName)
-//                binding.currencySymbol2.text = getString(resourceId)
-//                viewModel.updateCurrency(selected)
-//
-//                val selectedCurrency = CurrencyStoreManager.findCurrencyByUnit(selected)
-//                if (selectedCurrency != null) {
-//                    currencyIdTo = selectedCurrency.currentId
-//
-//                    val inputAmount = binding.inputField.text.toString().replace(",", "").toDoubleOrNull()
-//                    if (currencyIdFrom != 0L && inputAmount != null && inputAmount > 0) {
-//                        val result = calculateExchangeRate(currencyIdFrom, currencyIdTo, inputAmount)
-//                        binding.changedText.text = String.format(Locale.US, "%,.2f", result)
-//                    }
-//                }
-//            }
-//        }
-//
         binding.inputField.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -118,8 +73,7 @@ class AddActivity : AppCompatActivity() {
 
             if (amount > 0) {
                 val convertedAmount = calculateExchangeRate(currencyIdFrom, currencyIdTo, amount)
-                addProductToList(listId, "", amount) // 상품 이름 자동 count
-                finish()
+                addProductToList(listId, "", amount)
             }
         }
     }
@@ -177,6 +131,11 @@ class AddActivity : AppCompatActivity() {
                             if (productResponse != null) {
                                 Toast.makeText(this@AddActivity, "상품 추가 완료!", Toast.LENGTH_SHORT).show()
                                 Log.d("CameraActivity", "✅ 상품 추가 성공: ${productResponse.name}")
+
+                                // 리스트로 돌아가서 업데이트하도록 결과 전달
+                                val resultIntent = Intent()
+                                setResult(RESULT_OK, resultIntent)
+                                finish()
                             } else {
                                 Log.e("CameraActivity", "🚨 상품 응답 데이터 변환 실패")
                             }
