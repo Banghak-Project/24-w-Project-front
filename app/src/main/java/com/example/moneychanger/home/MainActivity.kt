@@ -7,6 +7,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
@@ -44,6 +46,8 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
     private lateinit var currencyViewModel: CurrencyViewModel
     private var lists: MutableList<ListModel> = mutableListOf()
 
+    private lateinit var addListLauncher: ActivityResultLauncher<Intent>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -63,13 +67,15 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
         binding.buttonCamera.setOnClickListener {
             // 카메라 api와 연결하여 동작할 내용
             val intent = Intent(this, CameraActivity::class.java)
-            startActivity(intent)
+            addListLauncher.launch(intent)
         }
 
         // recyclerView 연결
         adapter = ListAdapter(lists) { item ->
             val intent = Intent(this, ListActivity::class.java)
             intent.putExtra("list_id", item.listId)
+            intent.putExtra("currencyIdFrom", item.currencyFrom.currencyId)
+            intent.putExtra("currencyIdTo", item.currencyTo.currencyId)
             startActivity(intent)
         }
         binding.listContainer.layoutManager = LinearLayoutManager(this)
@@ -92,6 +98,20 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
         binding.b2.setOnClickListener{
             val intent = Intent(this, NewPwActivity::class.java)
             startActivity(intent)
+        }
+
+        // 직접 리스트 추가 후 갱신
+        supportFragmentManager.setFragmentResultListener("requestKey", this) { _, bundle ->
+            val listAdded = bundle.getBoolean("listAdded")
+            if (listAdded) {
+                fetchListsFromApi()
+            }
+        }
+
+        addListLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                fetchListsFromApi()
+            }
         }
 
 

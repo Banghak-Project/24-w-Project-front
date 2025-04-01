@@ -1,12 +1,15 @@
 package com.example.moneychanger.etc
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import com.example.moneychanger.databinding.SlideNewListBinding
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
@@ -96,10 +99,7 @@ class SlideNewList : BottomSheetDialogFragment() {
 
             addNewList(userId, storeName, currencyIdFrom, currencyIdTo, location)
 
-            // ListActivity로 데이터 전달
-            listener?.onStoreNameUpdated(storeName)
 
-            dismiss() // Bottom Sheet 닫기
         }
     }
 
@@ -132,6 +132,12 @@ class SlideNewList : BottomSheetDialogFragment() {
                                         Toast.makeText(it, "리스트 추가 완료!", Toast.LENGTH_SHORT).show()
                                     }
                                     Log.d("CameraActivity", "✅ 리스트 생성 성공: ID=$listId")
+
+                                    val result = Bundle().apply {
+                                        putBoolean("listAdded", true)
+                                    }
+                                    parentFragmentManager.setFragmentResult("requestKey", result)
+                                    dismiss() // Bottom Sheet 닫기
                                 } else {
                                     Log.e("CameraActivity", "🚨 리스트 ID 오류 발생")
                                 }

@@ -62,7 +62,7 @@ data class CreateListResponseDto(
     @SerializedName("name") val name: String,
     @SerializedName("createdAt") val createdAt: String,  // 서버에서 "2025-03-18T17:35:04.933048" 형식으로 전달되므로 String 사용
     @SerializedName("location") val location: String,
-    @SerializedName("currencyFrom") val currencyFrom: Long,
-    @SerializedName("currencyTo") val currencyTo: Long,
+    @SerializedName("currencyFrom") val currencyFrom: CurrencyModel,
+    @SerializedName("currencyTo") val currencyTo: CurrencyModel,
     @SerializedName("deletedYn") val deletedYn: Boolean
 )
