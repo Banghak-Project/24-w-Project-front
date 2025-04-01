@@ -22,6 +22,7 @@ import com.example.moneychanger.databinding.ActivityMainBinding
 import com.example.moneychanger.etc.BaseActivity
 import com.example.moneychanger.etc.OnStoreNameUpdatedListener
 import com.example.moneychanger.etc.SlideNewList
+import com.example.moneychanger.location.LocationActivity
 import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.network.RetrofitClient.apiService
 import com.example.moneychanger.network.currency.CurrencyManager
@@ -114,6 +115,10 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
             }
         }
 
+        binding.b3.setOnClickListener{
+            val intent = Intent(this, LocationActivity::class.java)
+            startActivity(intent)
+        }
 
     }
     private fun fetchAndStoreCurrencyData(onFinished: () -> Unit) {
