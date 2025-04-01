@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,13 +43,13 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
     private lateinit var binding: ActivityListBinding
     private lateinit var viewModel: CurrencyViewModel
 
-    private var currencyIdFrom = 23L // 더미 데이터 (리스트 정보 가져와야 함)
-    private var currencyIdTo = 14L // 더미 데이터 (리스트 정보 가져와야 함)
     private val userId = TokenManager.getUserId() ?: -1L
     private val location = "Seoul"
 
     private var productList: MutableList<ProductModel> = mutableListOf()
     private var selectedList: ListModel? = null
+
+    private lateinit var addProductLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +60,12 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
+
+
+        // 인텐트에서 list_id 받아오기
+        val selectedListId = intent.getLongExtra("list_id", 0L)
+        var currencyIdFrom = intent.getLongExtra("currencyIdFrom", -1L)
+        var currencyIdTo = intent.getLongExtra("currencyIdTo", -1L)
 
         // 뒤로 가기
         val backButton : ImageView = toolbar.findViewById(R.id.button_back)
@@ -129,12 +137,14 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
 
         // 직접 추가하기 버튼 클릭 이벤트 처리
         binding.buttonAdd.setOnClickListener {
-            val intent = Intent(this, AddActivity::class.java)
-            intent.putExtra("currencyIdFrom", currencyIdFrom)
-            intent.putExtra("currencyIdTo", currencyIdTo)
-            intent.putExtra("listId", selectedList!!.listId)
-            startActivity(intent)
+            val intent = Intent(this, AddActivity::class.java).apply {
+                putExtra("currencyIdFrom", currencyIdFrom)
+                putExtra("currencyIdTo", currencyIdTo)
+                putExtra("listId", selectedList!!.listId)
+            }
+            addProductLauncher.launch(intent)
         }
+
 
         // 카메라 버튼 클릭 이벤트 설정
         binding.buttonCamera.setOnClickListener {
@@ -143,10 +153,10 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             intent.putExtra("listId", selectedList!!.listId)
             intent.putExtra("currencyIdFrom", currencyIdFrom)
             intent.putExtra("currencyIdTo", currencyIdTo)
-            startActivity(intent)
+
+            addProductLauncher.launch(intent)
         }
-        // 인텐트에서 list_id 받아오기
-        val selectedListId = intent.getLongExtra("list_id", 0L)
+
         fetchListByIdFromApi(selectedListId) { list ->
             if (list != null) {
                 selectedList = list // selectedList 초기화
@@ -168,6 +178,15 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             val intent = Intent(this, DeleteActivity::class.java)
             intent.putExtra("list_id", selectedListId)
             startActivity(intent)
+        }
+
+        addProductLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                // 새로 상품 목록을 불러옴!
+                selectedList?.let {
+                    fetchProductsByListId(it.listId)
+                }
+            }
         }
     }
 
@@ -194,8 +213,17 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
 
                     productList = products.toMutableList()
 
-                    binding.productContainer.layoutManager = LinearLayoutManager(this@ListActivity)
-                    binding.productContainer.adapter = ProductAdapter(productList, currencyIdFrom, currencyIdTo)
+                    val adapter = binding.productContainer.adapter as? ProductAdapter
+                    if (adapter != null) {
+                        adapter.updateProducts(productList)
+                    } else {
+                        binding.productContainer.layoutManager = LinearLayoutManager(this@ListActivity)
+                        binding.productContainer.adapter = ProductAdapter(
+                            productList,
+                            selectedList!!.currencyFrom.currencyId,
+                            selectedList!!.currencyTo.currencyId
+                        )
+                    }
 
                     // 총 금액 계산
                     val total = productList.sumOf { it.originPrice ?: 0.0 }
