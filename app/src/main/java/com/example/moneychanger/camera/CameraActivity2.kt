@@ -22,6 +22,7 @@ import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import android.Manifest
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -446,6 +447,8 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                                 Toast.makeText(this@CameraActivity2, "상품 추가 완료!", Toast.LENGTH_SHORT).show()
                                 Log.d("CameraActivity", "✅ 상품 추가 성공: ${productResponse.name}")
 
+                                val resultIntent = Intent()
+                                setResult(RESULT_OK, resultIntent)
                                 finish() // 상품 추가 후 액티비티 종료
                             } else {
                                 Log.e("CameraActivity", "🚨 상품 응답 데이터 변환 실패")
