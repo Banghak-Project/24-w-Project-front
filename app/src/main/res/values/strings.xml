@@ -12,6 +12,20 @@
     <string name="AUD">＄</string>
     <string name="CNH">￥</string>
     <string name="HKD">＄</string>
+    <string name="AED">د.إ</string>
+    <string name="BHD">ب.د</string>
+    <string name="BND">$</string>
+    <string name="CAD">＄</string>
+    <string name="DKK">kr</string>
+    <string name="IDR">Rp</string>
+    <string name="KWD">د.ك</string>
+    <string name="MYR">RM</string>
+    <string name="NOK">kr</string>
+    <string name="NZD">＄</string>
+    <string name="SAR">ر.س</string>
+    <string name="SEK">kr</string>
+    <string name="SGD">＄</string>
+
 
     <!--통화이름-->
     <string name="korea">KRW</string>
@@ -24,6 +38,19 @@
     <string name="europe">EUR</string>
     <string name="china">CNH</string>
     <string name="hongkong">HKD</string>
+    <string name="uae">AED</string>
+    <string name="bahrain">BHD</string>
+    <string name="brunei">BND</string>
+    <string name="canada">CAD</string>
+    <string name="denmark">DKK</string>
+    <string name="indonesia">IDR</string>
+    <string name="kuwait">KWD</string>
+    <string name="malaysia">MYR</string>
+    <string name="norway">NOK</string>
+    <string name="newzealand">NZD</string>
+    <string name="saudiarabia">SAR</string>
+    <string name="sweden">SEK</string>
+    <string name="singapore">SGD</string>
 
     <string name="confirm">확인</string>
     <string name="next">다음</string>
