@@ -157,21 +157,40 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             addProductLauncher.launch(intent)
         }
 
+//        fetchListByIdFromApi(selectedListId) { list ->
+//            if (list != null) {
+//                Toast.makeText(this, "${selectedListId}", Toast.LENGTH_SHORT).show()
+//                selectedList = list // selectedList 초기화
+//                updateUI(list) // UI 업데이트
+//                binding.productContainer.layoutManager = LinearLayoutManager(this)
+//                binding.productContainer.adapter = ProductAdapter(
+//                    productList.toMutableList(),
+//                    selectedList!!.currencyFrom.currencyId,
+//                    selectedList!!.currencyTo.currencyId)
+//                fetchProductsByListId(selectedListId)
+//            } else {
+//                Toast.makeText(this, "리스트 데이터를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+//                finish()
+//            }
+//        }
+
         fetchListByIdFromApi(selectedListId) { list ->
-            if (list != null) {
-                selectedList = list // selectedList 초기화
-                updateUI(list) // UI 업데이트
-                binding.productContainer.layoutManager = LinearLayoutManager(this)
-                binding.productContainer.adapter = ProductAdapter(
-                    productList.toMutableList(),
-                    selectedList!!.currencyFrom.currencyId,
-                    selectedList!!.currencyTo.currencyId)
+            list?.let {
+                Toast.makeText(this, "$selectedListId", Toast.LENGTH_SHORT).show()
+                Log.d("ListDebug", "Fetched List: $it")
+
+                selectedList = it // selectedList 초기화
+                updateUI(it) // UI 업데이트
+//                binding.productContainer.layoutManager = LinearLayoutManager(this)
+//                binding.productContainer.adapter = ProductAdapter(
+//                    productList.toMutableList(),
+//                    it.currencyFrom.currencyId,
+//                    it.currencyTo.currencyId
+//                )
                 fetchProductsByListId(selectedListId)
-            } else {
-                Toast.makeText(this, "리스트 데이터를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
-                finish()
             }
         }
+
 
         // 삭제하기 버튼 클릭 이벤트 처리
         binding.buttonMoveToDelete.setOnClickListener {
@@ -213,17 +232,24 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
 
                     productList = products.toMutableList()
 
-                    val adapter = binding.productContainer.adapter as? ProductAdapter
-                    if (adapter != null) {
-                        adapter.updateProducts(productList)
-                    } else {
-                        binding.productContainer.layoutManager = LinearLayoutManager(this@ListActivity)
-                        binding.productContainer.adapter = ProductAdapter(
-                            productList,
-                            selectedList!!.currencyFrom.currencyId,
-                            selectedList!!.currencyTo.currencyId
-                        )
-                    }
+                    binding.productContainer.layoutManager = LinearLayoutManager(this@ListActivity)
+                    binding.productContainer.adapter = ProductAdapter(
+                        productList,
+                        selectedList!!.currencyFrom.currencyId,
+                        selectedList!!.currencyTo.currencyId
+                    )
+
+//                    val adapter = binding.productContainer.adapter as? ProductAdapter
+//                    if (adapter != null) {
+//                        adapter.updateProducts(productList)
+//                    } else {
+//                        binding.productContainer.layoutManager = LinearLayoutManager(this@ListActivity)
+//                        binding.productContainer.adapter = ProductAdapter(
+//                            productList,
+//                            selectedList!!.currencyFrom.currencyId,
+//                            selectedList!!.currencyTo.currencyId
+//                        )
+//                    }
 
                     // 총 금액 계산
                     val total = productList.sumOf { it.originPrice ?: 0.0 }
@@ -296,12 +322,17 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         binding.locationName.text = list.location
         val dateTime = LocalDateTime.parse(list.createdAt, DateTimeFormatter.ISO_DATE_TIME)
         binding.createdDate.text = dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
-        binding.createdTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+        binding.createdTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH시 mm분 ss초"))
         binding.currencyName1.text = list.currencyFrom.curUnit
         binding.currencyName2.text = list.currencyTo.curUnit
         binding.currencyName3.text = list.currencyFrom.curUnit
-        binding.currencySymbol1.text = list.currencyTo.curUnit
-        binding.currencySymbol2.text = list.currencyTo.curUnit
+
+        val symbolKey = list.currencyTo.curUnit.replace(Regex("\\(.*\\)"), "").trim()
+        val resId = resources.getIdentifier(symbolKey, "string", packageName)
+        val symbolText = if (resId != 0) getString(resId) else symbolKey // fallback
+        binding.currencySymbol1.text = symbolText
+        binding.currencySymbol2.text = symbolText
+
         binding.totalSum.text = calculateTotalAmount().toString()
     }
 
