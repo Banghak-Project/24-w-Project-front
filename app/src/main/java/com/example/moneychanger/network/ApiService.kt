@@ -101,7 +101,7 @@ interface ApiService {
 
     //아이디에 맞는 상품 삭제
     @DELETE("/api/products/{id}")
-    fun deleteProduct(@Path("id") productId: Long): Response<ApiResponse<Call<Void>>>
+    fun deleteProduct(@Path("id") productId: Long): Call<ApiResponse<Void>>
 
     //이미지 분석
     @Multipart

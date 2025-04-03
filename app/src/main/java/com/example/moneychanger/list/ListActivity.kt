@@ -226,7 +226,8 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                             name = it.name,
                             originPrice = it.originPrice,
                             listId = it.listId,
-                            deletedYn = it.deletedYn
+                            deletedYn = it.deletedYn,
+                            createdAt = it.createdAt
                         )
                     }
 

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.example.moneychanger.adapter.ProductAdapter
 import com.example.moneychanger.databinding.SlideCameraListBinding
 import com.example.moneychanger.network.product.ProductModel
+import com.example.moneychanger.network.product.ProductResponseDto
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class SlideCameraList : BottomSheetDialogFragment() {
@@ -21,7 +22,7 @@ class SlideCameraList : BottomSheetDialogFragment() {
         const val TAG = "SlideCameraList"
 
         fun newInstance(
-            productList: MutableList<ProductModel>,
+            productList: List<ProductResponseDto>,
             currencyIdFrom: Long,
             currencyIdTo: Long
         ): SlideCameraList {
