@@ -19,6 +19,7 @@ class ProductAdapter(
             Log.i("ProductAdapter",product.originPrice.toString())
             binding.productName.text = product.name
             binding.originPrice.text = product.originPrice.toString()
+            binding.productTime.text = product.createdAt
 
             val converted = ExchangeRateUtil.calculate(currencyIdFrom, currencyIdTo, product.originPrice)
             binding.convertedPrice.text = String.format("%.2f", converted)
