@@ -592,10 +592,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
-                                val slideCameraList = SlideCameraList.newInstance(
-                                    productList,
-                                    currencyIdFrom,
-                                    currencyIdTo
+                                val slideCameraList = SlideCameraList.newInstance(productList, currencyIdFrom, currencyIdTo
                                 )
                                 slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
                             }

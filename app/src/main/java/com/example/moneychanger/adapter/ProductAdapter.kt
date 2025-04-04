@@ -8,10 +8,7 @@ import com.example.moneychanger.databinding.ListProductBinding
 import com.example.moneychanger.etc.ExchangeRateUtil
 import com.example.moneychanger.network.product.ProductModel
 
-class ProductAdapter(
-    private val products: MutableList<ProductModel>,
-    private val currencyIdFrom: Long,
-    private val currencyIdTo: Long
+class ProductAdapter(private val products: MutableList<ProductModel>, private val currencyIdFrom: Long, private val currencyIdTo: Long
 ) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     inner class ProductViewHolder(val binding: ListProductBinding) : RecyclerView.ViewHolder(binding.root) {

@@ -21,13 +21,22 @@ class SlideCameraList : BottomSheetDialogFragment() {
     companion object {
         const val TAG = "SlideCameraList"
 
-        fun newInstance(
-            productList: List<ProductResponseDto>,
-            currencyIdFrom: Long,
-            currencyIdTo: Long
+        fun newInstance(productResponseList: List<ProductResponseDto>, currencyIdFrom: Long, currencyIdTo: Long
         ): SlideCameraList {
             val fragment = SlideCameraList()
             val args = Bundle()
+
+            val productList = productResponseList.map {
+                ProductModel(
+                    productId = it.productId,
+                    listId = it.listId,
+                    name = it.name,
+                    originPrice = it.originPrice,
+                    createdAt = it.createdAt,
+                    deletedYn = it.deletedYn
+                )
+            }
+
             args.putParcelableArrayList("product_list", ArrayList(productList))
             args.putLong("currency_id_from", currencyIdFrom)
             args.putLong("currency_id_to", currencyIdTo)
@@ -60,7 +69,7 @@ class SlideCameraList : BottomSheetDialogFragment() {
         val currencyIdFrom = arguments?.getLong("currency_id_from") ?: -1L
         val currencyIdTo = arguments?.getLong("currency_id_to") ?: -1L
 
-        productAdapter = ProductAdapter(productList,currencyIdFrom, currencyIdTo)
+        productAdapter = ProductAdapter(productList, currencyIdFrom, currencyIdTo)
         binding.productContainer.adapter = productAdapter
 
         // ✅ 추가하기 버튼 클릭 시
