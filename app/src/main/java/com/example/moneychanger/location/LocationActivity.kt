@@ -83,17 +83,27 @@ class LocationActivity : AppCompatActivity() {
     private fun getLocation(textView: TextView) {
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
-        fusedLocationProviderClient.lastLocation
-            .addOnSuccessListener { location: Location? ->
-                location?.let {
-                    val lat = it.latitude
-                    val lng = it.longitude
+        val locationRequest = com.google.android.gms.location.LocationRequest.create().apply {
+            interval = 5000 // 위치 요청 간격
+            fastestInterval = 2000
+            priority = Priority.PRIORITY_HIGH_ACCURACY
+            numUpdates = 1 // 한번만 받아오도록
+        }
+
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            object : com.google.android.gms.location.LocationCallback() {
+                override fun onLocationResult(result: com.google.android.gms.location.LocationResult) {
+                    val location = result.lastLocation ?: return
+
+                    val lat = location.latitude
+                    val lng = location.longitude
 
                     lifecycleScope.launch(Dispatchers.IO) {
                         val address = getAddress(lat, lng)?.getOrNull(0)
 
                         withContext(Dispatchers.Main) {
-                            val locationInfo = "위도: $lat\n경도: $lng"
+                            val locationInfo = "위도: $lat\n경도: $lng\n"
                             val addressInfo = if (address != null) {
                                 "\n주소: ${address.adminArea ?: ""} ${address.locality ?: ""} ${address.thoroughfare ?: ""}".trim()
                             } else {
@@ -103,14 +113,12 @@ class LocationActivity : AppCompatActivity() {
                             textView.text = locationInfo + addressInfo
                         }
                     }
-                } ?: run {
-                    textView.text = "위치 정보를 가져올 수 없습니다."
                 }
-            }
-            .addOnFailureListener {
-                textView.text = "위치 정보를 가져오지 못했습니다: ${it.localizedMessage}"
-            }
+            },
+            mainLooper
+        )
     }
+
 
 
 
