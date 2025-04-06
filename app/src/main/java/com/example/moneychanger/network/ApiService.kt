@@ -8,6 +8,7 @@ import com.example.moneychanger.network.list.CreateListWithNameRequestDto
 import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.network.list.ListsResponseDto
 import com.example.moneychanger.network.list.UpdateRequestDto
+import com.example.moneychanger.network.location.GeocodeResponse
 import com.example.moneychanger.network.product.CreateProductRequestDto
 import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.product.DeleteProductsRequestDto
@@ -150,5 +151,14 @@ interface ApiService {
         @Body request: UpdateUserInfoRequest
     ): Response<ApiResponse<UserInfoResponse>>
 
-    
+    // google geocoding api
+    interface GoogleGeocodingApi {
+        @GET("geocode/json")
+        suspend fun reverseGeocode(
+            @Query("latlng") latlng: String,
+            @Query("key") apiKey: String
+        ): GeocodeResponse
+    }
+
+
 }
