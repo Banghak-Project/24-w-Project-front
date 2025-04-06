@@ -35,11 +35,10 @@ import androidx.camera.core.AspectRatio
 import androidx.lifecycle.ViewModelProvider
 import com.example.moneychanger.R
 import com.example.moneychanger.etc.CustomSpinner
-import com.example.moneychanger.etc.DataProvider
 import com.example.moneychanger.etc.ExchangeRateUtil
 import com.example.moneychanger.etc.OnProductAddedListener
 import com.example.moneychanger.etc.SlideCameraList
-import com.example.moneychanger.network.RetrofitClient
+import com.example.moneychanger.network.RetrofitClient.apiService
 import com.example.moneychanger.network.TokenManager
 import com.example.moneychanger.network.currency.CurrencyManager
 import com.example.moneychanger.network.list.CreateListRequestDto
@@ -50,6 +49,7 @@ import com.example.moneychanger.network.user.ApiResponse
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.example.moneychanger.network.currency.CurrencyViewModel
+import com.example.moneychanger.network.product.ProductResponseDto
 //import com.example.moneychanger.network.CurrencyStoreManager
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
@@ -79,6 +79,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
     private var currencyIdTo = -1L
     private val userId = TokenManager.getUserId()
     private val location = "Seoul"
+    private var latestListId = -1L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,10 +100,13 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         }
 
         binding.listButton.setOnClickListener {
-            val productList = DataProvider.productDummyModel  // 더미 데이터 가져오기
-            val slideCameraList = SlideCameraList.newInstance(productList, currencyIdFrom, currencyIdTo)  // newInstance() 사용
-            slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
+            if (latestListId != -1L) {
+                fetchProductsAndShowDialog(latestListId)
+            } else {
+                Toast.makeText(this, "리스트를 먼저 생성해주세요.", Toast.LENGTH_SHORT).show()
+            }
         }
+
 
         captureButton.setOnClickListener {
             takePicture()
@@ -427,7 +431,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         Log.d("CameraActivity", "🚀 리스트 생성 요청 데이터: userId=$userId, currencyIdFrom=$currencyIdFrom, currencyIdTo=$currencyIdTo, location=$location")
 
         // 리스트 추가 API 호출 (비동기 방식)
-        RetrofitClient.apiService.createList(createRequest)
+        apiService.createList(createRequest)
             .enqueue(object : Callback<ApiResponse<CreateListResponseDto>> {
                 override fun onResponse(
                     call: Call<ApiResponse<CreateListResponseDto>>,
@@ -450,6 +454,9 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                                     Toast.makeText(this@CameraActivity, "리스트 추가 완료!", Toast.LENGTH_SHORT).show()
                                     Log.d("CameraActivity", "✅ 리스트 생성 성공: ID=$listId")
 
+                                    latestListId = listId
+
+                                    fetchProductsAndShowDialog(listId)
                                     // 리스트 추가 성공 후 상품 추가
                                     addProductToList(listId, selectedProductName!!, selectedProductPrice!!)
                                 } else {
@@ -476,7 +483,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         val cleanPrice = cleanPriceText(price!!).toDouble()
         val productRequest = CreateProductRequestDto(listId, productName, cleanPrice)
 
-        RetrofitClient.apiService.createProduct(productRequest)
+        apiService.createProduct(productRequest)
             .enqueue(object : Callback<ApiResponse<CreateProductResponseDto>> {
                 override fun onResponse(
                     call: Call<ApiResponse<CreateProductResponseDto>>,
@@ -516,6 +523,34 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                 }
             })
     }
+
+    private fun fetchProductsAndShowDialog(listId: Long) {
+        apiService.getProductByListsId(listId)
+            .enqueue(object : Callback<ApiResponse<List<ProductResponseDto>>> {
+                override fun onResponse(
+                    call: Call<ApiResponse<List<ProductResponseDto>>>,
+                    response: Response<ApiResponse<List<ProductResponseDto>>>
+                ) {
+                    if (response.isSuccessful) {
+                        val apiResponse = response.body()
+                        if (apiResponse != null && apiResponse.status == "success") {
+                            val productList = apiResponse.data ?: emptyList()
+                            val slideCameraList = SlideCameraList.newInstance(productList, currencyIdFrom, currencyIdTo)
+                            slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
+                        } else {
+                            Toast.makeText(this@CameraActivity, "상품 목록을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Log.e("CameraActivity", "🚨 상품 목록 응답 실패: ${response.errorBody()?.string()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<ApiResponse<List<ProductResponseDto>>>, t: Throwable) {
+                    Log.e("CameraActivity", "🚨 상품 목록 서버 요청 실패: ${t.message}")
+                }
+            })
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()

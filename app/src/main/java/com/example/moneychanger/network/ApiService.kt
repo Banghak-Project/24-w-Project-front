@@ -11,6 +11,7 @@ import com.example.moneychanger.network.list.UpdateRequestDto
 import com.example.moneychanger.network.location.GeocodeResponse
 import com.example.moneychanger.network.product.CreateProductRequestDto
 import com.example.moneychanger.network.product.CreateProductResponseDto
+import com.example.moneychanger.network.product.DeleteProductsRequestDto
 import com.example.moneychanger.network.product.ImageProductResponseDto
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductRequestDto
@@ -101,8 +102,12 @@ interface ApiService {
     ): Response<ApiResponse<Call<ProductModel>>>
 
     //아이디에 맞는 상품 삭제
-    @DELETE("/api/products/{id}")
-    fun deleteProduct(@Path("id") productId: Long): Response<ApiResponse<Call<Void>>>
+    @PATCH("/api/products/{id}")
+    fun deleteProduct(@Path("id") productId: Long): Call<ApiResponse<Void>>
+
+    @PATCH("/api/products/selected")
+    fun deleteProductsByIds(@Body request: DeleteProductsRequestDto): Call<ApiResponse<List<ProductResponseDto>>>
+
 
     //이미지 분석
     @Multipart
