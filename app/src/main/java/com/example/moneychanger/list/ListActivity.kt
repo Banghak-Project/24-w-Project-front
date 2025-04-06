@@ -239,19 +239,6 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                         selectedList!!.currencyFrom.currencyId,
                         selectedList!!.currencyTo.currencyId
                     )
-
-//                    val adapter = binding.productContainer.adapter as? ProductAdapter
-//                    if (adapter != null) {
-//                        adapter.updateProducts(productList)
-//                    } else {
-//                        binding.productContainer.layoutManager = LinearLayoutManager(this@ListActivity)
-//                        binding.productContainer.adapter = ProductAdapter(
-//                            productList,
-//                            selectedList!!.currencyFrom.currencyId,
-//                            selectedList!!.currencyTo.currencyId
-//                        )
-//                    }
-
                     // 총 금액 계산
                     val total = productList.sumOf { it.originPrice ?: 0.0 }
                     binding.totalSum.text = total.toString()

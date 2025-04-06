@@ -8,9 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.moneychanger.R
 import com.example.moneychanger.adapter.DeleteAdapter
-import com.example.moneychanger.adapter.ProductAdapter
 import com.example.moneychanger.databinding.ActivityDeleteBinding
-import com.example.moneychanger.etc.DataProvider
 import com.example.moneychanger.network.RetrofitClient.apiService
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductResponseDto
@@ -18,8 +16,6 @@ import com.example.moneychanger.network.user.ApiResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class DeleteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDeleteBinding
@@ -73,7 +69,9 @@ class DeleteActivity : AppCompatActivity() {
                             val apiResponse = response.body()
                             if (apiResponse != null && apiResponse.status == "success") {
                                 val productList = apiResponse.data ?: emptyList()
-                                setupRecyclerView(productList.toMutableList())
+                                val mappedList = productList.map { mapToProductModel(it) }.toMutableList()
+                                setupRecyclerView(mappedList)
+
                             } else {
                                 Toast.makeText(this@DeleteActivity, "상품 목록을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show()
                             }
@@ -89,13 +87,10 @@ class DeleteActivity : AppCompatActivity() {
                     }
                 })
         }
-    private fun setupRecyclerView(productResponseList: MutableList<ProductResponseDto>) {
-        val productList = productResponseList.map { mapToProductModel(it) }.toMutableList()
-
+    private fun setupRecyclerView(productResponseList: MutableList<ProductModel>) {
+        val productList = productResponseList.toMutableList()
         adapter = DeleteAdapter(productList, { selectedItems ->
-            val selectedIds = selectedItems.map { it.productId }
-            deleteProductsFromDB(selectedIds)
-            Toast.makeText(this, "${selectedItems.size}개 상품이 삭제되었습니다.", Toast.LENGTH_SHORT).show()
+            fetchProductList(intent.getLongExtra("list_id", 0L))
         }, { isChecked ->
             binding.checkboxAll.isChecked = isChecked
         })
