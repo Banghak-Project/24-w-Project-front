@@ -72,11 +72,10 @@ class SlideCameraList : BottomSheetDialogFragment() {
         productAdapter = ProductAdapter(productList, currencyIdFrom, currencyIdTo)
         binding.productContainer.adapter = productAdapter
 
-        // ✅ 추가하기 버튼 클릭 시
         binding.buttonAdd.setOnClickListener {
-            val slideCameraInput = SlideCameraInput()  // ✅ 입력 창으로 이동
+            val slideCameraInput = SlideCameraInput()
             slideCameraInput.show(parentFragmentManager, SlideCameraInput.TAG)  // ✅ parentFragmentManager 사용
-            dismiss() // ✅ 기존 리스트 닫기
+            dismiss()
         }
     }
 

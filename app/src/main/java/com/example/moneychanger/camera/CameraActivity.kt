@@ -77,9 +77,11 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
     private var currencyIdFrom = -1L
     private var currencyIdTo = -1L
-    private val userId = TokenManager.getUserId()
+    private val userId = TokenManager.getUserId() ?: -1L
     private val location = "Seoul"
     private var latestListId = -1L
+
+    private var productList: MutableList<ProductResponseDto> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,11 +102,8 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         }
 
         binding.listButton.setOnClickListener {
-            if (latestListId != -1L) {
-                fetchProductsAndShowDialog(latestListId)
-            } else {
-                Toast.makeText(this, "리스트를 먼저 생성해주세요.", Toast.LENGTH_SHORT).show()
-            }
+            val slideCameraList = SlideCameraList.newInstance(productList, currencyIdFrom, currencyIdTo)
+            slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
         }
 
 
@@ -125,9 +124,9 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         // 통화 정보 가져오기
         val currencyList = CurrencyManager.getCurrencies()
 
-        if (currencyList.isEmpty()) {
-            Toast.makeText(this, "로그인 후 이용해주세요.2", Toast.LENGTH_LONG).show()
-            finish()  // 👉 종료하지 않고 onCreate 나감
+        if (userId == -1L) {
+            Toast.makeText(this, "로그인 후 이용해주세요.", Toast.LENGTH_LONG).show()
+            finish()
             return
         }
 
@@ -154,6 +153,12 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                 val selectedCurrency = CurrencyManager.getByUnit(selected)
                 currencyIdTo = selectedCurrency.currencyId
             }
+        }
+
+        if (latestListId != -1L) {
+            fetchProductsAndShowDialog(latestListId)
+        } else {
+            Toast.makeText(this, "리스트를 먼저 생성해주세요.", Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -534,9 +539,9 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                     if (response.isSuccessful) {
                         val apiResponse = response.body()
                         if (apiResponse != null && apiResponse.status == "success") {
-                            val productList = apiResponse.data ?: emptyList()
-                            val slideCameraList = SlideCameraList.newInstance(productList, currencyIdFrom, currencyIdTo)
-                            slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
+                            val productListDto = apiResponse.data ?: emptyList()
+                            productList = productListDto.toMutableList()
+
                         } else {
                             Toast.makeText(this@CameraActivity, "상품 목록을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show()
                         }
