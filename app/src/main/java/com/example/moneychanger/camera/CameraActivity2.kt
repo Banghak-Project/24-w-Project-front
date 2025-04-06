@@ -70,6 +70,8 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
     private var selectedProductPriceView: View? = null
     private var isSelectingPrice = false
 
+    private var productList: MutableList<ProductResponseDto> = mutableListOf()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCameraBinding.inflate(layoutInflater)
@@ -95,7 +97,10 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
 
         binding.listButton.setOnClickListener {
             if (listId != -1L) {
-                fetchProductsAndShowDialog(listId, currencyIdFrom, currencyIdTo)
+                fetchProductsAndShowDialog(listId)
+                val slideCameraList = SlideCameraList.newInstance(productList, currencyIdFrom, currencyIdTo
+                )
+                slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
             } else {
                 Toast.makeText(this, "리스트 정보가 없습니다.", Toast.LENGTH_SHORT).show()
             }
@@ -124,7 +129,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
 
         if (currencyFrom == null || currencyTo == null) {
             Log.e("MainActivity", "⚠️ 통화 정보 매핑 실패:")
-        } else {
+        }else{
             // 리스트에서 전달받은 통화 ID를 기반으로 초기값 설정
             val initialCurrencyFrom = currencyFrom.curUnit
             val initialCurrencyTo = currencyTo.curUnit
@@ -185,16 +190,16 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                 .requireLensFacing(CameraSelector.LENS_FACING_BACK)
                 .build()
 
-            try {
+            try{
                 Log.v("CameraActivity", "startCamera.try")
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
-            } catch (exc: Exception) {
+            }catch (exc:Exception){
                 Log.e("CameraActivity", "Use case binding failed", exc)
             }
         }, ContextCompat.getMainExecutor(this))
     }
 
-    private fun takePicture(currencyIdFrom: Long, currencyIdTo: Long, listId: Long) {
+    private fun takePicture(currencyIdFrom : Long, currencyIdTo : Long, listId: Long) {
         if (currencyIdFrom == -1L || currencyIdTo == -1L) {
             Toast.makeText(this, "두 통화를 모두 선택해주세요.", Toast.LENGTH_SHORT).show()
             return
@@ -248,10 +253,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         val bitmap = BitmapFactory.decodeStream(inputStream)
 
         val exif = ExifInterface(contentResolver.openInputStream(uri)!!)
-        val rotation = when (exif.getAttributeInt(
-            ExifInterface.TAG_ORIENTATION,
-            ExifInterface.ORIENTATION_NORMAL
-        )) {
+        val rotation = when (exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
             ExifInterface.ORIENTATION_ROTATE_90 -> 90
             ExifInterface.ORIENTATION_ROTATE_180 -> 180
             ExifInterface.ORIENTATION_ROTATE_270 -> 270
@@ -271,25 +273,14 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
     }
 
     private fun hasCameraPermission(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.CAMERA
-        ) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestCameraPermission() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(Manifest.permission.CAMERA),
-            CAMERA_PERMISSION_CODE
-        )
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CAMERA_PERMISSION_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -300,12 +291,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         }
     }
 
-    private fun recognizeTextFromBitmap(
-        bitmap: Bitmap,
-        currencyIdFrom: Long,
-        currencyIdTo: Long,
-        listId: Long
-    ) {
+    private fun recognizeTextFromBitmap(bitmap: Bitmap, currencyIdFrom : Long, currencyIdTo : Long,listId: Long) {
         val image = InputImage.fromBitmap(bitmap, 0)
         val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
 
@@ -319,13 +305,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             }
     }
 
-    private fun displayRecognizedText(
-        visionText: Text,
-        bitmap: Bitmap,
-        currencyIdFrom: Long,
-        currencyIdTo: Long,
-        listId: Long
-    ) {
+    private fun displayRecognizedText(visionText: Text, bitmap: Bitmap, currencyIdFrom : Long, currencyIdTo : Long, listId: Long) {
         binding.textOverlay.removeAllViews()
         selectedTexts.clear()
 
@@ -342,10 +322,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             val offsetX = (displayedWidth - (originalWidth * scaleX)) / 2
             val offsetY = (displayedHeight - (originalHeight * scaleY)) / 2
 
-            Log.d(
-                "OCR",
-                "🔍 Scale Factor: X=$scaleX, Y=$scaleY, OffsetX: $offsetX, OffsetY: $offsetY"
-            )
+            Log.d("OCR", "🔍 Scale Factor: X=$scaleX, Y=$scaleY, OffsetX: $offsetX, OffsetY: $offsetY")
 
             for (block in visionText.textBlocks) {
                 for (line in block.lines) {
@@ -360,21 +337,13 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                         setBackgroundResource(R.drawable.ocr_border)
                         isClickable = true
                         rotation = angle
-                        setOnClickListener {
-                            toggleSelection(
-                                this,
-                                line.text,
-                                currencyIdFrom,
-                                currencyIdTo
-                            )
-                        }
+                        setOnClickListener { toggleSelection(this, line.text, currencyIdFrom, currencyIdTo) }
                     }
 
-                    val layoutParams =
-                        FrameLayout.LayoutParams(adjustedWidth, adjustedHeight).apply {
-                            leftMargin = (rect.left * scaleX + offsetX - boxPadding / 2).toInt()
-                            topMargin = (rect.top * scaleY + offsetY - boxPadding / 2).toInt()
-                        }
+                    val layoutParams = FrameLayout.LayoutParams(adjustedWidth, adjustedHeight).apply {
+                        leftMargin = (rect.left * scaleX + offsetX - boxPadding / 2).toInt()
+                        topMargin = (rect.top * scaleY + offsetY - boxPadding / 2).toInt()
+                    }
 
                     binding.textOverlay.addView(borderView, layoutParams)
                 }
@@ -384,22 +353,16 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             // 선택 완료 버튼 클릭 시, 새로운 상품 추가
             binding.confirmButton.setOnClickListener {
                 if (selectedProductName != null && selectedProductPrice != null) {
-                    addProductToList(listId, selectedProductName!!, selectedProductPrice!!)
+                    addProductToList(listId , selectedProductName!!, selectedProductPrice!!)
                 } else {
-                    Toast.makeText(this@CameraActivity2, "상품명과 상품 가격을 선택해주세요.", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(this@CameraActivity2, "상품명과 상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
                 }
             }
             Toast.makeText(this@CameraActivity2, "상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun toggleSelection(
-        view: View,
-        text: String,
-        currencyIdFrom: Long,
-        currencyIdTo: Long
-    ) {
+    private fun toggleSelection(view: View, text: String, currencyIdFrom : Long, currencyIdTo : Long) {
         if (selectedTexts.contains(text)) {
             selectedTexts.remove(text)
             view.setBackgroundResource(R.drawable.ocr_border)
@@ -457,16 +420,10 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         return price
     }
 
-    private fun updateSelectedText(currencyIdFrom: Long, currencyIdTo: Long) {
+    private fun updateSelectedText(currencyIdFrom : Long, currencyIdTo : Long) {
         if (selectedProductName != null && selectedProductPrice != null) {
             val cleanPrice = cleanPriceText(selectedProductPrice!!).toDouble()
-            val resultText = "상품명: ${selectedProductName}, 상품가격: ${cleanPrice} -> ${
-                calculateExchangeRate(
-                    currencyIdFrom,
-                    currencyIdTo,
-                    cleanPrice
-                )
-            }"
+            val resultText = "상품명: ${selectedProductName}, 상품가격: ${cleanPrice} -> ${calculateExchangeRate(currencyIdFrom, currencyIdTo, cleanPrice)}"
             binding.cameraText.text = resultText
             Toast.makeText(this, "선택 완료: $resultText", Toast.LENGTH_SHORT).show()
         }
@@ -494,11 +451,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                             }
 
                             if (productResponse != null) {
-                                Toast.makeText(
-                                    this@CameraActivity2,
-                                    "상품 추가 완료!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                Toast.makeText(this@CameraActivity2, "상품 추가 완료!", Toast.LENGTH_SHORT).show()
                                 Log.d("CameraActivity", "✅ 상품 추가 성공: ${productResponse.name}")
 
                                 val resultIntent = Intent()
@@ -508,20 +461,14 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                                 Log.e("CameraActivity", "🚨 상품 응답 데이터 변환 실패")
                             }
                         } else {
-                            Log.e(
-                                "CameraActivity",
-                                "🚨 상품 추가 실패: ${apiResponse?.message ?: "알 수 없는 오류"}"
-                            )
+                            Log.e("CameraActivity", "🚨 상품 추가 실패: ${apiResponse?.message ?: "알 수 없는 오류"}")
                         }
                     } else {
                         Log.e("CameraActivity", "🚨 응답 실패: ${response.errorBody()?.string()}")
                     }
                 }
 
-                override fun onFailure(
-                    call: Call<ApiResponse<CreateProductResponseDto>>,
-                    t: Throwable
-                ) {
+                override fun onFailure(call: Call<ApiResponse<CreateProductResponseDto>>, t: Throwable) {
                     Log.e("CameraActivity", "🚨 서버 요청 실패: ${t.message}")
                 }
             })
@@ -550,10 +497,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
 
         val exchangedAmount = (amount * adjustedRateFrom) / adjustedRateTo
 
-        Log.d(
-            "ExchangeRate",
-            "✅ ${fromCurrency.curUnit} -> ${toCurrency.curUnit} 환율 적용: $amount -> $exchangedAmount"
-        )
+        Log.d("ExchangeRate", "✅ ${fromCurrency.curUnit} -> ${toCurrency.curUnit} 환율 적용: $amount -> $exchangedAmount")
         return exchangedAmount
     }
 
@@ -574,7 +518,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         Log.d("CameraActivity", "상품명: $productName, 가격: $price")
     }
 
-    private fun fetchProductsAndShowDialog(listId: Long, currencyIdFrom: Long, currencyIdTo: Long) {
+    private fun fetchProductsAndShowDialog(listId: Long) {
         RetrofitClient.apiService.getProductByListsId(listId)
             .enqueue(object : Callback<ApiResponse<List<ProductResponseDto>>> {
                 override fun onResponse(
@@ -584,17 +528,15 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                     if (response.isSuccessful) {
                         val apiResponse = response.body()
                         if (apiResponse != null && apiResponse.status == "success") {
-                            val productList = apiResponse.data ?: emptyList()
-                            if (productList.isEmpty()) {
+                            val productListDto = apiResponse.data ?: emptyList()
+                            if (productListDto.isEmpty()) {
                                 Toast.makeText(
                                     this@CameraActivity2,
                                     "상품이 없습니다.",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
-                                val slideCameraList = SlideCameraList.newInstance(productList, currencyIdFrom, currencyIdTo
-                                )
-                                slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
+                                productList = productListDto.toMutableList()
                             }
                         } else {
                             Toast.makeText(
