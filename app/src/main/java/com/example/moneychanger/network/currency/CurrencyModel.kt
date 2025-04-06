@@ -1,13 +1,14 @@
 package com.example.moneychanger.network.currency
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class CurrencyModel(
     val currencyId: Long,
     val curUnit: String,
     val dealBasR: Double,
     val curNm: String
-) {
+) : Serializable {
     override fun toString(): String {
         return "$curUnit ($curNm)"
     }
