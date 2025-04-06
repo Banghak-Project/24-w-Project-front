@@ -8,6 +8,7 @@ import com.example.moneychanger.network.list.CreateListWithNameRequestDto
 import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.network.list.ListsResponseDto
 import com.example.moneychanger.network.list.UpdateRequestDto
+import com.example.moneychanger.network.list.UpdateResponseDto
 import com.example.moneychanger.network.location.GeocodeResponse
 import com.example.moneychanger.network.product.CreateProductRequestDto
 import com.example.moneychanger.network.product.CreateProductResponseDto
@@ -78,6 +79,9 @@ interface ApiService {
 
     @PATCH("/api/lists/delete/{id}")
     fun deleteList(@Path("id") id: Long): Call<ApiResponse<Void>>
+
+    @PATCH("/api/lists/update")
+    fun updateList(@Body requestDto: UpdateRequestDto): Call<ApiResponse<UpdateResponseDto>>
 
     //총금액표시
     @GET("/api/lists/total/{id}")
