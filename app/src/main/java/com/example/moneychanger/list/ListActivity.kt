@@ -12,14 +12,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.etc.OnStoreNameUpdatedListener
-import com.example.moneychanger.camera.CameraActivity
 import com.example.moneychanger.R
-import com.example.moneychanger.adapter.ListAdapter
 import com.example.moneychanger.adapter.ProductAdapter
 import com.example.moneychanger.camera.CameraActivity2
 import com.example.moneychanger.etc.SlideEdit
 import com.example.moneychanger.databinding.ActivityListBinding
-import com.example.moneychanger.etc.TotalAmountUtil
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.RetrofitClient.apiService
 import com.example.moneychanger.network.currency.CurrencyManager
@@ -27,12 +24,11 @@ import com.example.moneychanger.network.currency.CurrencyViewModel
 import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.network.list.ListsResponseDto
 import com.example.moneychanger.network.TokenManager
+import com.example.moneychanger.network.list.UpdateRequestDto
+import com.example.moneychanger.network.list.UpdateResponseDto
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
-import com.google.android.gms.common.api.Api
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -61,8 +57,6 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
 
-
-        // 인텐트에서 list_id 받아오기
         val selectedListId = intent.getLongExtra("list_id", 0L)
         var currencyIdFrom = intent.getLongExtra("currencyIdFrom", -1L)
         var currencyIdTo = intent.getLongExtra("currencyIdTo", -1L)
@@ -110,6 +104,8 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
 
                 val selectedCurrency = CurrencyManager.getByUnit(selected)
                 currencyIdFrom = selectedCurrency.currencyId
+
+                updateListCurrency(currencyIdFrom, currencyIdTo)
             }
         }
 
@@ -126,12 +122,18 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                 viewModel.updateCurrency(selected)
                 val selectedCurrency = CurrencyManager.getByUnit(selected)
                 currencyIdTo = selectedCurrency.currencyId
+
+                updateListCurrency(currencyIdFrom, currencyIdTo)
             }
         }
 
-        // 장소 수정하기 버튼 클릭 이벤트 처리
+        // 이름 수정하기 버튼 클릭 이벤트 처리
         binding.buttonEdit.setOnClickListener {
-            val slideEdit = SlideEdit()
+            val slideEdit = SlideEdit().apply {
+                arguments = Bundle().apply {
+                    putSerializable("selectedList", selectedList)
+                }
+            }
             slideEdit.show(supportFragmentManager, slideEdit.tag)
         }
 
@@ -156,23 +158,6 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
 
             addProductLauncher.launch(intent)
         }
-
-//        fetchListByIdFromApi(selectedListId) { list ->
-//            if (list != null) {
-//                Toast.makeText(this, "${selectedListId}", Toast.LENGTH_SHORT).show()
-//                selectedList = list // selectedList 초기화
-//                updateUI(list) // UI 업데이트
-//                binding.productContainer.layoutManager = LinearLayoutManager(this)
-//                binding.productContainer.adapter = ProductAdapter(
-//                    productList.toMutableList(),
-//                    selectedList!!.currencyFrom.currencyId,
-//                    selectedList!!.currencyTo.currencyId)
-//                fetchProductsByListId(selectedListId)
-//            } else {
-//                Toast.makeText(this, "리스트 데이터를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
-//                finish()
-//            }
-//        }
 
         fetchListByIdFromApi(selectedListId) { list ->
             list?.let {
@@ -305,6 +290,38 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             }
         })
     }
+
+    private fun updateListCurrency(currencyFromId: Long, currencyToId: Long) {
+        val updateRequest = UpdateRequestDto(
+            listId = selectedList!!.listId,
+            currencyIdFrom = currencyFromId,
+            currencyIdTo = currencyToId,
+            location = selectedList!!.location,
+            name = selectedList!!.name
+        )
+
+        RetrofitClient.apiService.updateList(updateRequest)
+            .enqueue(object : Callback<ApiResponse<UpdateResponseDto>> {
+                override fun onResponse(
+                    call: Call<ApiResponse<UpdateResponseDto>>,
+                    response: Response<ApiResponse<UpdateResponseDto>>
+                ) {
+                    if (response.isSuccessful && response.body()?.status == "success") {
+                        Log.i("ListActivity", "✅ 서버에 리스트 업데이트 완료")
+                        setResult(RESULT_OK)
+                    } else {
+                        Log.e("ListActivity", "❌ 서버 응답 실패: ${response.errorBody()?.string()}")
+                        Toast.makeText(this@ListActivity, "리스트 업데이트 실패", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ApiResponse<UpdateResponseDto>>, t: Throwable) {
+                    Log.e("ListActivity", "❌ 서버 업데이트 실패", t)
+                    Toast.makeText(this@ListActivity, "서버 통신 오류", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
     private fun updateUI(list: ListModel) {
         binding.placeName.text = list.name
         binding.locationName.text = list.location
