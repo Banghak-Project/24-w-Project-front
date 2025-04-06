@@ -49,6 +49,8 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
 
     private lateinit var addListLauncher: ActivityResultLauncher<Intent>
 
+    private lateinit var editListLauncher: ActivityResultLauncher<Intent>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -77,7 +79,7 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
             intent.putExtra("list_id", item.listId)
             intent.putExtra("currencyIdFrom", item.currencyFrom.currencyId)
             intent.putExtra("currencyIdTo", item.currencyTo.currencyId)
-            startActivity(intent)
+            editListLauncher.launch(intent)
         }
         binding.listContainer.layoutManager = LinearLayoutManager(this)
         binding.listContainer.adapter = adapter
@@ -110,6 +112,11 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
         }
 
         addListLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                fetchListsFromApi()
+            }
+        }
+        editListLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
                 fetchListsFromApi()
             }
