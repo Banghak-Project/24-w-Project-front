@@ -96,14 +96,8 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         }
 
         binding.listButton.setOnClickListener {
-            if (listId != -1L) {
-                fetchProductsAndShowDialog(listId)
-                val slideCameraList = SlideCameraList.newInstance(productList, currencyIdFrom, currencyIdTo
-                )
-                slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
-            } else {
-                Toast.makeText(this, "리스트 정보가 없습니다.", Toast.LENGTH_SHORT).show()
-            }
+            val slideCameraList = SlideCameraList.newInstance(productList, currencyIdFrom, currencyIdTo)
+            slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
         }
 
         captureButton.setOnClickListener {
@@ -162,6 +156,12 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                 val selectedCurrency = CurrencyManager.getByUnit(selected)
                 currencyIdTo = selectedCurrency.currencyId
             }
+        }
+
+        if (listId != -1L) {
+            fetchProductsAndShowDialog(listId)
+        } else {
+            Toast.makeText(this, "리스트 정보가 없습니다.", Toast.LENGTH_SHORT).show()
         }
 
     }
