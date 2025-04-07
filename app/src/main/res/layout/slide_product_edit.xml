@@ -27,6 +27,40 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/product_name"
+                    style="@style/TextBodyS"/>
+            </LinearLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/input_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:paddingHorizontal="24dp"
+                    android:hint="@string/product_name"
+                    android:background="@drawable/round_background"
+                    android:textColor="@color/gray_06"
+                    style="@style/TextBodyL"
+                    android:inputType="number"
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"/>
+            </FrameLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -81,42 +115,11 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"/>
-
-        <LinearLayout
+        <Button
             android:id="@+id/button_add"
-            android:layout_width="312dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center|bottom"
-            android:background="@drawable/round_background"
             android:layout_marginBottom="24dp"
-            android:backgroundTint="@color/main">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center">
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/icon_add"
-                    android:layout_gravity="center"
-                    app:tint="@color/white"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/direct"
-                    android:layout_marginLeft="16dp"
-                    android:textColor="@color/white"
-                    style="@style/TextLabelL"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add"
-                    android:layout_marginLeft="8dp"
-                    android:textColor="@color/white"
-                    style="@style/TextLabelL"/>
-            </LinearLayout>
-        </LinearLayout>
+            android:text="@string/edit_long"
+            style="@style/NextButtonStyle" />
     </LinearLayout>
 
 </LinearLayout>

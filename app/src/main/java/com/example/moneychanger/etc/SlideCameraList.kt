@@ -2,13 +2,16 @@ package com.example.moneychanger.etc
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.moneychanger.adapter.ProductAdapter
 import com.example.moneychanger.databinding.SlideCameraListBinding
+import com.example.moneychanger.list.ListActivity
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductResponseDto
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class SlideCameraList : BottomSheetDialogFragment() {
@@ -21,7 +24,12 @@ class SlideCameraList : BottomSheetDialogFragment() {
     companion object {
         const val TAG = "SlideCameraList"
 
-        fun newInstance(productResponseList: List<ProductResponseDto>, currencyIdFrom: Long, currencyIdTo: Long
+        fun newInstance(
+            productResponseList: List<ProductResponseDto>,
+            currencyIdFrom: Long,
+            currencyIdTo: Long,
+            currencyFromUnit: String,
+            currencyToUnit: String
         ): SlideCameraList {
             val fragment = SlideCameraList()
             val args = Bundle()
@@ -40,6 +48,8 @@ class SlideCameraList : BottomSheetDialogFragment() {
             args.putParcelableArrayList("product_list", ArrayList(productList))
             args.putLong("currency_id_from", currencyIdFrom)
             args.putLong("currency_id_to", currencyIdTo)
+            args.putString("currency_from_unit", currencyFromUnit)
+            args.putString("currency_to_unit", currencyToUnit)
             fragment.arguments = args
             return fragment
         }
@@ -51,6 +61,20 @@ class SlideCameraList : BottomSheetDialogFragment() {
             listener = context
         } else {
             throw RuntimeException("$context must implement OnProductAddedListener")
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        bottomSheet?.let {
+            val behavior = BottomSheetBehavior.from(it)
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED // 슬라이드 최대 크기로 시작
+
+            val layoutParams = it.layoutParams
+            layoutParams.height = dpToPx(368f).toInt() // 전체 높이 설정
+            it.layoutParams = layoutParams
         }
     }
 
@@ -68,16 +92,45 @@ class SlideCameraList : BottomSheetDialogFragment() {
         val productList = arguments?.getParcelableArrayList<ProductModel>("product_list")?.toMutableList() ?: mutableListOf()
         val currencyIdFrom = arguments?.getLong("currency_id_from") ?: -1L
         val currencyIdTo = arguments?.getLong("currency_id_to") ?: -1L
+        val currencyFromUnit = arguments?.getString("currency_from_unit") ?: ""
+        val currencyToUnit = arguments?.getString("currency_to_unit") ?: ""
 
-        productAdapter = ProductAdapter(productList, currencyIdFrom, currencyIdTo)
+        val editListener = object : ListActivity.OnProductEditListener {
+            override fun onEditRequested(product: ProductModel) {
+                val slideEdit = SlideProductEdit().apply {
+                    arguments = Bundle().apply {
+                        putParcelable("product", product)
+                        putString("currency_from_unit", currencyFromUnit)
+                        putString("currency_to_unit", currencyToUnit)
+                    }
+                }
+                slideEdit.show(parentFragmentManager, "SlideProductEdit")
+            }
+        }
+
+        productAdapter = ProductAdapter(
+            productList,
+            currencyIdFrom,
+            currencyIdTo,
+            currencyFromUnit,
+            currencyToUnit,
+            editListener,
+            showEditButton = false
+        )
+
         binding.productContainer.adapter = productAdapter
 
         binding.buttonAdd.setOnClickListener {
-            val slideCameraInput = SlideCameraInput()
-            slideCameraInput.show(parentFragmentManager, SlideCameraInput.TAG)  // ✅ parentFragmentManager 사용
+            val slideCameraInput = SlideCameraInput().apply {
+                arguments = Bundle().apply {
+                    putString("currency_from_unit", currencyFromUnit)
+                }
+            }
+            slideCameraInput.show(parentFragmentManager, SlideCameraInput.TAG)
             dismiss()
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
