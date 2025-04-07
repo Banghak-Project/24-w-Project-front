@@ -23,6 +23,7 @@ import com.example.moneychanger.network.user.FindPasswordRequest
 import com.example.moneychanger.network.user.KakaoLoginRequest
 import com.example.moneychanger.network.user.KakaoLoginResponse
 import com.example.moneychanger.network.user.OtpRequest
+import com.example.moneychanger.network.user.ResetPasswordRequest
 import com.example.moneychanger.network.user.SignInRequest
 import com.example.moneychanger.network.user.SignInResponse
 import com.example.moneychanger.network.user.SignUpRequest
@@ -163,6 +164,17 @@ interface ApiService {
             @Query("key") apiKey: String
         ): GeocodeResponse
     }
+    // 회원탈퇴
+    @DELETE("/api/auth/withdrawal")
+    suspend fun withdrawal(
+        @Header("Authorization") token: String,
+        @Body request: Map<String, String>
+    ): Response<ApiResponse<String>>
 
 
+    // 새 비밀번호 설정
+    @POST("/api/auth/reset-password")
+    suspend fun resetPassword(
+        @Body request: Map<String, String>
+    ): Response<ApiResponse<String>>
 }

@@ -127,7 +127,7 @@ class FindIdPwActivity : BaseActivity() {
                         if (response.isSuccessful) {
                             val apiResponse = response.body()
                             if (apiResponse?.status == "success") {
-                                moveToPwResult()
+                                moveToPwResult(userEmail)
                             } else {
                                 Toast.makeText(this@FindIdPwActivity, apiResponse?.message ?: "비밀번호 찾기 실패", Toast.LENGTH_SHORT).show()
                             }
@@ -169,8 +169,10 @@ class FindIdPwActivity : BaseActivity() {
         startActivity(intent)
     }
 
-    private fun moveToPwResult() {
-        val intent = Intent(this, PwResultActivity::class.java)
+    private fun moveToPwResult(userEmail: String) {
+        val intent = Intent(this, NewPwActivity::class.java).apply {
+            putExtra("userEmail", userEmail)
+        }
         startActivity(intent)
     }
 }
