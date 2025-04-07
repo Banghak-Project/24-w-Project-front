@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityPolicyBinding
+import com.example.moneychanger.setting.TermSet
 
 // CheckBoxSet 데이터 클래스
 data class CheckBoxSet(
@@ -27,6 +28,7 @@ class PolicyActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPolicyBinding
     private lateinit var checkBoxSets: List<CheckBoxSet>
+    private lateinit var termSets : List<TermSet>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +68,24 @@ class PolicyActivity : AppCompatActivity() {
                 binding.contentThird,
                 binding.arrowThird
             )
+        )
+
+        termSets = listOf(
+            TermSet(
+                binding.containerFirst,
+                binding.term1DetailContainer,
+                binding.arrowFirst
+            ),
+            TermSet(
+                binding.containerSecond,
+                binding.term2DetailContainer,
+                binding.arrowSecond
+            ),
+            TermSet(
+                binding.containerThird,
+                binding.term3DetailContainer,
+                binding.arrowThird
+            ),
         )
 
         // 전체 선택 체크박스 클릭 시
@@ -134,6 +154,8 @@ class PolicyActivity : AppCompatActivity() {
         }
         // 초기 버튼 상태 업데이트
         updateButtonState()
+
+        setupTermListeners()
     }
 
 
@@ -188,7 +210,8 @@ class PolicyActivity : AppCompatActivity() {
             container.backgroundTintList = null
             text.setTextColor(ContextCompat.getColor(this, R.color.gray_08))
             content.setTextColor(ContextCompat.getColor(this, R.color.gray_08))
-            arrow.imageTintList = null
+            arrow.imageTintList =
+                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.gray_04))
         }
     }
 
@@ -199,6 +222,21 @@ class PolicyActivity : AppCompatActivity() {
     private fun updateButtonState() {
         binding.buttonNext.isEnabled = binding.checkboxFirst.isChecked && binding.checkboxSecond.isChecked
         Log.d("PolicyActivity", "버튼 활성화 상태: ${binding.buttonNext.isEnabled}")
+    }
+
+    // 클릭 시 약관 펼치기/접기
+    private fun setupTermListeners() {
+        termSets.forEach { term ->
+            term.arrow.setOnClickListener {
+                if (term.content.visibility == View.VISIBLE) {
+                    term.content.visibility = View.GONE
+                    term.arrow.rotation = 270F
+                } else {
+                    term.content.visibility = View.VISIBLE
+                    term.arrow.rotation = 90F
+                }
+            }
+        }
     }
 }
 

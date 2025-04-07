@@ -86,9 +86,9 @@
     <string name="accept_all">네, 모두 동의합니다</string>
     <string name="essential">[필수]</string>
     <string name="optional">[선택]</string>
-    <string name="policy_content1">-</string>
-    <string name="policy_content2">-</string>
-    <string name="policy_content3">-</string>
+    <string name="policy_content1">이용약관 동의</string>
+    <string name="policy_content2">개인정보 수집 및 이용 동의</string>
+    <string name="policy_content3">쿠키 및 유사기술 이용 동의</string>
 
     <!--온보딩_05,06-->
     <string name="login_auth_title1">본인 확인을 위해 사용하실</string>
@@ -134,6 +134,7 @@
 
     <!--새 pw 설정-->
     <string name="new_pw_title">새 비밀번호 설정</string>
+    <string name="origin_pw">기존 비밀번호</string>
     <string name="new_pw">새 비밀번호</string>
     <string name="new_pw_again">새 비밀번호 확인</string>
     <string name="new_pw_button">새 비밀번호 설정 완료하기</string>

@@ -30,7 +30,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="28dp"/>
 
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="8dp" >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/origin_pw"
+                    style="@style/TextBodyS"/>
+                <EditText
+                    android:id="@+id/pw_origin"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:paddingHorizontal="24dp"
+                    android:hint="@string/origin_pw"
+                    android:background="@drawable/round_background"
+                    android:inputType="textPassword"
+                    android:imeOptions="actionDone"
+                    android:maxLines="1"
+                    android:importantForAutofill="no"
+                    style="@style/TextBodyL"/>
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -43,11 +66,11 @@
                     android:text="@string/new_pw"
                     style="@style/TextBodyS"/>
                 <EditText
-                    android:id="@+id/editTextName"
+                    android:id="@+id/pw_new"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:paddingHorizontal="24dp"
-                    android:hint="@string/pw_kor"
+                    android:hint="@string/new_pw"
                     android:background="@drawable/round_background"
                     android:inputType="textPassword"
                     android:imeOptions="actionDone"
@@ -71,7 +94,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:paddingHorizontal="24dp"
-                    android:hint="@string/pw_kor"
+                    android:hint="@string/new_pw"
                     android:background="@drawable/round_background"
                     android:inputType="textPassword"
                     android:imeOptions="actionDone"
