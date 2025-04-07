@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.moneychanger.databinding.SlideCameraInputBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class SlideCameraInput : BottomSheetDialogFragment() {
@@ -22,9 +23,15 @@ class SlideCameraInput : BottomSheetDialogFragment() {
     override fun onStart() {
         super.onStart()
 
-        // BottomSheetDialog의 높이를 최대 크기로 설정
         val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-        bottomSheet?.layoutParams?.height = resources.displayMetrics.heightPixels * 1 / 2
+        bottomSheet?.let {
+            val behavior = BottomSheetBehavior.from(it)
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED // 슬라이드 최대 크기로 시작
+
+            val layoutParams = it.layoutParams
+            layoutParams.height = dpToPx(368f).toInt() // 전체 높이 설정
+            it.layoutParams = layoutParams
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -48,8 +55,17 @@ class SlideCameraInput : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val fromUnit = arguments?.getString("currency_from_unit") ?: ""
+        val fromKey = fromUnit.replace(Regex("\\(.*\\)"), "").trim()
+        val fromResId = resources.getIdentifier(fromKey, "string", requireContext().packageName)
+        val fromSymbol = if (fromResId != 0) getString(fromResId) else fromKey
+
+        // 🟢 통화 기호 바인딩
+        binding.currencyText.text = fromUnit
+        binding.currencySymbol.text = fromSymbol
+
         binding.buttonAdd.setOnClickListener {
-            val productName = binding.inputName.text.toString()
+            val productName = "자동 설정 이름으로 바꾸시길"
             val priceText = binding.inputPrice.text.toString()
 
             // ✅ Double 변환 (예외 발생 방지)

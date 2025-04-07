@@ -102,7 +102,16 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         }
 
         binding.listButton.setOnClickListener {
-            val slideCameraList = SlideCameraList.newInstance(productList, currencyIdFrom, currencyIdTo)
+            val currencyFromUnit = CurrencyManager.getById(currencyIdFrom)?.curUnit ?: ""
+            val currencyToUnit = CurrencyManager.getById(currencyIdTo)?.curUnit ?: ""
+
+            val slideCameraList = SlideCameraList.newInstance(
+                productList,
+                currencyIdFrom,
+                currencyIdTo,
+                currencyFromUnit,
+                currencyToUnit
+            )
             slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
         }
 
