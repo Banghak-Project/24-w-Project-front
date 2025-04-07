@@ -3,6 +3,7 @@ package com.example.moneychanger.onboarding
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.moneychanger.R
@@ -35,6 +36,12 @@ class LoginActivity : AppCompatActivity() {
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바 타이틀 숨김
+
+        // 뒤로 가기
+        val backButton: ImageView = toolbar.findViewById(R.id.button_back)
+        backButton.setOnClickListener {
+            finish()
+        }
 
         binding.buttonSignIn.setOnClickListener {
             val email = binding.inputEmail.text.toString().trim()

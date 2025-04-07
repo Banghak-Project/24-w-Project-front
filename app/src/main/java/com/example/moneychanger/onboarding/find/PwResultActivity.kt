@@ -30,7 +30,7 @@ class PwResultActivity : BaseActivity() {
 
         // 로그인 화면으로
         binding.buttonToNewPw.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, NewPwActivity::class.java)
             startActivity(intent)
         }
     }
