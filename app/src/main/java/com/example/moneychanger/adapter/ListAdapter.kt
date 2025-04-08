@@ -34,7 +34,7 @@ class ListAdapter(
 
             val dateTime = LocalDateTime.parse(item.createdAt, DateTimeFormatter.ISO_DATE_TIME)
             binding.createdDate.text = dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
-            binding.createdTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH시 mm분 ss초"))
+            binding.createdTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH시 mm분"))
 
             itemView.setOnClickListener {
                 if (!isDeleteMode) onItemClick(item) // 삭제 모드가 아닐 때만 클릭 가능
