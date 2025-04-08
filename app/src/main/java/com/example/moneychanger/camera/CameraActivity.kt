@@ -155,6 +155,9 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                 viewModel.updateCurrency(selected)
                 val selectedCurrency = CurrencyManager.getByUnit(selected)
                 currencyIdFrom = selectedCurrency.currencyId
+                if (latestListId != -1L) {
+                    updateListCurrency(currencyIdFrom, currencyIdTo)
+                }
             }
         }
 
@@ -165,6 +168,9 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                 viewModel.updateCurrency(selected)
                 val selectedCurrency = CurrencyManager.getByUnit(selected)
                 currencyIdTo = selectedCurrency.currencyId
+                if (latestListId != -1L) {
+                    updateListCurrency(currencyIdFrom, currencyIdTo)
+                }
             }
         }
 
@@ -586,6 +592,37 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
                 override fun onFailure(call: Call<ApiResponse<List<ProductResponseDto>>>, t: Throwable) {
                     Log.e("CameraActivity", "🚨 상품 목록 서버 요청 실패: ${t.message}")
+                }
+            })
+    }
+
+    private fun updateListCurrency(currencyFromId: Long, currencyToId: Long) {
+        val updateRequest = UpdateRequestDto(
+            listId = saveedList!!.listId,
+            currencyIdFrom = currencyFromId,
+            currencyIdTo = currencyToId,
+            location = saveedList!!.location,
+            name = saveedList!!.name
+        )
+
+        RetrofitClient.apiService.updateList(updateRequest)
+            .enqueue(object : Callback<ApiResponse<UpdateResponseDto>> {
+                override fun onResponse(
+                    call: Call<ApiResponse<UpdateResponseDto>>,
+                    response: Response<ApiResponse<UpdateResponseDto>>
+                ) {
+                    if (response.isSuccessful && response.body()?.status == "success") {
+                        Log.i("ListActivity", "✅ 서버에 리스트 업데이트 완료")
+                        setResult(RESULT_OK)
+                    } else {
+                        Log.e("ListActivity", "❌ 서버 응답 실패: ${response.errorBody()?.string()}")
+                        Toast.makeText(this@CameraActivity, "리스트 업데이트 실패", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ApiResponse<UpdateResponseDto>>, t: Throwable) {
+                    Log.e("ListActivity", "❌ 서버 업데이트 실패", t)
+                    Toast.makeText(this@CameraActivity, "서버 통신 오류", Toast.LENGTH_SHORT).show()
                 }
             })
     }
