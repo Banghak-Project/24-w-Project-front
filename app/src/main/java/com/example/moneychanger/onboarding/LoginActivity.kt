@@ -107,7 +107,7 @@ class LoginActivity : AppCompatActivity() {
                     } else {
                         val errorBody = response.errorBody()?.string()
                         Log.e("LoginActivity", "🚨 로그인 실패 - HTTP ${response.code()}: $errorBody")
-                        Toast.makeText(this@LoginActivity, "로그인 실패: 서버 오류 (${response.code()})", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@LoginActivity, "로그인 실패: 서버 오류 (${response.message()})", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: HttpException) {

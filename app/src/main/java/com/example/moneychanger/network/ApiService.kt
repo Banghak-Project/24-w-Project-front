@@ -165,11 +165,11 @@ interface ApiService {
         ): GeocodeResponse
     }
     // 회원탈퇴
-    @DELETE("/api/auth/withdrawal")
+    @POST("/api/auth/withdrawal")
     suspend fun withdrawal(
-        @Header("Authorization") token: String,
         @Body request: Map<String, String>
     ): Response<ApiResponse<String>>
+
 
 
     // 새 비밀번호 설정

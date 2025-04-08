@@ -24,9 +24,17 @@ object TokenManager {
         prefs.edit().putString(KEY_ACCESS_TOKEN, token).apply()
     }
 
-    // 액세스 토큰 가져오기
     fun getAccessToken(): String? {
         return prefs.getString(KEY_ACCESS_TOKEN, null)
+    }
+
+    fun getAccessTokenWithBearer(): String? {
+        val token = getAccessToken()
+        return if (token != null && !token.startsWith("Bearer ")) {
+            "Bearer $token"
+        } else {
+            token
+        }
     }
 
     fun saveRefreshToken(token: String) {
@@ -42,7 +50,6 @@ object TokenManager {
         prefs.edit().putString(KEY_SIGN_IN_INFO, json).apply()
     }
 
-    // ✅ 회원 정보 저장 (null 방지)
     fun saveUserInfo(userInfo: UserInfoResponse?) {
         if (userInfo != null) {
             val json = Gson().toJson(userInfo)
@@ -84,7 +91,6 @@ object TokenManager {
         }
     }
 
-    // ✅ 전체 사용자 정보 업데이트 (null 방지)
     fun updateUserInfo(newInfo: UserInfoResponse?) {
         saveUserInfo(newInfo)
     }
