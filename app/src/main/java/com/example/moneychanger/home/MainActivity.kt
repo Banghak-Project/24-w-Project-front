@@ -48,7 +48,6 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
     private var lists: MutableList<ListModel> = mutableListOf()
 
     private lateinit var addListLauncher: ActivityResultLauncher<Intent>
-
     private lateinit var editListLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
