@@ -156,6 +156,7 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             intent.putExtra("listId", selectedList!!.listId)
             intent.putExtra("currencyIdFrom", currencyIdFrom)
             intent.putExtra("currencyIdTo", currencyIdTo)
+            intent.putExtra("selectedList", selectedList)
 
             addProductLauncher.launch(intent)
         }
@@ -167,12 +168,6 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
 
                 selectedList = it // selectedList 초기화
                 updateUI(it) // UI 업데이트
-//                binding.productContainer.layoutManager = LinearLayoutManager(this)
-//                binding.productContainer.adapter = ProductAdapter(
-//                    productList.toMutableList(),
-//                    it.currencyFrom.currencyId,
-//                    it.currencyTo.currencyId
-//                )
                 fetchProductsByListId(selectedListId)
             }
         }
@@ -187,9 +182,17 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
 
         addProductLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
-                // 새로 상품 목록을 불러옴!
-                selectedList?.let {
-                    fetchProductsByListId(it.listId)
+                fetchListByIdFromApi(selectedListId) { list ->
+                    list?.let {
+                        Toast.makeText(this, "$selectedListId", Toast.LENGTH_SHORT).show()
+                        Log.d("ListDebug", "Fetched List: $it")
+
+                        selectedList = it // selectedList 초기화
+                        updateUI(it) // UI 업데이트
+                        currencyIdFrom = it.currencyFrom.currencyId
+                        currencyIdTo = it.currencyTo.currencyId
+                        fetchProductsByListId(selectedListId)
+                    }
                 }
             }
         }
@@ -233,6 +236,13 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                                         putParcelable("product", product)
                                         putString("currency_from_unit", selectedList!!.currencyFrom.curUnit)
                                         putString("currency_to_unit", selectedList!!.currencyTo.curUnit)
+                                    }
+                                }
+                                slideProductEdit.setOnProductUpdatedListener { updatedProduct ->
+                                    val adapter = binding.productContainer.adapter
+                                    if (adapter is ProductAdapter) {
+                                        adapter.updateItem(updatedProduct)
+                                        binding.totalSum.text = String.format("%.2f", calculateTotalAmount())
                                     }
                                 }
                                 slideProductEdit.show(supportFragmentManager, "SlideProductEdit")

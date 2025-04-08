@@ -11,6 +11,7 @@ import com.example.moneychanger.databinding.ListProductBinding
 import com.example.moneychanger.etc.ExchangeRateUtil
 import com.example.moneychanger.list.ListActivity
 import com.example.moneychanger.network.product.ProductModel
+import com.example.moneychanger.network.product.ProductResponseDto
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -29,7 +30,13 @@ class ProductAdapter(
             Log.i("ProductAdapter",product.originPrice.toString())
             binding.productName.text = product.name
             binding.originPrice.text = product.originPrice.toString()
-            val dateTime = LocalDateTime.parse(product.createdAt, DateTimeFormatter.ISO_DATE_TIME)
+            val dateTime = try {
+                LocalDateTime.parse(product.createdAt, DateTimeFormatter.ISO_DATE_TIME)
+            } catch (e: Exception) {
+                Log.e("ProductAdapter", "createdAt 파싱 실패: ${product.createdAt}", e)
+                LocalDateTime.now()
+            }
+            //val dateTime = LocalDateTime.parse(product.createdAt, DateTimeFormatter.ISO_DATE_TIME)
             binding.productTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH시 mm분"))
 
             val context = binding.root.context
@@ -77,6 +84,14 @@ class ProductAdapter(
         products.clear()
         products.addAll(newProducts)
         notifyDataSetChanged()
+    }
+
+    fun updateItem(updatedProduct: ProductModel) {
+        val index = products.indexOfFirst { it.productId == updatedProduct.productId }
+        if (index != -1) {
+            products[index] = updatedProduct
+            notifyDataSetChanged()
+        }
     }
 
 }

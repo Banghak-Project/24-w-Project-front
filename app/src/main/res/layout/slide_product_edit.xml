@@ -53,7 +53,7 @@
                     android:background="@drawable/round_background"
                     android:textColor="@color/gray_06"
                     style="@style/TextBodyL"
-                    android:inputType="number"
+                    android:inputType="text"
                     android:imeOptions="actionDone"
                     android:maxLines="1"/>
             </FrameLayout>
@@ -90,12 +90,16 @@
                 android:paddingVertical="16dp"
                 android:paddingHorizontal="24dp"
                 android:background="@drawable/round_background">
-                <TextView
+                <EditText
                     android:id="@+id/input_price"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="N00,000,000"
                     android:textColor="@color/gray_06"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/product_price"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1"
+                    android:gravity="center_vertical"
                     style="@style/TextBodyL"/>
                 <Space
                     android:layout_width="0dp"

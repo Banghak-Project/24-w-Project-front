@@ -2,19 +2,33 @@ package com.example.moneychanger.etc
 
 import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.example.moneychanger.databinding.SlideProductEditBinding
+import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.product.ProductModel
+import com.example.moneychanger.network.product.ProductResponseDto
+import com.example.moneychanger.network.product.UpdateProductRequestDto
+import com.example.moneychanger.network.user.ApiResponse
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SlideProductEdit : BottomSheetDialogFragment() {
 
     private lateinit var binding: SlideProductEditBinding
     private var product: ProductModel? = null
+
+    private var onProductUpdatedListener: ((ProductModel) -> Unit)? = null
+
+    fun setOnProductUpdatedListener(listener: (ProductModel) -> Unit) {
+        onProductUpdatedListener = listener
+    }
 
     override fun onStart() {
         super.onStart()
@@ -79,11 +93,51 @@ class SlideProductEdit : BottomSheetDialogFragment() {
                 return@setOnClickListener
             }
 
-            // TODO: 이곳에서 서버로 수정 요청하거나 콜백을 통해 상위에서 처리할 수 있도록 구현
-            Toast.makeText(requireContext(), "수정 완료 (임시 메시지)", Toast.LENGTH_SHORT).show()
-            dismiss()
+            val productId = product?.productId ?: return@setOnClickListener
+            val updateRequest = UpdateProductRequestDto(productId, newName, newPrice)
+
+            updateListCurrency(updateRequest)
         }
 
+    }
+
+    private fun updateListCurrency(updateRequest: UpdateProductRequestDto) {
+        RetrofitClient.apiService.updateProduct(updateRequest)
+        .enqueue(object : Callback<ApiResponse<ProductResponseDto>> {
+            override fun onResponse(
+                call: Call<ApiResponse<ProductResponseDto>>,
+                response: Response<ApiResponse<ProductResponseDto>>
+            ) {
+                if (response.isSuccessful && response.body()?.status == "success") {
+                    Toast.makeText(requireContext(), "상품 수정 완료", Toast.LENGTH_SHORT).show()
+                    val updatedProduct = response.body()?.data
+                    Log.d("ProductEdit", "업데이트: $updatedProduct")
+                    val productsModel = updatedProduct?.let {
+                        ProductModel(
+                            productId = it.productId,
+                            listId = updatedProduct.listId,
+                            name = updatedProduct.name,
+                            originPrice = updatedProduct.originPrice,
+                            deletedYn = updatedProduct.deletedYn,
+                            createdAt = updatedProduct.createdAt
+                        )
+                    }
+                    if (updatedProduct != null) {
+                        if (productsModel != null) {
+                            onProductUpdatedListener?.invoke(productsModel)
+                        }
+                        Log.d("ProductEdit", "업데이트 콜백 호출됨: $productsModel")
+                    }
+                    dismiss()
+                } else {
+                    Toast.makeText(requireContext(), "상품 수정 실패", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ApiResponse<ProductResponseDto>>, t: Throwable) {
+                Toast.makeText(requireContext(), "서버 통신 오류", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     companion object {

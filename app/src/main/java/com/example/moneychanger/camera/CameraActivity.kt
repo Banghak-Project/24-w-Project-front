@@ -38,6 +38,7 @@ import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.etc.ExchangeRateUtil
 import com.example.moneychanger.etc.OnProductAddedListener
 import com.example.moneychanger.etc.SlideCameraList
+import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.RetrofitClient.apiService
 import com.example.moneychanger.network.TokenManager
 import com.example.moneychanger.network.currency.CurrencyManager
@@ -49,8 +50,9 @@ import com.example.moneychanger.network.user.ApiResponse
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.example.moneychanger.network.currency.CurrencyViewModel
+import com.example.moneychanger.network.list.UpdateRequestDto
+import com.example.moneychanger.network.list.UpdateResponseDto
 import com.example.moneychanger.network.product.ProductResponseDto
-//import com.example.moneychanger.network.CurrencyStoreManager
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
@@ -79,7 +81,9 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
     private var currencyIdTo = -1L
     private val userId = TokenManager.getUserId() ?: -1L
     private val location = "Seoul"
+
     private var latestListId = -1L
+    private var saveedList: CreateListResponseDto? = null
 
     private var productList: MutableList<ProductResponseDto> = mutableListOf()
 
@@ -151,6 +155,9 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                 viewModel.updateCurrency(selected)
                 val selectedCurrency = CurrencyManager.getByUnit(selected)
                 currencyIdFrom = selectedCurrency.currencyId
+                if (latestListId != -1L) {
+                    updateListCurrency(currencyIdFrom, currencyIdTo)
+                }
             }
         }
 
@@ -161,6 +168,9 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                 viewModel.updateCurrency(selected)
                 val selectedCurrency = CurrencyManager.getByUnit(selected)
                 currencyIdTo = selectedCurrency.currencyId
+                if (latestListId != -1L) {
+                    updateListCurrency(currencyIdFrom, currencyIdTo)
+                }
             }
         }
 
@@ -362,8 +372,28 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             binding.textOverlay.visibility = View.VISIBLE
             // 선택 완료 버튼 클릭 시, 새로운 리스트 생성 및 상품 추가
             binding.confirmButton.setOnClickListener {
-                if (selectedProductName != null && selectedProductPrice != null) {
-                    addNewList(userId, currencyIdFrom, currencyIdTo, location)
+                val productNameCopy = selectedProductName
+                val productPriceCopy = selectedProductPrice
+                if (productNameCopy != null && productPriceCopy != null) {
+                    if (latestListId != -1L) {
+                        // 이미 리스트가 있다면 상품만 추가
+                        addProductToList(latestListId, productNameCopy, productPriceCopy)
+                    } else {
+                        // 처음이라면 리스트 먼저 생성
+                        addNewList(userId, currencyIdFrom, currencyIdTo, location, productNameCopy, productPriceCopy)
+                    }
+                    // 이미지 뷰 → 카메라 프리뷰로 전환
+                    binding.textOverlay.removeAllViews()
+                    binding.capturedImageView.visibility = View.GONE
+                    binding.previewView.visibility = View.VISIBLE
+
+                    selectedProductName = null
+                    selectedProductPrice = null
+                    selectedProductNameView = null
+                    selectedProductPriceView = null
+                    selectedTexts.clear()
+                    isSelectingPrice = false
+                    binding.cameraText.text = ""
                 } else {
                     Toast.makeText(this@CameraActivity, "상품명과 상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
                 }
@@ -440,7 +470,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         }
     }
 
-    private fun addNewList(userId: Long, currencyIdFrom: Long, currencyIdTo: Long, location: String) {
+    private fun addNewList(userId: Long, currencyIdFrom: Long, currencyIdTo: Long, location: String, productNameCopy: String, productPriceCopy: String) {
         val createRequest = CreateListRequestDto(userId, currencyIdFrom, currencyIdTo, location)
         Log.d("CameraActivity", "🚀 리스트 생성 요청 데이터: userId=$userId, currencyIdFrom=$currencyIdFrom, currencyIdTo=$currencyIdTo, location=$location")
 
@@ -469,10 +499,11 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                                     Log.d("CameraActivity", "✅ 리스트 생성 성공: ID=$listId")
 
                                     latestListId = listId
+                                    saveedList = createListResponse
 
                                     fetchProductsAndShowDialog(listId)
-                                    // 리스트 추가 성공 후 상품 추가
-                                    addProductToList(listId, selectedProductName!!, selectedProductPrice!!)
+
+                                    addProductToList(listId, productNameCopy, productPriceCopy)
                                 } else {
                                     Log.e("CameraActivity", "🚨 리스트 ID 오류 발생")
                                 }
@@ -520,7 +551,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
                                 val resultIntent = Intent()
                                 setResult(RESULT_OK, resultIntent)
-                                finish() // 상품 추가 후 액티비티 종료
+                                fetchProductsAndShowDialog(listId)
                             } else {
                                 Log.e("CameraActivity", "🚨 상품 응답 데이터 변환 실패")
                             }
@@ -561,6 +592,37 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
                 override fun onFailure(call: Call<ApiResponse<List<ProductResponseDto>>>, t: Throwable) {
                     Log.e("CameraActivity", "🚨 상품 목록 서버 요청 실패: ${t.message}")
+                }
+            })
+    }
+
+    private fun updateListCurrency(currencyFromId: Long, currencyToId: Long) {
+        val updateRequest = UpdateRequestDto(
+            listId = saveedList!!.listId,
+            currencyIdFrom = currencyFromId,
+            currencyIdTo = currencyToId,
+            location = saveedList!!.location,
+            name = saveedList!!.name
+        )
+
+        RetrofitClient.apiService.updateList(updateRequest)
+            .enqueue(object : Callback<ApiResponse<UpdateResponseDto>> {
+                override fun onResponse(
+                    call: Call<ApiResponse<UpdateResponseDto>>,
+                    response: Response<ApiResponse<UpdateResponseDto>>
+                ) {
+                    if (response.isSuccessful && response.body()?.status == "success") {
+                        Log.i("ListActivity", "✅ 서버에 리스트 업데이트 완료")
+                        setResult(RESULT_OK)
+                    } else {
+                        Log.e("ListActivity", "❌ 서버 응답 실패: ${response.errorBody()?.string()}")
+                        Toast.makeText(this@CameraActivity, "리스트 업데이트 실패", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ApiResponse<UpdateResponseDto>>, t: Throwable) {
+                    Log.e("ListActivity", "❌ 서버 업데이트 실패", t)
+                    Toast.makeText(this@CameraActivity, "서버 통신 오류", Toast.LENGTH_SHORT).show()
                 }
             })
     }
