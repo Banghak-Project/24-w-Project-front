@@ -49,6 +49,22 @@ class AddActivity : AppCompatActivity() {
 
         binding.loginToolbar.pageText.text = "추가하기"
 
+        val currencyFrom = CurrencyManager.getById(currencyIdFrom)
+        val currencyTo = CurrencyManager.getById(currencyIdTo)
+        val fromUnit = currencyFrom?.curUnit ?: ""
+        val toUnit = currencyTo?.curUnit ?: ""
+        val fromKey = fromUnit.replace(Regex("\\(.*\\)"), "").trim()
+        val toKey = toUnit.replace(Regex("\\(.*\\)"), "").trim()
+        val fromResId = resources.getIdentifier(fromKey, "string", packageName)
+        val toResId = resources.getIdentifier(toKey, "string", packageName)
+        val fromSymbol = if (fromResId != 0) getString(fromResId) else fromKey
+        val toSymbol = if (toResId != 0) getString(toResId) else toKey
+        binding.currencyText1.text = fromUnit
+        binding.currencyText2.text = toUnit
+        binding.currencySymbol1.text = fromSymbol
+        binding.currencySymbol2.text = toSymbol
+
+
         binding.inputField.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 

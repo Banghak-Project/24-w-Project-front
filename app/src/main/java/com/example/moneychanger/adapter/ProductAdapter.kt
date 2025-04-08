@@ -1,15 +1,27 @@
 package com.example.moneychanger.adapter
 
+import android.os.Bundle
+import android.provider.Settings.Global.getString
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moneychanger.databinding.ListProductBinding
 import com.example.moneychanger.etc.ExchangeRateUtil
+import com.example.moneychanger.list.ListActivity
 import com.example.moneychanger.network.product.ProductModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class ProductAdapter(
-    private val products: MutableList<ProductModel>, private val currencyIdFrom: Long, private val currencyIdTo: Long
+    private val products: MutableList<ProductModel>,
+    private val currencyIdFrom: Long,
+    private val currencyIdTo: Long,
+    private val currencyFromUnit: String,
+    private val currencyToUnit: String,
+    private val editListener: ListActivity.OnProductEditListener,
+    private val showEditButton: Boolean = true
 ) : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     inner class ProductViewHolder(val binding: ListProductBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -17,13 +29,30 @@ class ProductAdapter(
             Log.i("ProductAdapter",product.originPrice.toString())
             binding.productName.text = product.name
             binding.originPrice.text = product.originPrice.toString()
-            binding.productTime.text = product.createdAt
+            val dateTime = LocalDateTime.parse(product.createdAt, DateTimeFormatter.ISO_DATE_TIME)
+            binding.productTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH시 mm분"))
+
+            val context = binding.root.context
+            val fromKey = currencyFromUnit.replace(Regex("\\(.*\\)"), "").trim()
+            val toKey = currencyToUnit.replace(Regex("\\(.*\\)"), "").trim()
+            val fromResId = context.resources.getIdentifier(fromKey, "string", context.packageName)
+            val toResId = context.resources.getIdentifier(toKey, "string", context.packageName)
+            val fromSymbol = if (fromResId != 0) context.getString(fromResId) else fromKey
+            val toSymbol = if (toResId != 0) context.getString(toResId) else toKey
+            binding.currencyFrom.text = fromSymbol
+            binding.currencyTo.text = toSymbol
+
 
             val converted = ExchangeRateUtil.calculate(currencyIdFrom, currencyIdTo, product.originPrice)
             binding.convertedPrice.text = String.format("%.2f", converted)
 
             binding.perNumber.text = (position + 1).toString()
             binding.allNumber.text = totalCount.toString()
+
+            binding.buttonEdit.setOnClickListener{
+                editListener.onEditRequested(product)
+            }
+            binding.buttonEdit.visibility = if(showEditButton) View.VISIBLE else View.INVISIBLE
         }
     }
 

@@ -141,6 +141,7 @@
 
     <!--카메라 리스트-->
     <string name="product_name">상품명</string>
+    <string name="product_price">상품 금액</string>
 
     <!--홈_01-->
     <string name="home_title">가게 별 소비 리스트</string>

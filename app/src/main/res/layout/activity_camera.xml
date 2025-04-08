@@ -172,14 +172,20 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>
-            <Button
+            <FrameLayout
                 android:id="@+id/confirmButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@drawable/round_button"
                 android:backgroundTint="@color/white"
-                android:layout_gravity="center">
-            </Button>
+                android:layout_gravity="center_vertical">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/icon_cart"
+                    android:layout_gravity="center"
+                    app:tint="@color/main"/>
+            </FrameLayout>
         </LinearLayout>
     </FrameLayout>
 

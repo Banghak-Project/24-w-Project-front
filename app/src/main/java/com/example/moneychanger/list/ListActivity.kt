@@ -17,6 +17,7 @@ import com.example.moneychanger.adapter.ProductAdapter
 import com.example.moneychanger.camera.CameraActivity2
 import com.example.moneychanger.etc.SlideEdit
 import com.example.moneychanger.databinding.ActivityListBinding
+import com.example.moneychanger.etc.SlideProductEdit
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.RetrofitClient.apiService
 import com.example.moneychanger.network.currency.CurrencyManager
@@ -222,11 +223,25 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                     binding.productContainer.adapter = ProductAdapter(
                         productList,
                         selectedList!!.currencyFrom.currencyId,
-                        selectedList!!.currencyTo.currencyId
+                        selectedList!!.currencyTo.currencyId,
+                        selectedList!!.currencyFrom.curUnit,
+                        selectedList!!.currencyTo.curUnit,
+                        object : OnProductEditListener {
+                            override fun onEditRequested(product: ProductModel) {
+                                val slideProductEdit = SlideProductEdit().apply {
+                                    arguments = Bundle().apply {
+                                        putParcelable("product", product)
+                                        putString("currency_from_unit", selectedList!!.currencyFrom.curUnit)
+                                        putString("currency_to_unit", selectedList!!.currencyTo.curUnit)
+                                    }
+                                }
+                                slideProductEdit.show(supportFragmentManager, "SlideProductEdit")
+                            }
+                        }
                     )
                     // 총 금액 계산
                     val total = productList.sumOf { it.originPrice ?: 0.0 }
-                    binding.totalSum.text = total.toString()
+                    binding.totalSum.text = String.format("%.2f", total)
 
                 } else {
                     Toast.makeText(this@ListActivity, "상품 불러오기 실패", Toast.LENGTH_SHORT).show()
@@ -327,7 +342,7 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         binding.locationName.text = list.location
         val dateTime = LocalDateTime.parse(list.createdAt, DateTimeFormatter.ISO_DATE_TIME)
         binding.createdDate.text = dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
-        binding.createdTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH시 mm분 ss초"))
+        binding.createdTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH시 mm분"))
         binding.currencyName1.text = list.currencyFrom.curUnit
         binding.currencyName2.text = list.currencyTo.curUnit
         binding.currencyName3.text = list.currencyFrom.curUnit
@@ -343,6 +358,10 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
 
     private fun calculateTotalAmount(): Double {
         return productList.sumOf { it.originPrice ?: 0.0 }
+    }
+
+    interface OnProductEditListener {
+        fun onEditRequested(product: ProductModel)
     }
 
 

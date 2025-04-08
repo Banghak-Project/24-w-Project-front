@@ -95,11 +95,6 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             startCamera()
         }
 
-        binding.listButton.setOnClickListener {
-            val slideCameraList = SlideCameraList.newInstance(productList, currencyIdFrom, currencyIdTo)
-            slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
-        }
-
         captureButton.setOnClickListener {
             takePicture(currencyIdFrom, currencyIdTo, listId)
         }
@@ -136,6 +131,17 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             if (initialCurrencyTo.isNotEmpty()) {
                 binding.currencyName2.text = initialCurrencyTo
                 viewModel.updateCurrency(initialCurrencyTo)
+            }
+
+            binding.listButton.setOnClickListener {
+                val slideCameraList = SlideCameraList.newInstance(
+                    productList,
+                    currencyIdFrom,
+                    currencyIdTo,
+                    initialCurrencyFrom,
+                    initialCurrencyTo
+                )
+                slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
             }
         }
 
