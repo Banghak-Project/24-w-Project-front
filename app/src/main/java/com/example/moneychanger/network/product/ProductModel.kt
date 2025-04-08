@@ -49,3 +49,9 @@ data class CreateProductResponseDto(
 data class DeleteProductsRequestDto(
     @SerializedName("product_ids")val productIds: List<Long>
 )
+
+data class UpdateProductRequestDto(
+    @SerializedName("productId") val productId: Long,
+    @SerializedName("name") val name: String,
+    @SerializedName("originPrice") val originPrice: Double,
+)

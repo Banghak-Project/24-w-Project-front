@@ -17,6 +17,7 @@ import com.example.moneychanger.network.product.ImageProductResponseDto
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductRequestDto
 import com.example.moneychanger.network.product.ProductResponseDto
+import com.example.moneychanger.network.product.UpdateProductRequestDto
 import com.example.moneychanger.network.user.ApiResponse
 import com.example.moneychanger.network.user.EmailRequest
 import com.example.moneychanger.network.user.FindPasswordRequest
@@ -100,11 +101,10 @@ interface ApiService {
     fun getAllProducts(): Response<ApiResponse<Call<List<ProductModel>>>>
 
     //아이디에 맞는 상품 수정
-    @PUT("/api/products/{id}")
+    @PATCH("/api/products/update")
     fun updateProduct(
-        @Path("id") productId: Long,
-        @Body requestDto: ProductRequestDto
-    ): Response<ApiResponse<Call<ProductModel>>>
+        @Body requestDto: UpdateProductRequestDto
+    ): Call<ApiResponse<ProductResponseDto>>
 
     //아이디에 맞는 상품 삭제
     @PATCH("/api/products/{id}")
@@ -130,9 +130,6 @@ interface ApiService {
 
     @GET("/api/currency")
     fun findAll(): Call<ApiResponse<List<CurrencyResponseDto>>>
-
-    @PATCH("/api/currency/update/{id}")
-    fun updateCurrency(@Path("id") id:Long, @Body request: UpdateRequestDto) : Call<ApiResponse<ListModel>>
 
     // ID 찾기 API
     @GET("/api/auth/find-id")
