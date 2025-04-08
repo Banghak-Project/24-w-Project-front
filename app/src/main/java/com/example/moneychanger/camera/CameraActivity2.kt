@@ -45,6 +45,9 @@ import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.example.moneychanger.network.currency.CurrencyManager
 import com.example.moneychanger.network.currency.CurrencyViewModel
+import com.example.moneychanger.network.list.ListModel
+import com.example.moneychanger.network.list.UpdateRequestDto
+import com.example.moneychanger.network.list.UpdateResponseDto
 import com.example.moneychanger.network.product.ProductResponseDto
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
@@ -88,6 +91,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         var currencyIdFrom = intent.getLongExtra("currencyIdFrom", -1L)
         var currencyIdTo = intent.getLongExtra("currencyIdTo", -1L)
         val listId = intent.getLongExtra("listId", -1L)
+        val selectedList = intent.getSerializableExtra("selectedList") as? ListModel
 
         if (!hasCameraPermission()) {
             requestCameraPermission()
@@ -152,6 +156,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                 viewModel.updateCurrency(selected)
                 val selectedCurrency = CurrencyManager.getByUnit(selected)
                 currencyIdFrom = selectedCurrency.currencyId
+                updateListCurrency(currencyIdFrom, currencyIdTo, selectedList!!)
             }
         }
 
@@ -161,6 +166,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                 viewModel.updateCurrency(selected)
                 val selectedCurrency = CurrencyManager.getByUnit(selected)
                 currencyIdTo = selectedCurrency.currencyId
+                updateListCurrency(currencyIdFrom, currencyIdTo, selectedList!!)
             }
         }
 
@@ -358,11 +364,25 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             binding.textOverlay.visibility = View.VISIBLE
             // 선택 완료 버튼 클릭 시, 새로운 상품 추가
             binding.confirmButton.setOnClickListener {
-                if (selectedProductName != null && selectedProductPrice != null) {
-                    addProductToList(listId , selectedProductName!!, selectedProductPrice!!)
+                val productNameCopy = selectedProductName
+                val productPriceCopy = selectedProductPrice
+                if (productNameCopy != null && productPriceCopy != null) {
+                    addProductToList(listId , productNameCopy, productPriceCopy)
                 } else {
                     Toast.makeText(this@CameraActivity2, "상품명과 상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
                 }
+                // 이미지 뷰 → 카메라 프리뷰로 전환
+                binding.textOverlay.removeAllViews()
+                binding.capturedImageView.visibility = View.GONE
+                binding.previewView.visibility = View.VISIBLE
+
+                selectedProductName = null
+                selectedProductPrice = null
+                selectedProductNameView = null
+                selectedProductPriceView = null
+                selectedTexts.clear()
+                isSelectingPrice = false
+                binding.cameraText.text = ""
             }
             Toast.makeText(this@CameraActivity2, "상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
         }
@@ -462,7 +482,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
 
                                 val resultIntent = Intent()
                                 setResult(RESULT_OK, resultIntent)
-                                finish() // 상품 추가 후 액티비티 종료
+                                fetchProductsAndShowDialog(listId)
                             } else {
                                 Log.e("CameraActivity", "🚨 상품 응답 데이터 변환 실패")
                             }
@@ -505,23 +525,6 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
 
         Log.d("ExchangeRate", "✅ ${fromCurrency.curUnit} -> ${toCurrency.curUnit} 환율 적용: $amount -> $exchangedAmount")
         return exchangedAmount
-    }
-
-
-    override fun onDestroy() {
-        super.onDestroy()
-        cameraExecutor.shutdown()
-    }
-
-    companion object {
-        private const val TAG = "CameraXApp"
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-        private const val CAMERA_PERMISSION_CODE: Int = 10
-
-    }
-
-    override fun onProductAdded(productName: String, price: Double) {
-        Log.d("CameraActivity", "상품명: $productName, 가격: $price")
     }
 
     private fun fetchProductsAndShowDialog(listId: Long) {
@@ -567,4 +570,54 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                 }
             })
     }
+
+    private fun updateListCurrency(currencyFromId: Long, currencyToId: Long, selectedList: ListModel) {
+        val updateRequest = UpdateRequestDto(
+            listId = selectedList.listId,
+            currencyIdFrom = currencyFromId,
+            currencyIdTo = currencyToId,
+            location = selectedList.location,
+            name = selectedList.name
+        )
+
+        RetrofitClient.apiService.updateList(updateRequest)
+            .enqueue(object : Callback<ApiResponse<UpdateResponseDto>> {
+                override fun onResponse(
+                    call: Call<ApiResponse<UpdateResponseDto>>,
+                    response: Response<ApiResponse<UpdateResponseDto>>
+                ) {
+                    if (response.isSuccessful && response.body()?.status == "success") {
+                        Log.i("ListActivity", "✅ 서버에 리스트 업데이트 완료")
+                        val resultIntent = Intent()
+                        setResult(RESULT_OK, resultIntent)
+                    } else {
+                        Log.e("ListActivity", "❌ 서버 응답 실패: ${response.errorBody()?.string()}")
+                        Toast.makeText(this@CameraActivity2, "리스트 업데이트 실패", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ApiResponse<UpdateResponseDto>>, t: Throwable) {
+                    Log.e("ListActivity", "❌ 서버 업데이트 실패", t)
+                    Toast.makeText(this@CameraActivity2, "서버 통신 오류", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        cameraExecutor.shutdown()
+    }
+
+    companion object {
+        private const val TAG = "CameraXApp"
+        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
+        private const val CAMERA_PERMISSION_CODE: Int = 10
+
+    }
+
+    override fun onProductAdded(productName: String, price: Double) {
+        Log.d("CameraActivity", "상품명: $productName, 가격: $price")
+    }
+
 }
