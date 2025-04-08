@@ -62,4 +62,11 @@ data class FindPasswordRequest(
     @SerializedName("inputOtp") val inputOtp: String? = null
 )
 
+data class ResetPasswordRequest(
+    val userEmail: String,
+    val currentPassword: String,
+    val newPassword: String,
+    val confirmPassword: String
+)
+
 
