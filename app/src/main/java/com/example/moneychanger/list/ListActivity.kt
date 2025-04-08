@@ -156,6 +156,7 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             intent.putExtra("listId", selectedList!!.listId)
             intent.putExtra("currencyIdFrom", currencyIdFrom)
             intent.putExtra("currencyIdTo", currencyIdTo)
+            intent.putExtra("selectedList", selectedList)
 
             addProductLauncher.launch(intent)
         }
@@ -167,12 +168,6 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
 
                 selectedList = it // selectedList 초기화
                 updateUI(it) // UI 업데이트
-//                binding.productContainer.layoutManager = LinearLayoutManager(this)
-//                binding.productContainer.adapter = ProductAdapter(
-//                    productList.toMutableList(),
-//                    it.currencyFrom.currencyId,
-//                    it.currencyTo.currencyId
-//                )
                 fetchProductsByListId(selectedListId)
             }
         }
