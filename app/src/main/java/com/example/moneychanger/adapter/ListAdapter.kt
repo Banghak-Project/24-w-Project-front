@@ -7,15 +7,22 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moneychanger.databinding.ListPlaceBinding
+import com.example.moneychanger.etc.ExchangeRateUtil
+import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
 import com.example.moneychanger.etc.TotalAmountUtil
 import com.example.moneychanger.network.RetrofitClient
+import com.example.moneychanger.network.currency.CurrencyModel
 import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.network.user.ApiResponse
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Currency
 
 class ListAdapter(
     private val items: MutableList<ListModel>,
@@ -30,7 +37,7 @@ class ListAdapter(
         fun bind(item: ListModel) {
             binding.placeName.text = item.name
             binding.locationName.text = item.location
-            fetchTotalAmount(item.listId, binding)
+            fetchTotalAmount(item.listId, item.currencyTo, item.currencyFrom, binding)
 
             val dateTime = LocalDateTime.parse(item.createdAt, DateTimeFormatter.ISO_DATE_TIME)
             binding.createdDate.text = dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
@@ -96,11 +103,22 @@ class ListAdapter(
         }
     }
 
-    fun fetchTotalAmount(listId: Long, binding: ListPlaceBinding) {
+    fun fetchTotalAmount(listId: Long, currencyFrom: CurrencyModel, currencyTo: CurrencyModel, binding: ListPlaceBinding) {
         TotalAmountUtil.fetchTotalAmount(listId) { total ->
-            binding.grossPayment.text = total.toString()
+            binding.grossPayment.text = String.format("%.2f", total)
+
+            // 비동기 환율 적용
+            CoroutineScope(Dispatchers.Main).launch {
+                val converted = calculateExchangeRate(
+                    currencyTo.currencyId,
+                    currencyFrom.currencyId,
+                    total
+                )
+                binding.grossPaymentConverted.text = String.format("%.2f", converted)
+            }
         }
     }
+
 
     fun addItem(item: ListModel) {
         items.add(item)

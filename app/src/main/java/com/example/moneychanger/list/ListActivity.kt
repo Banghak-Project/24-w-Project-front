@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.etc.OnStoreNameUpdatedListener
@@ -17,6 +18,8 @@ import com.example.moneychanger.adapter.ProductAdapter
 import com.example.moneychanger.camera.CameraActivity2
 import com.example.moneychanger.etc.SlideEdit
 import com.example.moneychanger.databinding.ActivityListBinding
+import com.example.moneychanger.etc.ExchangeRateUtil
+import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
 import com.example.moneychanger.etc.SlideProductEdit
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.RetrofitClient.apiService
@@ -30,6 +33,7 @@ import com.example.moneychanger.network.list.UpdateResponseDto
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -171,7 +175,6 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             }
         }
 
-
         // 삭제하기 버튼 클릭 이벤트 처리
         binding.buttonMoveToDelete.setOnClickListener {
             val intent = Intent(this, DeleteActivity::class.java)
@@ -197,6 +200,7 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         }
     }
 
+    //ListId로 Product 가져오기
     private fun fetchProductsByListId(listId: Long) {
         apiService.getProductByListsId(listId).enqueue(object : Callback<ApiResponse<List<ProductResponseDto>>> {
             override fun onResponse(
@@ -241,7 +245,7 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                                     val adapter = binding.productContainer.adapter
                                     if (adapter is ProductAdapter) {
                                         adapter.updateItem(updatedProduct)
-                                        binding.totalSum.text = String.format("%.2f", calculateTotalAmount())
+//                                        binding.totalSum.text = String.format("%.2f", calculateTotalAmount())
                                     }
                                 }
                                 slideProductEdit.show(supportFragmentManager, "SlideProductEdit")
@@ -249,9 +253,11 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                         }
                     )
                     // 총 금액 계산
-                    val total = productList.sumOf { it.originPrice ?: 0.0 }
-                    binding.totalSum.text = String.format("%.2f", total)
-
+                    val total = calculateTotalAmount()
+                    lifecycleScope.launch {
+                        val converted = calculateExchangeRate(selectedList!!.currencyFrom.currencyId, selectedList!!.currencyTo.currencyId, total)
+                        binding.totalSum.text = String.format("%.2f", converted)
+                    }
                 } else {
                     Toast.makeText(this@ListActivity, "상품 불러오기 실패", Toast.LENGTH_SHORT).show()
                 }
@@ -362,7 +368,11 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         binding.currencySymbol1.text = symbolText
         binding.currencySymbol2.text = symbolText
 
-        binding.totalSum.text = calculateTotalAmount().toString()
+        val total = calculateTotalAmount()
+        lifecycleScope.launch {
+            val converted = calculateExchangeRate(list.currencyFrom.currencyId, list.currencyTo.currencyId, total)
+            binding.totalSum.text = String.format("%.2f", converted)
+        }
     }
 
     private fun calculateTotalAmount(): Double {
@@ -372,11 +382,4 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
     interface OnProductEditListener {
         fun onEditRequested(product: ProductModel)
     }
-
-
 }
-
-
-
-
-

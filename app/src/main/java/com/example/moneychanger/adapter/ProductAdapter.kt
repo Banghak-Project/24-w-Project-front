@@ -9,9 +9,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moneychanger.databinding.ListProductBinding
 import com.example.moneychanger.etc.ExchangeRateUtil
+import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
 import com.example.moneychanger.list.ListActivity
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductResponseDto
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -49,9 +53,10 @@ class ProductAdapter(
             binding.currencyFrom.text = fromSymbol
             binding.currencyTo.text = toSymbol
 
-
-            val converted = ExchangeRateUtil.calculate(currencyIdFrom, currencyIdTo, product.originPrice)
-            binding.convertedPrice.text = String.format("%.2f", converted)
+            CoroutineScope(Dispatchers.Main).launch {
+                val converted = calculateExchangeRate(currencyIdFrom, currencyIdTo, product.originPrice ?: 0.0)
+                binding.convertedPrice.text = String.format("%.2f", converted)
+            }
 
             binding.perNumber.text = (position + 1).toString()
             binding.allNumber.text = totalCount.toString()

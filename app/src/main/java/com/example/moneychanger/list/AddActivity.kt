@@ -12,6 +12,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityAddBinding
+import com.example.moneychanger.etc.ExchangeRateUtil
+import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.currency.CurrencyManager
 import com.example.moneychanger.network.product.CreateProductRequestDto
@@ -24,6 +26,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.Locale
 import com.example.moneychanger.network.currency.CurrencyViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class AddActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddBinding
@@ -73,8 +78,10 @@ class AddActivity : AppCompatActivity() {
                 val amount = inputText.toDoubleOrNull() ?: 0.0
 
                 if (amount > 0) {
-                    val convertedAmount = calculateExchangeRate(currencyIdFrom,currencyIdTo,amount)
-                    binding.changedText.text = String.format(Locale.US, "%,.2f", convertedAmount)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val convertedAmount = calculateExchangeRate(currencyIdFrom,currencyIdTo,amount)
+                        binding.changedText.text = String.format(Locale.US, "%,.2f", convertedAmount)
+                    }
                 } else {
                     binding.changedText.text = "0.00"
                 }
@@ -88,40 +95,9 @@ class AddActivity : AppCompatActivity() {
             val amount = inputText.toDoubleOrNull() ?: 0.0
 
             if (amount > 0) {
-                val convertedAmount = calculateExchangeRate(currencyIdFrom, currencyIdTo, amount)
                 addProductToList(listId, "", amount)
             }
         }
-    }
-
-
-    private fun calculateExchangeRate(fromId: Long, toId: Long, amount: Double): Double {
-        val fromCurrency = CurrencyManager.getById(fromId)
-        val toCurrency = CurrencyManager.getById(toId)
-        if (fromCurrency == null || toCurrency == null) {
-            Log.e("MainActivity", "⚠️ 통화 정보 매핑 실패:")
-            return 0.0
-        }
-
-        val rateFrom = fromCurrency.dealBasR
-        val rateTo = toCurrency.dealBasR
-
-        if (rateFrom == 0.0 || rateTo == 0.0) {
-            Log.e("ExchangeRate", "🚨 환율 값이 유효하지 않습니다: rateFrom=$rateFrom, rateTo=$rateTo")
-            return 0.0
-        }
-
-        // 👇 (100) 단위를 가진 통화는 보정값 설정
-        val fromDivisor = if (fromCurrency.curUnit.contains("(100)") == true) 100.0 else 1.0
-        val toDivisor = if (toCurrency.curUnit.contains("(100)") == true) 100.0 else 1.0
-
-        val adjustedRateFrom = rateFrom / fromDivisor
-        val adjustedRateTo = rateTo / toDivisor
-
-        val exchangedAmount = (amount * adjustedRateFrom) / adjustedRateTo
-
-        Log.d("ExchangeRate", "✅ ${fromCurrency.curUnit} -> ${toCurrency.curUnit} 환율 적용: $amount -> $exchangedAmount")
-        return exchangedAmount
     }
 
     private fun addProductToList(listId: Long, productName: String, price: Double) {
