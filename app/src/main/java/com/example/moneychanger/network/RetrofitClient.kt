@@ -25,7 +25,6 @@ object RetrofitClient {
         .writeTimeout(15, TimeUnit.SECONDS)
         .build()
 
-
     private val gson = GsonBuilder()
         .serializeNulls() // null 값도 JSON에 포함
         .setLenient()  // JSON 파싱 오류 방지

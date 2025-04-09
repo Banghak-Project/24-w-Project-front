@@ -1,26 +1,26 @@
 package com.example.moneychanger.etc
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity.RESULT_OK
+import androidx.lifecycle.lifecycleScope
 import com.example.moneychanger.databinding.SlideNewListBinding
+import com.example.moneychanger.location.LocationUtil
+import com.example.moneychanger.location.getAddressFromLatLng
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
 import com.example.moneychanger.network.currency.CurrencyManager
-import com.example.moneychanger.network.list.CreateListRequestDto
 import com.example.moneychanger.network.list.CreateListResponseDto
 import com.example.moneychanger.network.list.CreateListWithNameRequestDto
 import com.example.moneychanger.network.user.ApiResponse
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,7 +34,6 @@ class SlideNewList : BottomSheetDialogFragment() {
     private var currencyIdFrom = -1L
     private var currencyIdTo = -1L
     private val userId = TokenManager.getUserId() ?: -1L
-    private val location = "Seoul"
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -97,10 +96,29 @@ class SlideNewList : BottomSheetDialogFragment() {
 
             val storeName = binding.textStoreName.text.toString()
 
-            addNewList(userId, storeName, currencyIdFrom, currencyIdTo, location)
-
-
+            getUserLocation { location ->
+                addNewList(userId, storeName, currencyIdFrom, currencyIdTo, location)
+            }
         }
+    }
+
+    private fun getUserLocation(onLocationReady: (String) -> Unit) {
+        LocationUtil.getCurrentLocation(
+            context = requireContext(),
+            onSuccess = { location ->
+                val lat = location.latitude
+                val lng = location.longitude
+
+                lifecycleScope.launch {
+                    val address = getAddressFromLatLng(requireContext(), lat, lng)?.replace("\n", "")
+                    val locationText = address ?: "주소 없음"
+                    onLocationReady(locationText)
+                }
+            },
+            onError = {
+                onLocationReady("위치 정보를 가져올 수 없습니다.")
+            }
+        )
     }
 
     private fun addNewList(userId: Long, storeName: String,currencyIdFrom: Long, currencyIdTo: Long, location: String) {

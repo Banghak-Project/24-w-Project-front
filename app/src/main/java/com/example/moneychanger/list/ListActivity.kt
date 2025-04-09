@@ -41,7 +41,6 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
     private lateinit var viewModel: CurrencyViewModel
 
     private val userId = TokenManager.getUserId() ?: -1L
-    private val location = "Seoul"
 
     private var productList: MutableList<ProductModel> = mutableListOf()
     private var selectedList: ListModel? = null
@@ -325,7 +324,7 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             name = selectedList!!.name
         )
 
-        RetrofitClient.apiService.updateList(updateRequest)
+        apiService.updateList(updateRequest)
             .enqueue(object : Callback<ApiResponse<UpdateResponseDto>> {
                 override fun onResponse(
                     call: Call<ApiResponse<UpdateResponseDto>>,
