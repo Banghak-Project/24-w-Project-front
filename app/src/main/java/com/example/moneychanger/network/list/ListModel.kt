@@ -50,6 +50,7 @@ data class UpdateResponseDto(
     @SerializedName("name") val name: String,
     @SerializedName("userId") val userId: Long,
     @SerializedName("createdAt") val createdAt: String,
+    @SerializedName("location") val location: String,
     @SerializedName("currencyFrom") val currencyFrom: CurrencyModel,
     @SerializedName("currencyTo") val currencyTo: CurrencyModel,
 )

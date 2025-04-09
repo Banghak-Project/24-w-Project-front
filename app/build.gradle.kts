@@ -1,7 +1,16 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
+    id("org.jetbrains.kotlin.kapt")
+}
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        load(localPropertiesFile.inputStream())
+    }
 }
 
 android {
@@ -16,6 +25,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "GOOGLE_MAPS_API_KEY", "\"${localProperties["GOOGLE_MAPS_API_KEY"]}\"")
+
+
     }
 
     buildTypes {
@@ -37,6 +50,7 @@ android {
 
     buildFeatures{
         viewBinding = true
+        buildConfig = true
     }
     packaging {
         resources {
@@ -54,8 +68,10 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("com.google.firebase:firebase-appdistribution-gradle:5.1.1")
-    implementation("com.google.firebase:firebase-crashlytics-buildtools:3.0.3")
+
+    implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-crashlytics")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
@@ -72,8 +88,6 @@ dependencies {
     implementation("androidx.camera:camera-extensions:${camerax_version}")
     implementation("androidx.camera:camera-camera2:${camerax_version}")
     implementation("com.google.guava:guava:30.1-jre")
-    // 한국어
-    implementation ("com.google.mlkit:text-recognition-korean:16.0.0")
 
     // Glide
     implementation ("com.github.bumptech.glide:glide:4.16.0")

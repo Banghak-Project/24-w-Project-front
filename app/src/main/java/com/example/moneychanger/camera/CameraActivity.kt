@@ -36,6 +36,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.moneychanger.R
 import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.etc.ExchangeRateUtil
+import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
 import com.example.moneychanger.etc.OnProductAddedListener
 import com.example.moneychanger.etc.SlideCameraList
 import com.example.moneychanger.network.RetrofitClient
@@ -57,6 +58,9 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 import retrofit2.Call
 import retrofit2.Callback
@@ -463,10 +467,11 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
     private fun updateSelectedText() {
         if (selectedProductName != null && selectedProductPrice != null) {
             val cleanPrice = cleanPriceText(selectedProductPrice!!).toDouble()
-            val exchangedAmount = ExchangeRateUtil.calculate(currencyIdFrom, currencyIdTo, cleanPrice)
-            val resultText = "상품명: ${selectedProductName}, 상품가격: ${cleanPrice} -> $exchangedAmount"
-            binding.cameraText.text = resultText
-            Toast.makeText(this, "선택 완료: $resultText", Toast.LENGTH_SHORT).show()
+            CoroutineScope(Dispatchers.Main).launch {
+                val exchangedAmount = calculateExchangeRate(currencyIdFrom, currencyIdTo, cleanPrice)
+                val resultText = "상품명: $selectedProductName, 상품가격: $cleanPrice -> $exchangedAmount"
+                binding.cameraText.text = resultText
+            }
         }
     }
 
