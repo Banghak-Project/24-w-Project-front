@@ -11,6 +11,7 @@ import com.example.moneychanger.databinding.ActivityLoginBinding
 import com.example.moneychanger.home.MainActivity
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
+import com.example.moneychanger.network.user.ApiResponse
 import com.example.moneychanger.network.user.SignInRequest
 import com.example.moneychanger.network.user.SignInResponse
 import com.example.moneychanger.onboarding.find.FindIdPwActivity
@@ -105,9 +106,17 @@ class LoginActivity : AppCompatActivity() {
                             Toast.makeText(this@LoginActivity, apiResponse?.message ?: "로그인 실패", Toast.LENGTH_SHORT).show()
                         }
                     } else {
+                        // 🔥 여기부터 로그인 실패 응답의 message 추출 추가됨
                         val errorBody = response.errorBody()?.string()
+                        val errorMessage = try {
+                            val apiError = Gson().fromJson(errorBody, ApiResponse::class.java)
+                            apiError?.message ?: "로그인 실패: 서버 응답 없음"
+                        } catch (e: Exception) {
+                            "로그인 실패: 오류 발생"
+                        }
+
                         Log.e("LoginActivity", "🚨 로그인 실패 - HTTP ${response.code()}: $errorBody")
-                        Toast.makeText(this@LoginActivity, "로그인 실패: 서버 오류 (${response.message()})", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@LoginActivity, errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: HttpException) {
@@ -128,6 +137,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
+
 
     private fun handleSuccessfulLogin(signInResponse: SignInResponse) {
         val accessToken = signInResponse.accessToken ?: ""

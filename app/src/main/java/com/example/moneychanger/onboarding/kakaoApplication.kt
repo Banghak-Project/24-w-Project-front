@@ -10,7 +10,7 @@ import com.kakao.sdk.common.util.Utility
 class kakaoApplication : Application(){
     override fun onCreate() {
         super.onCreate()
-        TokenManager.init(this)
+//        TokenManager.init(this)
         TokenManager.init(applicationContext)
 
 

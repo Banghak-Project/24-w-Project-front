@@ -27,8 +27,11 @@ class SettingActivity : BaseActivity() {
         binding = ActivitySettingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 🔑 필수: SharedPreferences 초기화
-        TokenManager.init(this)
+        // ✅ TokenManager가 초기화되지 않았다면 강제 초기화
+        TokenManager.init(applicationContext)
+
+        val accessToken = TokenManager.getAccessToken()
+        Log.d("SettingActivity", "✅ accessToken = $accessToken")
 
         // 이후에 getUserInfo 호출
         fetchUserInfo()
