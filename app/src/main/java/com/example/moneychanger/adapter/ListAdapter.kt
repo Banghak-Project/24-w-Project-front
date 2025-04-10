@@ -35,6 +35,11 @@ class ListAdapter(
     inner class ListViewHolder(val binding: ListPlaceBinding) : RecyclerView.ViewHolder(binding.root) {
         //val imageViewDelete: ImageView = view.findViewById(R.id.imageViewDelete)
         fun bind(item: ListModel) {
+            binding.locationName.isSelected = true
+            binding.placeName.isSelected = true
+            binding.grossPayment.isSelected = true
+            binding.grossPaymentConverted.isSelected = true
+
             binding.placeName.text = item.name
             binding.locationName.text = item.location
             fetchTotalAmount(item.listId, item.currencyTo, item.currencyFrom, binding)

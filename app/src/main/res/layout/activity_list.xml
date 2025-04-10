@@ -36,7 +36,7 @@
             android:background="@color/white"
             android:orientation="vertical"
             android:paddingHorizontal="24dp"
-            android:paddingVertical="12dp">
+            android:paddingBottom="16dp">
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -45,26 +45,45 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_marginBottom="4dp">
+                    <LinearLayout
+                        android:layout_width="60dp"
+                        android:layout_height="16dp"
+                        android:background="@drawable/round_background"
+                        android:backgroundTint="@color/gray_02">
+                        <TextView
+                            android:id="@+id/created_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="0000.00.00"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:textColor="@color/blue_06"
+                            style="@style/TextBodyXS"/>
+                    </LinearLayout>
                     <TextView
                         android:id="@+id/place_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="240dp"
                         android:layout_height="wrap_content"
                         android:text="쇼핑 장소"
                         android:textColor="@color/main"
-                        style="@style/TextHeadingXXXL"/>
+                        style="@style/TextHeadingXXXL"
+                        android:singleLine="true"
+                        android:ellipsize="marquee"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
                         <TextView
                             android:id="@+id/location_name"
-                            android:layout_width="wrap_content"
+                            android:layout_width="120dp"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="5dp"
                             android:text="도시/국가"
                             android:textColor="@color/gray_06"
                             android:maxLength="50"
-                            style="@style/TextBodyS"/>
+                            style="@style/TextBodyS"
+                            android:singleLine="true"
+                            android:ellipsize="marquee"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -79,22 +98,6 @@
                             android:text="00"
                             android:textColor="@color/gray_06"
                             style="@style/TextBodyS"/>
-                        <LinearLayout
-                            android:layout_width="60dp"
-                            android:layout_height="16dp"
-                            android:background="@drawable/round_background"
-                            android:backgroundTint="@color/gray_02"
-                            android:layout_marginLeft="8dp">
-                            <TextView
-                                android:id="@+id/created_date"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="0000.00.00"
-                                android:layout_gravity="center"
-                                android:gravity="center"
-                                android:textColor="@color/blue_06"
-                                style="@style/TextBodyXS"/>
-                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
                 <ImageView
@@ -118,7 +121,9 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:background="@drawable/round_background"
-                    android:backgroundTint="@color/blue_00">
+                    android:backgroundTint="@color/blue_00"
+                    android:clickable="true"
+                    android:focusable="true">
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -175,7 +180,9 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:background="@drawable/round_background"
-                    android:backgroundTint="@color/blue_00">
+                    android:backgroundTint="@color/blue_00"
+                    android:clickable="true"
+                    android:focusable="true">
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -275,7 +282,8 @@
                     android:layout_marginRight="8dp"
                     android:text="N00,000,000"
                     android:textColor="@color/gray_08"
-                    style="@style/TextLabelL"/>
+                    style="@style/TextLabelL"
+                    android:singleLine="true"/>
                 <TextView
                     android:id="@+id/currency_symbol2"
                     android:layout_width="wrap_content"
@@ -300,7 +308,9 @@
                 android:layout_gravity="end"
                 android:orientation="horizontal"
                 android:layout_marginVertical="4dp"
-                android:layout_marginHorizontal="8dp">
+                android:layout_marginHorizontal="8dp"
+                android:clickable="true"
+                android:focusable="true">
                 <FrameLayout
                     android:layout_width="48dp"
                     android:layout_height="24dp">
@@ -317,6 +327,7 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:textColor="@color/gray_06"
+                        android:text="기본순"
                         style="@style/TextBodyM_bold"/>
                 </FrameLayout>
                 <ImageView
@@ -339,6 +350,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal">
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/product_container"
                         android:layout_width="match_parent"
