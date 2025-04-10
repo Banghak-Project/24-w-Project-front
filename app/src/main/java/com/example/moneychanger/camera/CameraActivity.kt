@@ -33,12 +33,14 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.camera.core.AspectRatio
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.moneychanger.R
 import com.example.moneychanger.etc.CustomSpinner
-import com.example.moneychanger.etc.ExchangeRateUtil
 import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
 import com.example.moneychanger.etc.OnProductAddedListener
 import com.example.moneychanger.etc.SlideCameraList
+import com.example.moneychanger.location.LocationUtil
+import com.example.moneychanger.location.getAddressFromLatLng
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.RetrofitClient.apiService
 import com.example.moneychanger.network.TokenManager
@@ -83,8 +85,8 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
     private var currencyIdFrom = -1L
     private var currencyIdTo = -1L
-    private val userId = TokenManager.getUserId() ?: -1L
-    private val location = "Seoul"
+    private val userId = TokenManager.getUserId()
+    private lateinit var location : String
 
     private var latestListId = -1L
     private var saveedList: CreateListResponseDto? = null
@@ -384,7 +386,10 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                         addProductToList(latestListId, productNameCopy, productPriceCopy)
                     } else {
                         // 처음이라면 리스트 먼저 생성
-                        addNewList(userId, currencyIdFrom, currencyIdTo, location, productNameCopy, productPriceCopy)
+                        getLocation { address ->
+                            location = address
+                            addNewList(userId, currencyIdFrom, currencyIdTo, location, productNameCopy, productPriceCopy)
+                        }
                     }
                     // 이미지 뷰 → 카메라 프리뷰로 전환
                     binding.textOverlay.removeAllViews()
@@ -404,6 +409,24 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             }
             Toast.makeText(this@CameraActivity, "상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
         }
+    }
+    private fun getLocation(onLocationReady: (String) -> Unit) {
+        LocationUtil.getCurrentLocation(
+            context = this,
+            onSuccess = { location ->
+                val lat = location.latitude
+                val lng = location.longitude
+
+                lifecycleScope.launch {
+                    val address = getAddressFromLatLng(this@CameraActivity, lat, lng)
+                    val addressInfo = address ?: "주소를 찾을 수 없습니다."
+                    onLocationReady(addressInfo)
+                }
+            },
+            onError = {
+                onLocationReady("위치 정보를 가져올 수 없습니다.")
+            }
+        )
     }
 
     private fun toggleSelection(view: View, text: String) {
@@ -610,7 +633,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             name = saveedList!!.name
         )
 
-        RetrofitClient.apiService.updateList(updateRequest)
+        apiService.updateList(updateRequest)
             .enqueue(object : Callback<ApiResponse<UpdateResponseDto>> {
                 override fun onResponse(
                     call: Call<ApiResponse<UpdateResponseDto>>,
