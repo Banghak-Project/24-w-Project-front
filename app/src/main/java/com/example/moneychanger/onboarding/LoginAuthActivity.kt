@@ -53,35 +53,38 @@ class LoginAuthActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response: Response<Void> = RetrofitClient.apiService.sendOtp(EmailRequest(email))
-                withContext(Dispatchers.Main) { // UI 업데이트는 Main 스레드에서
+
+                withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         Toast.makeText(this@LoginAuthActivity, "인증 코드가 전송되었습니다.", Toast.LENGTH_SHORT).show()
-                        // OTP 요청 성공 시 다음 화면으로 이동 (이메일 데이터 함께 전달)
                         val intent = Intent(this@LoginAuthActivity, LoginAuthActivity2::class.java)
                         intent.putExtra("email", email)
-                        Log.d("LoginAuthActivity", "전달할 이메일: $email") // 로그 추가
+                        Log.d("LoginAuthActivity", "전달할 이메일: $email")
                         startActivity(intent)
                     } else {
-                        // 🚨 서버 응답이 200이 아닐 경우
-                        val errorMessage = response.errorBody()?.string() ?: "알 수 없는 오류"
-                        Log.e("LoginAuthActivity", "OTP 전송 실패: $errorMessage")
-                        Toast.makeText(this@LoginAuthActivity, "OTP 전송 실패: $errorMessage", Toast.LENGTH_SHORT).show()
+                        val errorBody = response.errorBody()?.string()
+                        val errorMessage = try {
+                            val apiError = com.google.gson.Gson().fromJson(errorBody, com.example.moneychanger.network.user.ApiResponse::class.java)
+                            apiError?.message ?: "OTP 전송 실패"
+                        } catch (e: Exception) {
+                            "OTP 전송 실패: 응답 해석 오류"
+                        }
+
+                        Log.e("LoginAuthActivity", "OTP 전송 실패: $errorBody")
+                        Toast.makeText(this@LoginAuthActivity, errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: HttpException) {
-                // 🚨 HTTP 오류 처리
                 withContext(Dispatchers.Main) {
                     Log.e("LoginAuthActivity", "HTTP 오류: ${e.message}")
-                    Toast.makeText(this@LoginAuthActivity, "서버 응답 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@LoginAuthActivity, "서버 오류: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: IOException) {
-                // 🚨 네트워크 연결 오류 처리
                 withContext(Dispatchers.Main) {
                     Log.e("LoginAuthActivity", "네트워크 오류: ${e.message}")
                     Toast.makeText(this@LoginAuthActivity, "네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                // 🚨 기타 알 수 없는 오류 처리
                 withContext(Dispatchers.Main) {
                     Log.e("LoginAuthActivity", "예외 발생: ${e.message}")
                     Toast.makeText(this@LoginAuthActivity, "알 수 없는 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()

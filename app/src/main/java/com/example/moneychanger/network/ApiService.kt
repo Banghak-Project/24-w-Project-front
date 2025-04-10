@@ -15,16 +15,13 @@ import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.product.DeleteProductsRequestDto
 import com.example.moneychanger.network.product.ImageProductResponseDto
 import com.example.moneychanger.network.product.ProductModel
-import com.example.moneychanger.network.product.ProductRequestDto
 import com.example.moneychanger.network.product.ProductResponseDto
 import com.example.moneychanger.network.product.UpdateProductRequestDto
 import com.example.moneychanger.network.user.ApiResponse
 import com.example.moneychanger.network.user.EmailRequest
 import com.example.moneychanger.network.user.FindPasswordRequest
 import com.example.moneychanger.network.user.KakaoLoginRequest
-import com.example.moneychanger.network.user.KakaoLoginResponse
 import com.example.moneychanger.network.user.OtpRequest
-import com.example.moneychanger.network.user.ResetPasswordRequest
 import com.example.moneychanger.network.user.SignInRequest
 import com.example.moneychanger.network.user.SignInResponse
 import com.example.moneychanger.network.user.SignUpRequest
@@ -64,7 +61,7 @@ interface ApiService {
     suspend fun verifyOtp(@Body request: OtpRequest): Response<ResponseBody>
 
     @POST("/api/auth/kakao/signin")
-    suspend fun kakaoSignIn(@Body request: KakaoLoginRequest): Response<ApiResponse<KakaoLoginResponse>>
+    suspend fun kakaoSignIn(@Body request: KakaoLoginRequest): Response<ApiResponse<SignInResponse>>
 
     //List
     @POST("/api/lists/add")
@@ -146,6 +143,7 @@ interface ApiService {
     @GET("/api/auth/user-info")
     suspend fun getUserInfo(): Response<ApiResponse<UserInfoResponse>>
 
+
     //  회원정보 수정
     @POST("/api/auth/update-user-info")
     suspend fun updateUserInfo(
@@ -166,7 +164,6 @@ interface ApiService {
     suspend fun withdrawal(
         @Body request: Map<String, String>
     ): Response<ApiResponse<String>>
-
 
 
     // 새 비밀번호 설정

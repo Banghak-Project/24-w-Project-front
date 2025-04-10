@@ -49,13 +49,6 @@ data class KakaoLoginRequest(
     @SerializedName("access_token") val accessToken: String
 )
 
-data class KakaoLoginResponse(
-    val userId: Long?,
-    val userName: String?,
-    val msg: String?,
-    val accessToken: String?,
-    val refreshToken: String?
-)
 data class FindPasswordRequest(
     @SerializedName("userEmail") val userEmail: String,
     @SerializedName("userName") val userName: String,

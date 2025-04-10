@@ -2,6 +2,7 @@ package com.example.moneychanger.network
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.moneychanger.network.user.SignInResponse
 import com.example.moneychanger.network.user.UserInfoResponse
 import com.google.gson.Gson
@@ -21,8 +22,11 @@ object TokenManager {
     }
 
     fun saveAccessToken(token: String) {
+        Log.d("TokenManager", "✅ 저장 시도 accessToken = $token")
         prefs.edit().putString(KEY_ACCESS_TOKEN, token).apply()
+        Log.d("TokenManager", "✅ 저장 후 실제 값 = ${getAccessToken()}")
     }
+
 
     fun getAccessToken(): String? {
         return prefs.getString(KEY_ACCESS_TOKEN, null)
