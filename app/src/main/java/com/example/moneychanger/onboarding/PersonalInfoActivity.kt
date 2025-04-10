@@ -151,7 +151,7 @@ class PersonalInfoActivity : AppCompatActivity() {
                         var signUpData: SignUpResponse? = null
 
                         if (signUpResponse?.message == "회원가입 성공") {
-                            val userName = signUpData?.userName?: "회원정보 없음" ;
+                            val userName = signUpResponse?.data?.userName ;
                             Toast.makeText(this@PersonalInfoActivity, "${signUpResponse.message} ($userName 님)", Toast.LENGTH_SHORT).show()
                             startActivity(Intent(this@PersonalInfoActivity, LoginActivity::class.java))
                             finish()
