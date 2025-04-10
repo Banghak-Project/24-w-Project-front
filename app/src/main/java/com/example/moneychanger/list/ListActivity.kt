@@ -43,6 +43,7 @@ import java.time.format.DateTimeFormatter
 class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
     private lateinit var binding: ActivityListBinding
     private lateinit var viewModel: CurrencyViewModel
+    private lateinit var productAdapter: ProductAdapter
 
     private val userId = TokenManager.getUserId() ?: -1L
 
@@ -73,6 +74,9 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
 
         binding.loginToolbar.pageText.text = "상품 리스트"
 
+        binding.placeName.isSelected = true
+        binding.locationName.isSelected = true
+
         // 최신순, 가격순 Spinner 데이터 설정
         val sortItems = listOf("최신순", "가격순")
         val sortSpinner = CustomSpinner(this, sortItems)
@@ -81,6 +85,16 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         binding.sortContainer.setOnClickListener {
             sortSpinner.show(binding.sortContainer) { selected ->
                 binding.sortText.text = selected
+
+                // 정렬 기준에 따라 새로운 리스트 생성
+                productList = when (selected) {
+                    "최신순" -> productList.sortedBy { it.createdAt }.toMutableList()
+                    "가격순" -> productList.sortedByDescending { it.originPrice }.toMutableList()
+                    else -> productList.toMutableList()
+                }
+
+                // 어댑터 갱신
+                productAdapter.updateList(productList)
             }
         }
 
@@ -225,8 +239,7 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
 
                     productList = products.toMutableList()
 
-                    binding.productContainer.layoutManager = LinearLayoutManager(this@ListActivity)
-                    binding.productContainer.adapter = ProductAdapter(
+                    productAdapter = ProductAdapter(
                         productList,
                         selectedList!!.currencyFrom.currencyId,
                         selectedList!!.currencyTo.currencyId,
@@ -242,16 +255,15 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                                     }
                                 }
                                 slideProductEdit.setOnProductUpdatedListener { updatedProduct ->
-                                    val adapter = binding.productContainer.adapter
-                                    if (adapter is ProductAdapter) {
-                                        adapter.updateItem(updatedProduct)
-//                                        binding.totalSum.text = String.format("%.2f", calculateTotalAmount())
-                                    }
+                                    productAdapter.updateItem(updatedProduct)
                                 }
                                 slideProductEdit.show(supportFragmentManager, "SlideProductEdit")
                             }
                         }
                     )
+                    binding.productContainer.layoutManager = LinearLayoutManager(this@ListActivity)
+                    binding.productContainer.adapter = productAdapter
+
                     // 총 금액 계산
                     val total = calculateTotalAmount()
                     lifecycleScope.launch {

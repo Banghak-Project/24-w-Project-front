@@ -35,9 +35,24 @@ class ListAdapter(
     inner class ListViewHolder(val binding: ListPlaceBinding) : RecyclerView.ViewHolder(binding.root) {
         //val imageViewDelete: ImageView = view.findViewById(R.id.imageViewDelete)
         fun bind(item: ListModel) {
+            binding.locationName.isSelected = true
+            binding.placeName.isSelected = true
+            binding.grossPayment.isSelected = true
+            binding.grossPaymentConverted.isSelected = true
+
             binding.placeName.text = item.name
             binding.locationName.text = item.location
             fetchTotalAmount(item.listId, item.currencyTo, item.currencyFrom, binding)
+
+            val context = binding.root.context
+            val fromKey = item.currencyFrom.toString().replace(Regex("\\(.*\\)"), "").trim()
+            val toKey = item.currencyTo.toString().replace(Regex("\\(.*\\)"), "").trim()
+            val fromResId = context.resources.getIdentifier(fromKey, "string", context.packageName)
+            val toResId = context.resources.getIdentifier(toKey, "string", context.packageName)
+            val fromSymbol = if (fromResId != 0) context.getString(fromResId) else fromKey
+            val toSymbol = if (toResId != 0) context.getString(toResId) else toKey
+            binding.currencyFrom.text = fromSymbol
+            binding.currencyTo.text = toSymbol
 
             val dateTime = LocalDateTime.parse(item.createdAt, DateTimeFormatter.ISO_DATE_TIME)
             binding.createdDate.text = dateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))

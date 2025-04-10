@@ -23,7 +23,9 @@
                 android:layout_height="32dp"
                 android:orientation="horizontal"
                 android:layout_gravity="center"
-                android:gravity="center">
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true">
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -66,7 +68,9 @@
                 android:layout_height="32dp"
                 android:orientation="horizontal"
                 android:layout_gravity="center"
-                android:gravity="center">
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true">
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

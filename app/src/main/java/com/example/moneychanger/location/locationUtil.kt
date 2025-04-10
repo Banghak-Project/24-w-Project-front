@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import com.example.moneychanger.network.location.GoogleGeocodingClient
 import com.google.android.gms.location.LocationCallback
@@ -21,6 +22,7 @@ object LocationUtil {
         onSuccess: (Location) -> Unit,
         onError: ((String) -> Unit)? = null
     ) {
+        Log.d("Debug", "위치 함수 내부 실행 시작")
         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
 
         val locationRequest = LocationRequest.create().apply {
@@ -34,10 +36,13 @@ object LocationUtil {
             locationRequest,
             object : LocationCallback() {
                 override fun onLocationResult(result: LocationResult) {
+                    Log.d("Debug", "✅ onLocationResult 호출됨")
                     val location = result.lastLocation
                     if (location != null) {
+                        Log.d("Debug", "📍 위치 가져오기 성공: lat=${location.latitude}, lng=${location.longitude}")
                         onSuccess(location)
                     } else {
+                        Log.d("Debug", "❌ 위치는 null임")
                         onError?.invoke("위치를 가져올 수 없습니다.")
                         Toast.makeText(context, "위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
                     }
@@ -54,6 +59,7 @@ suspend fun getAddressFromLatLng(context: Context, lat: Double, lng: Double): St
                 latlng = "$lat,$lng",
                 apiKey = GoogleGeocodingClient.apiKey
             )
+            Log.d("Debug", "📦 Geocoding 응답: status=${response.status}, 결과 수=${response.results.size}")
             if (response.status == "OK" && response.results.isNotEmpty()) {
                 response.results[0].formatted_address
             } else {

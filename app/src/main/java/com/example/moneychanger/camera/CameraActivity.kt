@@ -305,13 +305,28 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CAMERA_PERMISSION_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startCamera()
             } else {
                 Toast.makeText(this, "카메라 권한이 필요합니다.", Toast.LENGTH_LONG).show()
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 권한이 승인되었을 때 다시 위치 요청
+                getLocation { address ->
+                    Log.d("Debug", "✔ 권한 승인 후 위치: $address")
+                }
+            } else {
+                Toast.makeText(this, "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -378,6 +393,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             binding.textOverlay.visibility = View.VISIBLE
             // 선택 완료 버튼 클릭 시, 새로운 리스트 생성 및 상품 추가
             binding.confirmButton.setOnClickListener {
+                Log.d("Debug", "confirm 버튼 클릭 됨")
                 val productNameCopy = selectedProductName
                 val productPriceCopy = selectedProductPrice
                 if (productNameCopy != null && productPriceCopy != null) {
@@ -386,9 +402,12 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                         addProductToList(latestListId, productNameCopy, productPriceCopy)
                     } else {
                         // 처음이라면 리스트 먼저 생성
-                        getLocation { address ->
-                            location = address
-                            addNewList(userId, currencyIdFrom, currencyIdTo, location, productNameCopy, productPriceCopy)
+                        checkAndRequestLocationPermission {
+                            getLocation { address ->
+                                Log.d("Debug", "새 리스트 생성중")
+                                location = address
+                                addNewList(userId, currencyIdFrom, currencyIdTo, location, productNameCopy, productPriceCopy)
+                            }
                         }
                     }
                     // 이미지 뷰 → 카메라 프리뷰로 전환
@@ -411,9 +430,11 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         }
     }
     private fun getLocation(onLocationReady: (String) -> Unit) {
+        Log.d("Debug", "위치 함수 실행 시작")
         LocationUtil.getCurrentLocation(
             context = this,
             onSuccess = { location ->
+                Log.d("Debug", "위치 함수 실행 성공")
                 val lat = location.latitude
                 val lng = location.longitude
 
@@ -424,10 +445,30 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                 }
             },
             onError = {
+                Log.d("Debug", "위치 함수 실행 실패")
                 onLocationReady("위치 정보를 가져올 수 없습니다.")
             }
         )
     }
+
+    private val LOCATION_PERMISSION_CODE = 1001
+
+    private fun checkAndRequestLocationPermission(onGranted: () -> Unit) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_CODE
+            )
+        } else {
+            onGranted()
+        }
+    }
+
 
     private fun toggleSelection(view: View, text: String) {
         if (selectedTexts.contains(text)) {

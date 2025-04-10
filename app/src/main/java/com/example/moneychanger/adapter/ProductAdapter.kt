@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class ProductAdapter(
-    private val products: MutableList<ProductModel>,
+    private var products: MutableList<ProductModel>,
     private val currencyIdFrom: Long,
     private val currencyIdTo: Long,
     private val currencyFromUnit: String,
@@ -31,6 +31,8 @@ class ProductAdapter(
 
     inner class ProductViewHolder(val binding: ListProductBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(product: ProductModel, position: Int, totalCount: Int) {
+            binding.productName.isSelected = true
+
             Log.i("ProductAdapter",product.originPrice.toString())
             binding.productName.text = product.name
             binding.originPrice.text = product.originPrice.toString()
@@ -98,6 +100,12 @@ class ProductAdapter(
             notifyDataSetChanged()
         }
     }
+
+    fun updateList(newList: MutableList<ProductModel>) {
+        products = newList
+        notifyDataSetChanged()
+    }
+
 
 }
 
