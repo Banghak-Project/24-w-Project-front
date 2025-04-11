@@ -171,4 +171,8 @@ interface ApiService {
     suspend fun resetPassword(
         @Body request: Map<String, String>
     ): Response<ApiResponse<String>>
+
+    @POST("/api/auth/kakao/withdrawal")
+    suspend fun kakaoWithdrawal(): Response<ApiResponse<String>>
+
 }

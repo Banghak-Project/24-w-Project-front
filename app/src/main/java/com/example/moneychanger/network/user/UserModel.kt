@@ -34,7 +34,9 @@ data class UserInfoResponse(
     @SerializedName("userId") val userId: Long,
     @SerializedName("userName") val userName: String,
     @SerializedName("userEmail") val userEmail: String,
-    @SerializedName("userDateOfBirth") val userDateOfBirth: String? // Timestamp (밀리초)
+    @SerializedName("userDateOfBirth") val userDateOfBirth: String?,
+    @SerializedName("kakaoUser") val isKakaoUser: Boolean // ✅ 요거 추가
+
 )
 data class UpdateUserInfoRequest(
     @SerializedName("userEmail") val userEmail: String,
