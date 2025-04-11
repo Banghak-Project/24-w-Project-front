@@ -14,6 +14,8 @@ object TokenManager {
     private const val KEY_SIGN_IN_INFO = "sign_in_info"
     private const val KEY_USER_INFO = "user_info"
     private const val KEY_USER_ID = "user_id"
+    private const val KEY_IS_KAKAO_USER = "isKakaoUser"
+
 
     private lateinit var prefs: SharedPreferences
 
@@ -54,12 +56,17 @@ object TokenManager {
         prefs.edit().putString(KEY_SIGN_IN_INFO, json).apply()
     }
 
+    // ✅ 기존 함수 기반으로 수정 + isKakaoUser도 저장
     fun saveUserInfo(userInfo: UserInfoResponse?) {
         if (userInfo != null) {
             val json = Gson().toJson(userInfo)
             prefs.edit().putString(KEY_USER_INFO, json).apply()
+
+            // ✅ 카카오 유저 여부 저장
+            prefs.edit().putBoolean(KEY_IS_KAKAO_USER, userInfo.isKakaoUser ?: false).apply()
         }
     }
+
 
     fun getUserInfo(): UserInfoResponse? {
         val json = prefs.getString(KEY_USER_INFO, null) ?: return null
@@ -98,4 +105,10 @@ object TokenManager {
     fun updateUserInfo(newInfo: UserInfoResponse?) {
         saveUserInfo(newInfo)
     }
+
+    // ✅ 저장된 isKakaoUser 여부 확인 (null 방지)
+    fun isKakaoUser(): Boolean {
+        return prefs.getBoolean(KEY_IS_KAKAO_USER, false)
+    }
+
 }

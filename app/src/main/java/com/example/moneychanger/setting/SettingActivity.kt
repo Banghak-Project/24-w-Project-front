@@ -62,13 +62,23 @@ class SettingActivity : BaseActivity() {
 
         binding.buttonLogout.setOnClickListener { logout() }
 
-        binding.buttonUnsubscribe.setOnClickListener { showUnsubscribePopup() }
+        binding.buttonUnsubscribe.setOnClickListener {
+            val isKakao = TokenManager.isKakaoUser()
+
+            if (isKakao) {
+                // 카카오 유저: 안내 팝업 → 확인 누르면 탈퇴 API 호출
+                showUnsubscribePopup()
+            } else {
+                // 일반 유저: 비밀번호 입력 액티비티로 이동
+                val intent = Intent(this, UnsubscribeActivity::class.java)
+                startActivity(intent)
+            }
+        }
     }
 
     // ✅ 사용자 정보 요청
     private fun fetchUserInfo() {
         val accessToken = TokenManager.getAccessToken()
-        Log.d("SettingActivity", "accessToken = $accessToken")
         if (accessToken.isNullOrBlank()) return
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -81,6 +91,9 @@ class SettingActivity : BaseActivity() {
                         if (userInfo != null) {
                             TokenManager.saveUserInfo(userInfo)
                             updateUserInfo()
+
+                            // 🔥 fetch 완료 후 버튼 리스너 다시 세팅
+                            setupUnsubscribeButton()
                         }
                     } else {
                         Toast.makeText(this@SettingActivity, "회원 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
@@ -93,6 +106,23 @@ class SettingActivity : BaseActivity() {
             }
         }
     }
+
+    private fun setupUnsubscribeButton() {
+        binding.buttonUnsubscribe.setOnClickListener {
+            val isKakao = TokenManager.isKakaoUser()
+            Log.d("SettingActivity", "👤 isKakaoUser: $isKakao")
+
+            if (isKakao) {
+                // ✅ 카카오 유저 → 안내 팝업 → API 호출
+                showKakaoUnsubscribeDialog()
+            } else {
+                // ✅ 일반 유저 → 비밀번호 입력 액티비티
+                val intent = Intent(this, UnsubscribeActivity::class.java)
+                startActivity(intent)
+            }
+        }
+    }
+
 
     private fun updateUserInfo() {
         val userInfo = TokenManager.getUserInfo()
@@ -134,4 +164,52 @@ class SettingActivity : BaseActivity() {
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
+
+    private fun showKakaoUnsubscribeDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.unsubscribe_popup, null)
+        val dialog = AlertDialog.Builder(this, R.style.PopupDialogTheme)
+            .setView(dialogView)
+            .create()
+
+        dialogView.findViewById<TextView>(R.id.button_no).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogView.findViewById<TextView>(R.id.button_yes).setOnClickListener {
+            performKakaoWithdrawal()
+            dialog.dismiss()
+        }
+
+        dialog.show()
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.8).toInt(),
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+    }
+
+    private fun performKakaoWithdrawal() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = RetrofitClient.apiService.kakaoWithdrawal()
+
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful && response.body()?.status == "success") {
+                        TokenManager.clearTokens()
+                        Toast.makeText(this@SettingActivity, "회원탈퇴가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this@SettingActivity, UnsubscribeSuccessActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        Toast.makeText(this@SettingActivity, "탈퇴 실패: ${response.body()?.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@SettingActivity, "네트워크 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+
 }
