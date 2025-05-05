@@ -104,8 +104,8 @@
     </FrameLayout>
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
         <androidx.camera.view.PreviewView
             android:id="@+id/previewView"
             android:layout_width="match_parent"
@@ -116,19 +116,105 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="invisible"/>
-        <TextView
-            android:id="@+id/cameraText"
+
+
+        <ImageView
+            android:id="@+id/off_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/icon_off"
+            app:tint="@color/white"
+            android:layout_gravity="end"
+            android:layout_margin="16dp"
+            android:visibility="gone"/>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="카메라 여기 들어오면 됨"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:background="#80000000"
-            android:padding="12dp"
+            android:orientation="vertical"
             android:layout_gravity="center_horizontal|top"
+            android:background="@drawable/round_background"
             android:layout_marginTop="16dp"
-            android:elevation="6dp"
-            android:visibility="visible"/>
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="16dp">
+            <TextView
+                android:id="@+id/default_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="사진을 찍어주세요"
+                style="@style/TextLabelM"
+                android:visibility="visible"/>
+            <LinearLayout
+                android:id="@+id/new_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/product_name"
+                        android:layout_marginRight="4dp"
+                        style="@style/TextLabelM"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/colon"
+                        style="@style/TextLabelM"/>
+                    <TextView
+                        android:id="@+id/product_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/product_name"
+                        style="@style/TextLabelM"
+                        android:singleLine="true"
+                        android:ellipsize="marquee"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/product_price"
+                        android:layout_marginRight="4dp"
+                        style="@style/TextLabelM"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/colon"
+                        style="@style/TextLabelM"/>
+                    <TextView
+                        android:id="@+id/product_origin_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/origin_price"
+                        style="@style/TextLabelM"
+                        android:singleLine="true"
+                        android:ellipsize="marquee"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="→"
+                        android:layout_marginHorizontal="8dp"
+                        style="@style/TextLabelM"/>
+                    <TextView
+                        android:id="@+id/product_calc_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/calc_price"
+                        style="@style/TextLabelM"
+                        android:singleLine="true"
+                        android:ellipsize="marquee"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
         <FrameLayout
             android:id="@+id/textOverlay"
             android:layout_width="match_parent"
@@ -142,102 +228,94 @@
             android:gravity="center"
             android:paddingHorizontal="24dp"
             android:layout_marginBottom="24dp">
-            <FrameLayout
-                android:id="@+id/list_button"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/round_button"
-                android:backgroundTint="@color/white"
-                android:layout_gravity="center_vertical">
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/icon_list"
-                    android:layout_gravity="center" />
-            </FrameLayout>
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"/>
-            <FrameLayout
-                android:id="@+id/cameraButton"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:background="@drawable/round_button"
-                android:backgroundTint="@color/main"
-                android:layout_gravity="center">
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/icon_camera"
-                    android:layout_gravity="center" />
-            </FrameLayout>
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"/>
-            <FrameLayout
-                android:id="@+id/confirmButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/round_button"
-                android:backgroundTint="@color/white"
-                android:layout_gravity="center_vertical">
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/icon_cart"
-                    android:layout_gravity="center"
-                    app:tint="@color/main"/>
-            </FrameLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <!-- 파란색 중앙 버튼 -->
+                <FrameLayout
+                    android:id="@+id/camera_button"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/round_button"
+                    android:backgroundTint="@color/main"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/icon_camera" />
+                </FrameLayout>
+
+                <!-- 왼쪽 버튼 그룹 -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <FrameLayout
+                        android:id="@+id/list_button"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/round_button"
+                        android:backgroundTint="@color/white">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/icon_list" />
+                    </FrameLayout>
+
+                    <Space
+                        android:layout_width="16dp"
+                        android:layout_height="match_parent" />
+
+                    <FrameLayout
+                        android:id="@+id/gallery_button"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/round_button"
+                        android:backgroundTint="@color/white">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/icon_photo"
+                            app:tint="@color/main"/>
+                    </FrameLayout>
+                </LinearLayout>
+
+                <!-- 오른쪽 버튼 -->
+                <FrameLayout
+                    android:id="@+id/confirm_button"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/round_button"
+                    android:backgroundTint="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/icon_cart"
+                        app:tint="@color/main" />
+                </FrameLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </FrameLayout>
-
-
-
-<!--    <TextView-->
-<!--        android:id="@+id/cameraText"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginHorizontal="16dp"-->
-<!--        android:text="인식된 텍스트 없음"-->
-<!--        android:textSize="16sp"-->
-<!--        android:textColor="@android:color/white"/>-->
-
-<!--    <FrameLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:layout_weight="1">-->
-
-<!--        <androidx.camera.view.PreviewView-->
-<!--            android:id="@+id/previewView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:scaleType="fitXY"-->
-<!--            android:visibility="visible">-->
-
-<!--            <ImageView-->
-<!--                android:id="@+id/capturedImageView"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:scaleType="fitXY"-->
-<!--                android:visibility="invisible" />-->
-<!--        </androidx.camera.view.PreviewView>-->
-
-<!--        <FrameLayout-->
-<!--            android:id="@+id/textOverlay"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:visibility="gone"/>-->
-<!--    </FrameLayout>-->
-
-<!--    <Button-->
-<!--        android:id="@+id/confirmButton"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="선택 완료"-->
-<!--        android:visibility="invisible"-->
-<!--        android:backgroundTint="@android:color/holo_green_dark"-->
-<!--        android:textColor="@android:color/white"-->
-<!--        android:layout_margin="16dp"/>-->
 </LinearLayout>
