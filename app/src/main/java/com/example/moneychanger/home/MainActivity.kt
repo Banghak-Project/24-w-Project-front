@@ -17,6 +17,7 @@ import com.example.moneychanger.camera.CameraActivity
 import com.example.moneychanger.list.ListActivity
 import com.example.moneychanger.adapter.ListAdapter
 import com.example.moneychanger.R
+import com.example.moneychanger.calendar.CalendarActivity
 import com.example.moneychanger.setting.SettingActivity
 import com.example.moneychanger.databinding.ActivityMainBinding
 import com.example.moneychanger.etc.BaseActivity
@@ -94,7 +95,7 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
         // 임시 버튼 연결 - 임시
         binding.b1.setOnClickListener {
             // 로그인 선택 페이지로 연결
-            val intent = Intent(this, LoginSelectActivity::class.java)
+            val intent = Intent(this, CalendarActivity::class.java)
             startActivity(intent)
         }
         binding.b2.setOnClickListener{
