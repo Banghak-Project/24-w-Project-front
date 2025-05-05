@@ -101,6 +101,9 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
 
         captureButton.setOnClickListener {
             takePicture(currencyIdFrom, currencyIdTo, listId)
+            binding.defaultText.visibility = View.GONE
+            binding.newText.visibility = View.VISIBLE
+            binding.offButton.visibility = View.VISIBLE
         }
 
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
@@ -382,9 +385,30 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                 selectedProductPriceView = null
                 selectedTexts.clear()
                 isSelectingPrice = false
-                binding.cameraText.text = ""
+
+                binding.defaultText.visibility = View.VISIBLE
+                binding.newText.visibility = View.GONE
+                binding.offButton.visibility = View.GONE
             }
             Toast.makeText(this@CameraActivity2, "상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
+
+            // 사진 찍기 전으로 돌아가기
+            binding.offButton.setOnClickListener{
+                binding.textOverlay.removeAllViews()
+                binding.capturedImageView.visibility = View.GONE
+                binding.previewView.visibility = View.VISIBLE
+
+                selectedProductName = null
+                selectedProductPrice = null
+                selectedProductNameView = null
+                selectedProductPriceView = null
+                selectedTexts.clear()
+                isSelectingPrice = false
+
+                binding.defaultText.visibility = View.VISIBLE
+                binding.newText.visibility = View.GONE
+                binding.offButton.visibility = View.GONE
+            }
         }
     }
 
@@ -449,9 +473,10 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
     private fun updateSelectedText(currencyIdFrom : Long, currencyIdTo : Long) {
         if (selectedProductName != null && selectedProductPrice != null) {
             val cleanPrice = cleanPriceText(selectedProductPrice!!).toDouble()
-            val resultText = "상품명: ${selectedProductName}, 상품가격: ${cleanPrice} -> ${calculateExchangeRate(currencyIdFrom, currencyIdTo, cleanPrice)}"
-            binding.cameraText.text = resultText
-            Toast.makeText(this, "선택 완료: $resultText", Toast.LENGTH_SHORT).show()
+            binding.productName.text = selectedProductName
+            binding.productOriginPrice.text = cleanPrice.toString()
+            binding.productCalcPrice.text = calculateExchangeRate(currencyIdFrom, currencyIdTo, cleanPrice).toString()
+            Toast.makeText(this, "선택 완료: $selectedProductName", Toast.LENGTH_SHORT).show()
         }
     }
 

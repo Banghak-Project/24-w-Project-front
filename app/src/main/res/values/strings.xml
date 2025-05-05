@@ -143,6 +143,9 @@
     <string name="product_name">상품명</string>
     <string name="product_price">상품 금액</string>
 
+    <string name="origin_price">원래 가격</string>
+    <string name="calc_price">계산된 가격</string>
+
     <!--홈_01-->
     <string name="home_title">가게 별 소비 리스트</string>
 
@@ -172,7 +175,6 @@
     <string name="place_ex">H MART</string>
 
     <!--list-->
-    <string name="dot">•</string>
     <string name="before">분 전</string>
     <string name="total">총 합계</string>
     <string name="select">선택</string>
@@ -262,5 +264,25 @@
 
     <string name="find_pw">비밀번호 재설정</string>
     <string name="find_id">ID 찾기</string>
+
+    <!--캘린더-->
+    <string name="total_spend">소비 총액</string>
+    <string name="year">년</string>
+    <string name="month">월</string>
+    <string name="date">일</string>
+    <string name="history">소비 내역</string>
+    <string name="add_sum">누적 합계</string>
+
+    <string name="sun">일</string>
+    <string name="mon">월</string>
+    <string name="tue">화</string>
+    <string name="wed">수</string>
+    <string name="thu">목</string>
+    <string name="fri">금</string>
+    <string name="sat">토</string>
+
+    <string name="plus">+</string>
+    <string name="dot">•</string>
+    <string name="colon">:</string>
 
 </resources>

@@ -29,6 +29,8 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.camera.core.AspectRatio
@@ -63,6 +65,7 @@ import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.checkerframework.checker.index.qual.GTENegativeOne
 
 import retrofit2.Call
 import retrofit2.Callback
@@ -128,6 +131,9 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
         captureButton.setOnClickListener {
             takePicture()
+            binding.defaultText.visibility = GONE
+            binding.newText.visibility = VISIBLE
+            binding.offButton.visibility = VISIBLE
         }
 
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
@@ -390,7 +396,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                 }
             }
 
-            binding.textOverlay.visibility = View.VISIBLE
+            binding.textOverlay.visibility = VISIBLE
             // 선택 완료 버튼 클릭 시, 새로운 리스트 생성 및 상품 추가
             binding.confirmButton.setOnClickListener {
                 Log.d("Debug", "confirm 버튼 클릭 됨")
@@ -412,8 +418,8 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                     }
                     // 이미지 뷰 → 카메라 프리뷰로 전환
                     binding.textOverlay.removeAllViews()
-                    binding.capturedImageView.visibility = View.GONE
-                    binding.previewView.visibility = View.VISIBLE
+                    binding.capturedImageView.visibility = GONE
+                    binding.previewView.visibility = VISIBLE
 
                     selectedProductName = null
                     selectedProductPrice = null
@@ -421,12 +427,33 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                     selectedProductPriceView = null
                     selectedTexts.clear()
                     isSelectingPrice = false
-                    binding.cameraText.text = ""
+
+                    binding.defaultText.visibility = VISIBLE
+                    binding.newText.visibility = GONE
+                    binding.offButton.visibility = GONE
                 } else {
                     Toast.makeText(this@CameraActivity, "상품명과 상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
                 }
             }
             Toast.makeText(this@CameraActivity, "상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
+
+            // 사진 찍기 전으로 돌아가기
+            binding.offButton.setOnClickListener{
+                binding.textOverlay.removeAllViews()
+                binding.capturedImageView.visibility = GONE
+                binding.previewView.visibility = VISIBLE
+
+                selectedProductName = null
+                selectedProductPrice = null
+                selectedProductNameView = null
+                selectedProductPriceView = null
+                selectedTexts.clear()
+                isSelectingPrice = false
+
+                binding.defaultText.visibility = VISIBLE
+                binding.newText.visibility = GONE
+                binding.offButton.visibility = GONE
+            }
         }
     }
     private fun getLocation(onLocationReady: (String) -> Unit) {
@@ -533,8 +560,9 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             val cleanPrice = cleanPriceText(selectedProductPrice!!).toDouble()
             CoroutineScope(Dispatchers.Main).launch {
                 val exchangedAmount = calculateExchangeRate(currencyIdFrom, currencyIdTo, cleanPrice)
-                val resultText = "상품명: $selectedProductName, 상품가격: $cleanPrice -> $exchangedAmount"
-                binding.cameraText.text = resultText
+                binding.productName.text = selectedProductName
+                binding.productOriginPrice.text = cleanPrice.toString()
+                binding.productCalcPrice.text = exchangedAmount.toString()
             }
         }
     }
