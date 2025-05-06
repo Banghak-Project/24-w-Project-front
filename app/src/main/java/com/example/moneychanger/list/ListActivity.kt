@@ -18,7 +18,6 @@ import com.example.moneychanger.adapter.ProductAdapter
 import com.example.moneychanger.camera.CameraActivity2
 import com.example.moneychanger.etc.SlideEdit
 import com.example.moneychanger.databinding.ActivityListBinding
-import com.example.moneychanger.etc.ExchangeRateUtil
 import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
 import com.example.moneychanger.etc.ExchangeRateUtil.getExchangeRate
 import com.example.moneychanger.etc.SlideProductEdit
@@ -109,7 +108,7 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         }
 
         // 통화 Spinner 데이터 설정
-        val currencyUnits: List<String> = currencyList?.map { it.curUnit } ?: emptyList()
+        val currencyUnits: List<String> = currencyList.map { it.curUnit }
         val customSpinner1 = CustomSpinner(this, currencyUnits)
         val customSpinner2 = CustomSpinner(this, currencyUnits)
 
@@ -352,16 +351,23 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                     response: Response<ApiResponse<UpdateResponseDto>>
                 ) {
                     if (response.isSuccessful && response.body()?.status == "success") {
-                        Log.i("ListActivity", "✅ 서버에 리스트 업데이트 완료")
+                        Log.i("ListActivity", "서버에 리스트 업데이트 완료")
+                        fetchListByIdFromApi(selectedList!!.listId) { list ->
+                            list?.let {
+                                selectedList = it
+                                updateUI(it)
+                                fetchProductsByListId(it.listId)
+                            }
+                        }
                         setResult(RESULT_OK)
                     } else {
-                        Log.e("ListActivity", "❌ 서버 응답 실패: ${response.errorBody()?.string()}")
+                        Log.e("ListActivity", "서버 응답 실패: ${response.errorBody()?.string()}")
                         Toast.makeText(this@ListActivity, "리스트 업데이트 실패", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(call: Call<ApiResponse<UpdateResponseDto>>, t: Throwable) {
-                    Log.e("ListActivity", "❌ 서버 업데이트 실패", t)
+                    Log.e("ListActivity", "서버 업데이트 실패", t)
                     Toast.makeText(this@ListActivity, "서버 통신 오류", Toast.LENGTH_SHORT).show()
                 }
             })
