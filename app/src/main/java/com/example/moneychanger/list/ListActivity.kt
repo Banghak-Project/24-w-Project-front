@@ -20,6 +20,7 @@ import com.example.moneychanger.etc.SlideEdit
 import com.example.moneychanger.databinding.ActivityListBinding
 import com.example.moneychanger.etc.ExchangeRateUtil
 import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
+import com.example.moneychanger.etc.ExchangeRateUtil.getExchangeRate
 import com.example.moneychanger.etc.SlideProductEdit
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.RetrofitClient.apiService
@@ -268,6 +269,8 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                     val total = calculateTotalAmount()
                     lifecycleScope.launch {
                         val converted = calculateExchangeRate(selectedList!!.currencyFrom.currencyId, selectedList!!.currencyTo.currencyId, total)
+                        val currencyRate = getExchangeRate(selectedList!!.currencyFrom.currencyId, selectedList!!.currencyTo.currencyId)
+                        binding.currencyRate.text = String.format("%.2f",currencyRate)
                         binding.totalSum.text = String.format("%.2f", converted)
                     }
                 } else {
