@@ -34,6 +34,7 @@ import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
 import kotlinx.coroutines.launch
+import com.example.moneychanger.viewmodel.SharedProductViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -57,6 +58,7 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         binding = ActivityListBinding.inflate(layoutInflater)
         setContentView(binding.root)
         viewModel = ViewModelProvider(this)[CurrencyViewModel::class.java]
+
 
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
         setSupportActionBar(toolbar)
@@ -213,6 +215,15 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        selectedList?.let {
+            fetchProductsByListId(it.listId)
+        }
+    }
+
 
     //ListId로 Product 가져오기
     private fun fetchProductsByListId(listId: Long) {
