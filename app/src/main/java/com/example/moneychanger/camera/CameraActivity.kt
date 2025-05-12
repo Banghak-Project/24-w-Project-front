@@ -43,7 +43,6 @@ import com.example.moneychanger.etc.OnProductAddedListener
 import com.example.moneychanger.etc.SlideCameraList
 import com.example.moneychanger.location.LocationUtil
 import com.example.moneychanger.location.getAddressFromLatLng
-import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.RetrofitClient.apiService
 import com.example.moneychanger.network.TokenManager
 import com.example.moneychanger.network.currency.CurrencyManager
@@ -65,7 +64,6 @@ import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.checkerframework.checker.index.qual.GTENegativeOne
 
 import retrofit2.Call
 import retrofit2.Callback
@@ -123,7 +121,8 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                 currencyIdFrom,
                 currencyIdTo,
                 currencyFromUnit,
-                currencyToUnit
+                currencyToUnit,
+                latestListId
             )
             slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
         }
@@ -134,6 +133,12 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             binding.defaultText.visibility = GONE
             binding.newText.visibility = VISIBLE
             binding.offButton.visibility = VISIBLE
+        }
+
+        binding.galleryButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            intent.type = "image/*"
+            startActivityForResult(intent, GALLERY_REQUEST_CODE)
         }
 
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
@@ -183,6 +188,14 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                 if (latestListId != -1L) {
                     updateListCurrency(currencyIdFrom, currencyIdTo)
                 }
+            }
+        }
+
+        supportFragmentManager.setFragmentResultListener("requestKey", this) { _, bundle ->
+            val listAdded = bundle.getBoolean("productAdded")
+            if (listAdded) {
+                fetchProductsAndShowDialog(latestListId)
+                Log.d("CameraActivity", "상품 추가됨")
             }
         }
 
@@ -567,6 +580,23 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            val selectedImageUri = data.data
+            if (selectedImageUri != null) {
+                val bitmap = loadBitmapWithRotation(selectedImageUri)
+
+                binding.capturedImageView.setImageBitmap(bitmap)
+                binding.previewView.visibility = View.INVISIBLE
+                binding.capturedImageView.visibility = View.VISIBLE
+
+                recognizeTextFromBitmap(bitmap)
+            }
+        }
+    }
+
     private fun addNewList(userId: Long, currencyIdFrom: Long, currencyIdTo: Long, location: String, productNameCopy: String, productPriceCopy: String) {
         val createRequest = CreateListRequestDto(userId, currencyIdFrom, currencyIdTo, location)
         Log.d("CameraActivity", "🚀 리스트 생성 요청 데이터: userId=$userId, currencyIdFrom=$currencyIdFrom, currencyIdTo=$currencyIdTo, location=$location")
@@ -678,7 +708,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                         if (apiResponse != null && apiResponse.status == "success") {
                             val productListDto = apiResponse.data ?: emptyList()
                             productList = productListDto.toMutableList()
-
                         } else {
                             Toast.makeText(this@CameraActivity, "상품 목록을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show()
                         }
@@ -734,6 +763,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         private const val TAG = "CameraXApp"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val CAMERA_PERMISSION_CODE: Int = 10
+        private const val GALLERY_REQUEST_CODE: Int = 100
 
     }
 

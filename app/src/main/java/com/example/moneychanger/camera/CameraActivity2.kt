@@ -146,7 +146,8 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                     currencyIdFrom,
                     currencyIdTo,
                     initialCurrencyFrom,
-                    initialCurrencyTo
+                    initialCurrencyTo,
+                    listId
                 )
                 slideCameraList.show(supportFragmentManager, SlideCameraList.TAG)
             }
@@ -170,6 +171,14 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                 val selectedCurrency = CurrencyManager.getByUnit(selected)
                 currencyIdTo = selectedCurrency.currencyId
                 updateListCurrency(currencyIdFrom, currencyIdTo, selectedList!!)
+            }
+        }
+
+        supportFragmentManager.setFragmentResultListener("requestKey", this) { _, bundle ->
+            val listAdded = bundle.getBoolean("productAdded")
+            if (listAdded) {
+                fetchProductsAndShowDialog(listId)
+                Log.d("CameraActivity", "상품 추가됨")
             }
         }
 
