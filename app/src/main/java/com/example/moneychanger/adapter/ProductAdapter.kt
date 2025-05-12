@@ -11,6 +11,7 @@ import com.example.moneychanger.databinding.ListProductBinding
 import com.example.moneychanger.etc.ExchangeRateUtil
 import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
 import com.example.moneychanger.list.ListActivity
+import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductResponseDto
 import kotlinx.coroutines.CoroutineScope
@@ -103,6 +104,12 @@ class ProductAdapter(
 
     fun updateList(newList: MutableList<ProductModel>) {
         products = newList
+        notifyDataSetChanged()
+    }
+
+    fun updateListCamera(newList: MutableList<ProductModel>) {
+        products.clear()
+        products.addAll(newList)
         notifyDataSetChanged()
     }
 
