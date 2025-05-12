@@ -43,7 +43,9 @@ data class CreateProductResponseDto(
     @SerializedName("productId") val productId: Long,
     @SerializedName("name") val name: String,
     @SerializedName("originPrice") val originPrice: Double,
-    @SerializedName("listId") val listId: Long
+    @SerializedName("listId") val listId: Long,
+    @SerializedName("deletedYn") val deletedYn: Boolean,
+    @SerializedName("createdAt") val createdAt : String
 )
 
 data class DeleteProductsRequestDto(
