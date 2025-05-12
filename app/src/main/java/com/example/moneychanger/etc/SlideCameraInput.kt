@@ -6,15 +6,29 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.moneychanger.databinding.SlideCameraInputBinding
+import com.example.moneychanger.network.RetrofitClient
+import com.example.moneychanger.network.product.CreateProductRequestDto
+import com.example.moneychanger.network.product.CreateProductResponseDto
+import com.example.moneychanger.network.user.ApiResponse
+import com.example.moneychanger.viewmodel.SharedProductViewModel
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class SlideCameraInput : BottomSheetDialogFragment() {
+class SlideCameraInput(
+    var onProductAddedListener: ((CreateProductResponseDto) -> Unit)? = null
+) : BottomSheetDialogFragment() {
+
     private var _binding: SlideCameraInputBinding? = null
     private val binding get() = _binding!!
 
     private var listener: OnProductAddedListener? = null
+    private val viewModel: SharedProductViewModel by activityViewModels()
 
     companion object {
         const val TAG = "SlideCameraInput"
@@ -55,6 +69,7 @@ class SlideCameraInput : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val listId = arguments?.getLong("list_id") ?: -1L
         val fromUnit = arguments?.getString("currency_from_unit") ?: ""
         val fromKey = fromUnit.replace(Regex("\\(.*\\)"), "").trim()
         val fromResId = resources.getIdentifier(fromKey, "string", requireContext().packageName)
@@ -65,21 +80,48 @@ class SlideCameraInput : BottomSheetDialogFragment() {
         binding.currencySymbol.text = fromSymbol
 
         binding.buttonAdd.setOnClickListener {
-            val productName = "자동 설정 이름으로 바꾸시길"
-            val priceText = binding.inputPrice.text.toString()
+            val productName = ""
 
-            // ✅ Double 변환 (예외 발생 방지)
-            val price: Double = try {
-                priceText.replace(",", "").toDouble()
-            } catch (e: NumberFormatException) {
-                0.0 // 변환 실패 시 기본값 설정
+            val inputText = binding.inputPrice.text.toString().replace(",", "")
+            val price = inputText.toDoubleOrNull() ?: 0.0
+
+            if (price > 0) {
+                addProductToList(listId, productName, price)
             }
-
-            listener?.onProductAdded(productName, price)
-
-            dismiss() // ✅ Bottom Sheet 닫기
         }
+    }
 
+    private fun addProductToList(listId: Long, productName: String, price: Double) {
+        val productRequest = CreateProductRequestDto(listId, productName, price)
+
+        RetrofitClient.apiService.createProduct(productRequest)
+            .enqueue(object : Callback<ApiResponse<CreateProductResponseDto>> {
+                override fun onResponse(
+                    call: Call<ApiResponse<CreateProductResponseDto>>,
+                    response: Response<ApiResponse<CreateProductResponseDto>>
+                ) {
+                    if (response.isSuccessful && response.body()?.status == "success") {
+                        context?.let {
+                            Toast.makeText(it, "상품 추가 완료!", Toast.LENGTH_SHORT).show()
+                        }
+
+                        val addedProduct = response.body()?.data
+                        Log.d("SlideCameraInput", "추가된 상품: $addedProduct")
+
+                        if (addedProduct != null) {
+                            Log.d("SlideCameraInput", "✅ 추가된 상품 콜백 전달")
+                            onProductAddedListener?.invoke(addedProduct)  // ★ 콜백 호출
+                            dismiss()
+                        }
+                    } else {
+                        Log.e("SlideCameraInput", "상품 추가 실패: ${response.body()?.message}")
+                    }
+                }
+
+                override fun onFailure(call: Call<ApiResponse<CreateProductResponseDto>>, t: Throwable) {
+                    Log.e("SlideCameraInput", "서버 요청 실패: ${t.message}")
+                }
+            })
     }
 
     override fun onDestroyView() {
@@ -91,4 +133,3 @@ class SlideCameraInput : BottomSheetDialogFragment() {
 interface OnProductAddedListener {
     fun onProductAdded(productName: String, price: Double)
 }
-
