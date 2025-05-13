@@ -369,67 +369,65 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         selectedTexts.clear()
 
         binding.capturedImageView.post {
-            val displayedWidth = binding.capturedImageView.width.toFloat()
-            val displayedHeight = binding.capturedImageView.height.toFloat()
+            val viewWidth = binding.capturedImageView.width.toFloat()
+            val viewHeight = binding.capturedImageView.height.toFloat()
 
-            val originalWidth = bitmap.width.toFloat()
-            val originalHeight = bitmap.height.toFloat()
+            val imageWidth = bitmap.width.toFloat()
+            val imageHeight = bitmap.height.toFloat()
 
-            val scaleX = displayedWidth / originalWidth
-            val scaleY = displayedHeight / originalHeight
+            // centerCrop 기준 스케일 계산
+            val scale = maxOf(viewWidth / imageWidth, viewHeight / imageHeight)
 
-            val offsetX = (displayedWidth - (originalWidth * scaleX)) / 2
-            val offsetY = (displayedHeight - (originalHeight * scaleY)) / 2
+            // 중심 정렬을 위한 offset 계산
+            val offsetX = (viewWidth - imageWidth * scale) / 2
+            val offsetY = (viewHeight - imageHeight * scale) / 2
 
-            Log.d("OCR", "🔍 Scale Factor: X=$scaleX, Y=$scaleY, OffsetX: $offsetX, OffsetY: $offsetY")
+            Log.d("OCR", "🔍 Scale: $scale, OffsetX: $offsetX, OffsetY: $offsetY")
 
             for (block in visionText.textBlocks) {
                 for (line in block.lines) {
                     val rect = line.boundingBox ?: continue
-                    val angle = line.angle  // ML Kit이 감지한 회전 각도 (기울어진 텍스트)
+                    val angle = line.angle
 
-                    // 박스 크기 보정 (약간의 padding 추가)
-                    val boxPadding = 4  // 4px 패딩 추가
-                    val adjustedWidth = (rect.width() * scaleX + boxPadding).toInt()
-                    val adjustedHeight = (rect.height() * scaleY + boxPadding).toInt()
+                    val boxPadding = 4
+                    val adjustedWidth = (rect.width() * scale + boxPadding).toInt()
+                    val adjustedHeight = (rect.height() * scale + boxPadding).toInt()
 
                     val borderView = View(this@CameraActivity).apply {
                         setBackgroundResource(R.drawable.ocr_border)
                         isClickable = true
-                        rotation = angle  // 기울어진 텍스트 각도를 OCR 박스에 적용
+                        rotation = angle
                         setOnClickListener { toggleSelection(this, line.text) }
                     }
 
                     val layoutParams = FrameLayout.LayoutParams(adjustedWidth, adjustedHeight).apply {
-                        leftMargin = (rect.left * scaleX + offsetX - boxPadding / 2).toInt()
-                        topMargin = (rect.top * scaleY + offsetY - boxPadding / 2).toInt()
+                        leftMargin = (rect.left * scale + offsetX - boxPadding / 2).toInt()
+                        topMargin = (rect.top * scale + offsetY - boxPadding / 2).toInt()
                     }
 
                     binding.textOverlay.addView(borderView, layoutParams)
                 }
             }
 
-            binding.textOverlay.visibility = VISIBLE
-            // 선택 완료 버튼 클릭 시, 새로운 리스트 생성 및 상품 추가
+            binding.textOverlay.visibility = View.VISIBLE
+
             binding.confirmButton.setOnClickListener {
-                Log.d("Debug", "confirm 버튼 클릭 됨")
                 val productNameCopy = selectedProductName
                 val productPriceCopy = selectedProductPrice
+
                 if (productNameCopy != null && productPriceCopy != null) {
                     if (latestListId != -1L) {
-                        // 이미 리스트가 있다면 상품만 추가
                         addProductToList(latestListId, productNameCopy, productPriceCopy)
                     } else {
-                        // 처음이라면 리스트 먼저 생성
                         checkAndRequestLocationPermission {
                             getLocation { address ->
-                                Log.d("Debug", "새 리스트 생성중")
                                 location = address
                                 addNewList(userId, currencyIdFrom, currencyIdTo, location, productNameCopy, productPriceCopy)
                             }
                         }
                     }
-                    // 이미지 뷰 → 카메라 프리뷰로 전환
+
+                    // 상태 초기화
                     binding.textOverlay.removeAllViews()
                     binding.capturedImageView.visibility = GONE
                     binding.previewView.visibility = VISIBLE
@@ -441,6 +439,10 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                     selectedTexts.clear()
                     isSelectingPrice = false
 
+                    binding.productName.text = "상품명"
+                    binding.productOriginPrice.text = "원래 가격"
+                    binding.productCalcPrice.text = "계산된 가격"
+
                     binding.defaultText.visibility = VISIBLE
                     binding.newText.visibility = GONE
                     binding.offButton.visibility = GONE
@@ -448,6 +450,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                     Toast.makeText(this@CameraActivity, "상품명과 상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
                 }
             }
+
             Toast.makeText(this@CameraActivity, "상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
 
             // 사진 찍기 전으로 돌아가기
