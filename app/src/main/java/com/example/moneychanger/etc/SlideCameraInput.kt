@@ -12,6 +12,7 @@ import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.product.CreateProductRequestDto
 import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import retrofit2.Call
@@ -26,7 +27,6 @@ class SlideCameraInput(
     private val binding get() = _binding!!
 
     private var listener: OnProductAddedListener? = null
-//    private val viewModel: SharedProductViewModel by activityViewModels()
 
     companion object {
         const val TAG = "SlideCameraInput"

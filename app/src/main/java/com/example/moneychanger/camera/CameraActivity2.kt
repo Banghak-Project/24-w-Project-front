@@ -29,6 +29,8 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.camera.core.AspectRatio
@@ -65,7 +67,10 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
     private lateinit var captureButton: FrameLayout
     private lateinit var cameraExecutor: ExecutorService
     private var imageCapture: ImageCapture? = null
-    private val selectedTexts = mutableListOf<String>()
+
+    private var currencyIdFrom = -1L
+    private var currencyIdTo = -1L
+    private var listId = -1L
 
     private var selectedProductName: String? = null
     private var selectedProductPrice: String? = null
@@ -88,9 +93,9 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         // 리스트에서 가져온 정보들
-        var currencyIdFrom = intent.getLongExtra("currencyIdFrom", -1L)
-        var currencyIdTo = intent.getLongExtra("currencyIdTo", -1L)
-        val listId = intent.getLongExtra("listId", -1L)
+        currencyIdFrom = intent.getLongExtra("currencyIdFrom", -1L)
+        currencyIdTo = intent.getLongExtra("currencyIdTo", -1L)
+        listId = intent.getLongExtra("listId", -1L)
         val selectedList = intent.getSerializableExtra("selectedList") as? ListModel
 
         if (!hasCameraPermission()) {
@@ -100,10 +105,13 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         }
 
         captureButton.setOnClickListener {
-            takePicture(currencyIdFrom, currencyIdTo, listId)
-            binding.defaultText.visibility = View.GONE
-            binding.newText.visibility = View.VISIBLE
-            binding.offButton.visibility = View.VISIBLE
+            takePicture()
+        }
+
+        binding.galleryButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            intent.type = "image/*"
+            startActivityForResult(intent, GALLERY_REQUEST_CODE)
         }
 
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
@@ -223,11 +231,15 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         }, ContextCompat.getMainExecutor(this))
     }
 
-    private fun takePicture(currencyIdFrom : Long, currencyIdTo : Long, listId: Long) {
+    private fun takePicture() {
         if (currencyIdFrom == -1L || currencyIdTo == -1L) {
             Toast.makeText(this, "두 통화를 모두 선택해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
+
+        binding.defaultText.visibility = View.GONE
+        binding.newText.visibility = View.VISIBLE
+        binding.offButton.visibility = View.VISIBLE
 
         val imageCapture = imageCapture ?: return
         val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis())
@@ -266,7 +278,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                         binding.capturedImageView.visibility = View.VISIBLE
                     }
 
-                    recognizeTextFromBitmap(bitmap, currencyIdFrom, currencyIdTo, listId)
+                    recognizeTextFromBitmap(bitmap)
                 }
             }
         )
@@ -296,6 +308,226 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
+    private fun recognizeTextFromBitmap(bitmap: Bitmap) {
+        val image = InputImage.fromBitmap(bitmap, 0)
+        val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
+
+        recognizer.process(image)
+            .addOnSuccessListener { visionText ->
+                displayRecognizedText(visionText, bitmap)
+            }
+            .addOnFailureListener { e ->
+                Log.e("OCR", "텍스트 인식 실패: ${e.localizedMessage}")
+                Toast.makeText(this, "텍스트 인식 실패", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun displayRecognizedText(visionText: Text, bitmap: Bitmap) {
+        binding.textOverlay.removeAllViews()
+
+        binding.capturedImageView.post {
+            val viewWidth = binding.capturedImageView.width.toFloat()
+            val viewHeight = binding.capturedImageView.height.toFloat()
+
+            val imageWidth = bitmap.width.toFloat()
+            val imageHeight = bitmap.height.toFloat()
+
+            // centerCrop 기준 스케일 계산
+            val scale = maxOf(viewWidth / imageWidth, viewHeight / imageHeight)
+
+            // 중심 정렬을 위한 offset 계산
+            val offsetX = (viewWidth - imageWidth * scale) / 2
+            val offsetY = (viewHeight - imageHeight * scale) / 2
+
+            Log.d("OCR", "🔍 Scale: $scale, OffsetX: $offsetX, OffsetY: $offsetY")
+
+            for (block in visionText.textBlocks) {
+                for (line in block.lines) {
+                    val rect = line.boundingBox ?: continue
+                    val angle = line.angle
+
+                    val boxPadding = 4
+                    val adjustedWidth = (rect.width() * scale + boxPadding).toInt()
+                    val adjustedHeight = (rect.height() * scale + boxPadding).toInt()
+
+                    val borderView = View(this@CameraActivity2).apply {
+                        setBackgroundResource(R.drawable.ocr_border)
+                        isClickable = true
+                        rotation = angle
+                        setOnClickListener { toggleSelection(this, line.text) }
+                    }
+
+                    val layoutParams = FrameLayout.LayoutParams(adjustedWidth, adjustedHeight).apply {
+                        leftMargin = (rect.left * scale + offsetX - boxPadding / 2).toInt()
+                        topMargin = (rect.top * scale + offsetY - boxPadding / 2).toInt()
+                    }
+
+                    binding.textOverlay.addView(borderView, layoutParams)
+                }
+            }
+
+            binding.textOverlay.visibility = View.VISIBLE
+
+            binding.confirmButton.setOnClickListener {
+                val productNameCopy = selectedProductName
+                val productPriceCopy = selectedProductPrice
+
+                if (productNameCopy != null && productPriceCopy != null) {
+                    addProductToList(listId, productNameCopy, productPriceCopy)
+
+                    // 상태 초기화
+                    binding.textOverlay.removeAllViews()
+                    binding.capturedImageView.visibility = GONE
+                    binding.previewView.visibility = VISIBLE
+
+                    selectedProductName = null
+                    selectedProductPrice = null
+                    selectedProductNameView = null
+                    selectedProductPriceView = null
+                    isSelectingPrice = false
+
+                    binding.productName.text = "상품명"
+                    binding.productOriginPrice.text = "원래 가격"
+                    binding.productCalcPrice.text = "계산된 가격"
+
+                    binding.defaultText.visibility = VISIBLE
+                    binding.newText.visibility = GONE
+                    binding.offButton.visibility = GONE
+                } else {
+                    Toast.makeText(this@CameraActivity2, "상품명과 상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            Toast.makeText(this@CameraActivity2, "상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
+
+            binding.offButton.setOnClickListener {
+                binding.textOverlay.removeAllViews()
+                binding.capturedImageView.visibility = GONE
+                binding.previewView.visibility = VISIBLE
+
+                selectedProductName = null
+                selectedProductPrice = null
+                selectedProductNameView = null
+                selectedProductPriceView = null
+                isSelectingPrice = false
+
+                binding.productName.text = "상품명"
+                binding.productOriginPrice.text = "원래 가격"
+                binding.productCalcPrice.text = "계산된 가격"
+
+                binding.defaultText.visibility = VISIBLE
+                binding.newText.visibility = GONE
+                binding.offButton.visibility = GONE
+            }
+        }
+    }
+
+    private fun toggleSelection(view: View, text: String) {
+        // 이미 상품명 선택된 박스를 다시 누르면 해제
+        if (view == selectedProductNameView) {
+            view.setBackgroundResource(R.drawable.ocr_border)
+            selectedProductName = null
+            selectedProductNameView = null
+            isSelectingPrice = false
+
+            // 가격도 초기화
+            selectedProductPrice = null
+            selectedProductPriceView?.setBackgroundResource(R.drawable.ocr_border)
+            selectedProductPriceView = null
+
+            binding.productName.text = "상품명"
+            binding.productOriginPrice.text = "원래 가격"
+            binding.productCalcPrice.text = "계산된 가격"
+
+            Toast.makeText(this, "상품명이 선택 해제되었습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // 이미 상품 가격 선택된 박스를 다시 누르면 해제
+        if (view == selectedProductPriceView) {
+            view.setBackgroundResource(R.drawable.ocr_border)
+            selectedProductPrice = null
+            selectedProductPriceView = null
+
+            binding.productOriginPrice.text = "원래 가격"
+            binding.productCalcPrice.text = "계산된 가격"
+
+            Toast.makeText(this, "상품 가격이 선택 해제되었습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (selectedProductName == null) {
+            if (!text.any { it.isLetter() }) {
+                Toast.makeText(this, "잘못된 선택입니다. 상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            selectedProductNameView?.setBackgroundResource(R.drawable.ocr_border)
+            selectedProductName = text
+            selectedProductNameView = view
+            isSelectingPrice = true
+
+            view.setBackgroundResource(R.drawable.ocr_border_selected)
+            Toast.makeText(this, "상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
+
+        } else {
+            val cleanPrice = cleanPriceText(text)
+            if (cleanPrice.isEmpty()) {
+                Toast.makeText(this, "잘못된 선택입니다. 숫자로 된 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            selectedProductPriceView?.setBackgroundResource(R.drawable.ocr_border)
+            selectedProductPrice = text
+            selectedProductPriceView = view
+
+            view.setBackgroundResource(R.drawable.ocr_border_selected)
+            updateSelectedText()
+        }
+    }
+
+    private fun cleanPriceText(priceText: String): String {
+        val cleaned = priceText.replace(Regex("[^0-9.]"), "")
+        val price = if (cleaned.matches(Regex("\\d+(\\.\\d+)?"))) cleaned else ""
+        return price
+    }
+
+    private fun updateSelectedText() {
+        if (selectedProductName != null && selectedProductPrice != null) {
+            val cleanPrice = cleanPriceText(selectedProductPrice!!).toDouble()
+            binding.productName.text = selectedProductName
+            binding.productOriginPrice.text = cleanPrice.toString()
+            binding.productCalcPrice.text = calculateExchangeRate(currencyIdFrom, currencyIdTo, cleanPrice).toString()
+            Toast.makeText(this, "선택 완료: $selectedProductName", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (currencyIdFrom == -1L || currencyIdTo == -1L) {
+            Toast.makeText(this, "두 통화를 모두 선택해주세요.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        binding.defaultText.visibility = GONE
+        binding.newText.visibility = VISIBLE
+        binding.offButton.visibility = VISIBLE
+
+        if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            val selectedImageUri = data.data
+            if (selectedImageUri != null) {
+                val bitmap = loadBitmapWithRotation(selectedImageUri)
+
+                binding.capturedImageView.setImageBitmap(bitmap)
+                binding.previewView.visibility = View.INVISIBLE
+                binding.capturedImageView.visibility = View.VISIBLE
+
+                recognizeTextFromBitmap(bitmap)
+            }
+        }
+    }
+
     private fun hasCameraPermission(): Boolean {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
     }
@@ -312,180 +544,6 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             } else {
                 Toast.makeText(this, "카메라 권한이 필요합니다.", Toast.LENGTH_LONG).show()
             }
-        }
-    }
-
-    private fun recognizeTextFromBitmap(bitmap: Bitmap, currencyIdFrom : Long, currencyIdTo : Long,listId: Long) {
-        val image = InputImage.fromBitmap(bitmap, 0)
-        val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
-
-        recognizer.process(image)
-            .addOnSuccessListener { visionText ->
-                displayRecognizedText(visionText, bitmap, currencyIdFrom, currencyIdTo, listId)
-            }
-            .addOnFailureListener { e ->
-                Log.e("OCR", "텍스트 인식 실패: ${e.localizedMessage}")
-                Toast.makeText(this, "텍스트 인식 실패", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun displayRecognizedText(visionText: Text, bitmap: Bitmap, currencyIdFrom : Long, currencyIdTo : Long, listId: Long) {
-        binding.textOverlay.removeAllViews()
-        selectedTexts.clear()
-
-        binding.capturedImageView.post {
-            val displayedWidth = binding.capturedImageView.width.toFloat()
-            val displayedHeight = binding.capturedImageView.height.toFloat()
-
-            val originalWidth = bitmap.width.toFloat()
-            val originalHeight = bitmap.height.toFloat()
-
-            val scaleX = displayedWidth / originalWidth
-            val scaleY = displayedHeight / originalHeight
-
-            val offsetX = (displayedWidth - (originalWidth * scaleX)) / 2
-            val offsetY = (displayedHeight - (originalHeight * scaleY)) / 2
-
-            Log.d("OCR", "🔍 Scale Factor: X=$scaleX, Y=$scaleY, OffsetX: $offsetX, OffsetY: $offsetY")
-
-            for (block in visionText.textBlocks) {
-                for (line in block.lines) {
-                    val rect = line.boundingBox ?: continue
-                    val angle = line.angle
-
-                    val boxPadding = 4
-                    val adjustedWidth = (rect.width() * scaleX + boxPadding).toInt()
-                    val adjustedHeight = (rect.height() * scaleY + boxPadding).toInt()
-
-                    val borderView = View(this@CameraActivity2).apply {
-                        setBackgroundResource(R.drawable.ocr_border)
-                        isClickable = true
-                        rotation = angle
-                        setOnClickListener { toggleSelection(this, line.text, currencyIdFrom, currencyIdTo) }
-                    }
-
-                    val layoutParams = FrameLayout.LayoutParams(adjustedWidth, adjustedHeight).apply {
-                        leftMargin = (rect.left * scaleX + offsetX - boxPadding / 2).toInt()
-                        topMargin = (rect.top * scaleY + offsetY - boxPadding / 2).toInt()
-                    }
-
-                    binding.textOverlay.addView(borderView, layoutParams)
-                }
-            }
-
-            binding.textOverlay.visibility = View.VISIBLE
-            // 선택 완료 버튼 클릭 시, 새로운 상품 추가
-            binding.confirmButton.setOnClickListener {
-                val productNameCopy = selectedProductName
-                val productPriceCopy = selectedProductPrice
-                if (productNameCopy != null && productPriceCopy != null) {
-                    addProductToList(listId , productNameCopy, productPriceCopy)
-                } else {
-                    Toast.makeText(this@CameraActivity2, "상품명과 상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
-                }
-                // 이미지 뷰 → 카메라 프리뷰로 전환
-                binding.textOverlay.removeAllViews()
-                binding.capturedImageView.visibility = View.GONE
-                binding.previewView.visibility = View.VISIBLE
-
-                selectedProductName = null
-                selectedProductPrice = null
-                selectedProductNameView = null
-                selectedProductPriceView = null
-                selectedTexts.clear()
-                isSelectingPrice = false
-
-                binding.defaultText.visibility = View.VISIBLE
-                binding.newText.visibility = View.GONE
-                binding.offButton.visibility = View.GONE
-            }
-            Toast.makeText(this@CameraActivity2, "상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
-
-            // 사진 찍기 전으로 돌아가기
-            binding.offButton.setOnClickListener{
-                binding.textOverlay.removeAllViews()
-                binding.capturedImageView.visibility = View.GONE
-                binding.previewView.visibility = View.VISIBLE
-
-                selectedProductName = null
-                selectedProductPrice = null
-                selectedProductNameView = null
-                selectedProductPriceView = null
-                selectedTexts.clear()
-                isSelectingPrice = false
-
-                binding.defaultText.visibility = View.VISIBLE
-                binding.newText.visibility = View.GONE
-                binding.offButton.visibility = View.GONE
-            }
-        }
-    }
-
-    private fun toggleSelection(view: View, text: String, currencyIdFrom : Long, currencyIdTo : Long) {
-        if (selectedTexts.contains(text)) {
-            selectedTexts.remove(text)
-            view.setBackgroundResource(R.drawable.ocr_border)
-
-            if (selectedProductName == text) {
-                selectedProductName = null
-                selectedProductNameView = null
-                isSelectingPrice = false
-                Toast.makeText(this, "상품명이 선택 해제되었습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
-            } else if (selectedProductPrice == text) {
-                selectedProductPrice = null
-                selectedProductPriceView = null
-                isSelectingPrice = true
-                Toast.makeText(this, "상품 가격이 선택 해제되었습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
-            }
-            return
-        }
-
-        selectedTexts.add(text)
-        view.setBackgroundResource(R.drawable.ocr_border_selected)
-
-        if (selectedProductName == null) {
-            if (!text.any { it.isLetter() }) {
-                Toast.makeText(this, "잘못된 선택입니다. 상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
-                return
-            }
-
-            // 기존 선택한 뷰가 있으면 초기화
-            selectedProductNameView?.setBackgroundResource(R.drawable.ocr_border)
-
-            selectedProductName = text
-            selectedProductNameView = view
-            isSelectingPrice = true
-            Toast.makeText(this, "상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
-
-        } else {
-            val cleanPrice = cleanPriceText(text)
-            if (cleanPrice.isEmpty()) {
-                Toast.makeText(this, "잘못된 선택입니다. 숫자로 된 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
-                return
-            }
-
-            // 기존 가격 선택 뷰 초기화
-            selectedProductPriceView?.setBackgroundResource(R.drawable.ocr_border)
-
-            selectedProductPrice = text
-            selectedProductPriceView = view
-            updateSelectedText(currencyIdFrom, currencyIdTo)
-        }
-    }
-
-    private fun cleanPriceText(priceText: String): String {
-        val cleaned = priceText.replace(Regex("[^0-9.]"), "")
-        val price = if (cleaned.matches(Regex("\\d+(\\.\\d+)?"))) cleaned else ""
-        return price
-    }
-
-    private fun updateSelectedText(currencyIdFrom : Long, currencyIdTo : Long) {
-        if (selectedProductName != null && selectedProductPrice != null) {
-            val cleanPrice = cleanPriceText(selectedProductPrice!!).toDouble()
-            binding.productName.text = selectedProductName
-            binding.productOriginPrice.text = cleanPrice.toString()
-            binding.productCalcPrice.text = calculateExchangeRate(currencyIdFrom, currencyIdTo, cleanPrice).toString()
-            Toast.makeText(this, "선택 완료: $selectedProductName", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -647,6 +705,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         private const val TAG = "CameraXApp"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val CAMERA_PERMISSION_CODE: Int = 10
+        private const val GALLERY_REQUEST_CODE: Int = 100
 
     }
 
