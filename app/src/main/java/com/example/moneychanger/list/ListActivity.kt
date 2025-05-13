@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,7 +35,6 @@ import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
 import kotlinx.coroutines.launch
-import com.example.moneychanger.viewmodel.SharedProductViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -60,7 +60,7 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         viewModel = ViewModelProvider(this)[CurrencyViewModel::class.java]
 
 
-        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
+        val toolbar: Toolbar = findViewById(R.id.login_toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
 
