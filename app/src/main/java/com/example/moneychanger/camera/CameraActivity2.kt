@@ -105,13 +105,13 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         }
 
         captureButton.setOnClickListener {
-            takePicture(currencyIdFrom, currencyIdTo, listId)
-            binding.defaultText.visibility = View.GONE
-            binding.newText.visibility = View.VISIBLE
-            binding.offButton.visibility = View.VISIBLE
             takePicture()
         }
 
+        binding.galleryButton.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            intent.type = "image/*"
+            startActivityForResult(intent, GALLERY_REQUEST_CODE)
         }
 
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
@@ -491,6 +491,32 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             binding.productOriginPrice.text = cleanPrice.toString()
             binding.productCalcPrice.text = calculateExchangeRate(currencyIdFrom, currencyIdTo, cleanPrice).toString()
             Toast.makeText(this, "선택 완료: $selectedProductName", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (currencyIdFrom == -1L || currencyIdTo == -1L) {
+            Toast.makeText(this, "두 통화를 모두 선택해주세요.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        binding.defaultText.visibility = GONE
+        binding.newText.visibility = VISIBLE
+        binding.offButton.visibility = VISIBLE
+
+        if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            val selectedImageUri = data.data
+            if (selectedImageUri != null) {
+                val bitmap = loadBitmapWithRotation(selectedImageUri)
+
+                binding.capturedImageView.setImageBitmap(bitmap)
+                binding.previewView.visibility = View.INVISIBLE
+                binding.capturedImageView.visibility = View.VISIBLE
+
+                recognizeTextFromBitmap(bitmap)
+            }
         }
     }
 

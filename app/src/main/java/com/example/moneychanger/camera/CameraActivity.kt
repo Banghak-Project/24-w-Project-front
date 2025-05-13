@@ -417,8 +417,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
             Toast.makeText(this@CameraActivity, "상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
 
-            // 사진 찍기 전으로 돌아가기
-            binding.offButton.setOnClickListener{
+            binding.offButton.setOnClickListener {
                 binding.textOverlay.removeAllViews()
                 binding.capturedImageView.visibility = GONE
                 binding.previewView.visibility = VISIBLE
@@ -428,6 +427,10 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                 selectedProductNameView = null
                 selectedProductPriceView = null
                 isSelectingPrice = false
+
+                binding.productName.text = "상품명"
+                binding.productOriginPrice.text = "원래 가격"
+                binding.productCalcPrice.text = "계산된 가격"
 
                 binding.defaultText.visibility = VISIBLE
                 binding.newText.visibility = GONE
@@ -457,25 +460,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             }
         )
     }
-
-    private val LOCATION_PERMISSION_CODE = 1001
-
-    private fun checkAndRequestLocationPermission(onGranted: () -> Unit) {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_CODE
-            )
-        } else {
-            onGranted()
-        }
-    }
-
 
     private fun toggleSelection(view: View, text: String) {
         if (selectedTexts.contains(text)) {
