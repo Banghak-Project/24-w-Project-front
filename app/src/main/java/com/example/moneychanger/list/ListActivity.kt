@@ -34,7 +34,6 @@ import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
 import kotlinx.coroutines.launch
-import com.example.moneychanger.viewmodel.SharedProductViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
