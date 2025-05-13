@@ -111,6 +111,8 @@
     <string name="birth_eng">YY/MM/DD</string>
     <string name="id_kor">아이디</string>
     <string name="name">이름</string>
+    <string name="currency1">주 통화</string>
+    <string name="currency2">통화</string>
     <string name="pw_kor">비밀번호</string>
 
     <!--id,pw 찾기-->
@@ -281,8 +283,25 @@
     <string name="fri">금</string>
     <string name="sat">토</string>
 
+    <!--대시보드-->
+    <string name="title">이용내역을 확인해 보세요</string>
+    <string name="first_week">1주차</string>
+    <string name="second_week">2주차</string>
+    <string name="third_week">3주차</string>
+    <string name="forth_week">4주차</string>
+    <string name="fifth_week">5주차</string>
+    <string name="avg">평균</string>
+    <string name="comapre_week_title">저번 달과 비교</string>
+    <string name="compare_week_label">이번 달 지출이</string>
+    <string name="up">상승</string>
+    <string name="end">했어요</string>
+    <string name="compare_year_title">지난 해와 비교</string>
+    <string name="compare_year_label">올해 평균 지출 금액이 작년 보다</string>
+
     <string name="plus">+</string>
     <string name="dot">•</string>
     <string name="colon">:</string>
+    <string name="percentage">%</string>
+    <string name="tilde">~</string>
 
 </resources>

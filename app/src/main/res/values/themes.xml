@@ -63,6 +63,11 @@
 
     <!--텍스트 스타일 정의-->
     <!--heading-->
+    <style name="TextHeadingXXXXL">
+        <item name="android:textSize">@dimen/XXXXL</item>
+        <item name="android:lineHeight">110sp</item>
+        <item name="android:textFontWeight">700</item>
+    </style>
     <style name="TextHeadingXXXL">
         <item name="android:textSize">@dimen/XXXL</item>
         <item name="android:lineHeight">110sp</item>
