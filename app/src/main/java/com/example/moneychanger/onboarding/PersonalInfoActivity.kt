@@ -6,10 +6,13 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityPersonalInfoBinding
+import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.network.RetrofitClient
+import com.example.moneychanger.network.currency.CurrencyManager
 import com.example.moneychanger.network.user.SignUpRequest
 import com.example.moneychanger.network.user.SignUpResponse
 import com.google.gson.Gson
@@ -91,6 +94,21 @@ class PersonalInfoActivity : AppCompatActivity() {
         // 다음 버튼 클릭 시 회원가입 요청
         binding.buttonNext.setOnClickListener {
             sendSignUpRequest()
+        }
+
+        // 통화 Spinner 데이터 설정
+        val currencyList = listOf("KRW", "USD", "JPY", "THB", "EUR", "GBP", "CHF", "AUD", "CNH", "HKD",
+            "AED", "BHD", "BND", "CAD", "DKK", "IDR", "KWD", "MYR", "NOK", "NZD",
+            "SAR", "SEK", "SGD")
+
+        // 바꿀 통화 Spinner 항목 선택 이벤트
+        binding.inputCurrency.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("통화")
+            builder.setItems(currencyList.toTypedArray()) { _, which ->
+                binding.inputCurrency.setHint(currencyList[which].toString())
+            }
+            builder.show()
         }
     }
 

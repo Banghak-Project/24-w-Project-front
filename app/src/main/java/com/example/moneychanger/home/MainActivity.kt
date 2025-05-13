@@ -18,6 +18,7 @@ import com.example.moneychanger.list.ListActivity
 import com.example.moneychanger.adapter.ListAdapter
 import com.example.moneychanger.R
 import com.example.moneychanger.calendar.CalendarActivity
+import com.example.moneychanger.calendar.DashboardActivity
 import com.example.moneychanger.setting.SettingActivity
 import com.example.moneychanger.databinding.ActivityMainBinding
 import com.example.moneychanger.etc.BaseActivity
@@ -102,6 +103,14 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
             val intent = Intent(this, NewPwActivity::class.java)
             startActivity(intent)
         }
+        binding.b3.setOnClickListener{
+            val intent = Intent(this, LocationActivity::class.java)
+            startActivity(intent)
+        }
+        binding.b4.setOnClickListener{
+            val intent = Intent(this, DashboardActivity::class.java)
+            startActivity(intent)
+        }
 
         // 직접 리스트 추가 후 갱신
         supportFragmentManager.setFragmentResultListener("requestKey", this) { _, bundle ->
@@ -120,11 +129,6 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
             if (result.resultCode == RESULT_OK) {
                 fetchListsFromApi()
             }
-        }
-
-        binding.b3.setOnClickListener{
-            val intent = Intent(this, LocationActivity::class.java)
-            startActivity(intent)
         }
 
     }

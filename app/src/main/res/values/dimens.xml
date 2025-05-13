@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="XXXXL">32sp</dimen>
     <dimen name="XXXL">24sp</dimen>
     <dimen name="XXL">22sp</dimen>
     <dimen name="XL">18sp</dimen>

@@ -79,6 +79,12 @@
                         android:layout_height="wrap_content"
                         android:contentDescription="임시버튼"
                         android:text="위치정보테스트 페이지로 이동" />
+                    <Button
+                        android:id="@+id/b4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="임시버튼"
+                        android:text="대시보드로 이동" />
                     <TextView
                         android:id="@+id/sampletext"
                         android:layout_width="match_parent"
