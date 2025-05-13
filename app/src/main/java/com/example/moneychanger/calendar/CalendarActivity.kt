@@ -56,12 +56,16 @@ class CalendarActivity : AppCompatActivity() {
 
         // 왼쪽 화살표(이전 달)
         binding.leftArrow.setOnClickListener {
-            moveToPreviousMonth()
+            val (newYear, newMonth) = DateUtils.moveToPreviousMonth(currentYear, currentMonth)
+            currentYear = newYear
+            currentMonth = newMonth
         }
 
         // 오른쪽 화살표(다음 달)
         binding.rightArrow.setOnClickListener {
-            moveToNextMonth()
+            val (newYear, newMonth) = DateUtils.moveToNextMonth(currentYear, currentMonth)
+            currentYear = newYear
+            currentMonth = newMonth
 
         }
 
@@ -78,7 +82,7 @@ class CalendarActivity : AppCompatActivity() {
     }
 
     private fun setCalendar() {
-        val dateList = generateDateList(currentYear, currentMonth)
+        val dateList = DateUtils.generateDateList(currentYear, currentMonth)
         val recordCountMap = allProducts
             .filter { !it.deletedYn }
             .groupingBy {
@@ -100,50 +104,6 @@ class CalendarActivity : AppCompatActivity() {
 
         binding.calendarYearText.text = currentYear.toString()
         binding.calendarMonthText.text = currentMonth.toString()
-    }
-    private fun moveToPreviousMonth() {
-        if (currentMonth == 1) {
-            currentMonth = 12
-            currentYear -= 1
-        } else {
-            currentMonth -= 1
-        }
-        setCalendar()
-    }
-    private fun moveToNextMonth() {
-        if (currentMonth == 12) {
-            currentMonth = 1
-            currentYear += 1
-        } else {
-            currentMonth += 1
-        }
-        setCalendar()
-    }
-
-    // 날짜 리스트 생성 함수
-    fun generateDateList(year: Int, month: Int): List<LocalDate?> {
-        val firstDayOfMonth = LocalDate.of(year, month, 1)
-        val daysInMonth = YearMonth.of(year, month).lengthOfMonth()
-        val dayOfWeek = firstDayOfMonth.dayOfWeek.value % 7  // 일요일 = 0
-
-        val dates = mutableListOf<LocalDate?>()
-
-        // 시작 전 빈칸 (null)
-        repeat(dayOfWeek) {
-            dates.add(null)
-        }
-
-        // 날짜 채우기
-        for (day in 1..daysInMonth) {
-            dates.add(LocalDate.of(year, month, day))
-        }
-
-        // 마지막 줄도 7개 맞추기 (필요시 null 채움)
-        while (dates.size % 7 != 0) {
-            dates.add(null)
-        }
-
-        return dates
     }
 
     private fun onDateSelected(date: LocalDate) {
