@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_weight="2"
         android:orientation="vertical"
         android:gravity="center">
         <ImageView
@@ -52,48 +52,79 @@
         android:gravity="center"
         android:orientation="vertical">
         <LinearLayout
-            android:id="@+id/button_kakao_login"
-            android:layout_width="312dp"
-            android:layout_height="48dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/round_background"
-            android:backgroundTint="@color/kakao_main"
-            android:clickable="true"
-            android:elevation="2dp"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingHorizontal="14dp">
-            <!--카카오 디자인 문서에서 사용하는 이미지를 사용하고 싶다면 추천하는 방법-->
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/kakao_login_medium_narrow"/>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/button_email_login"
-            android:layout_width="312dp"
-            android:layout_height="48dp"
-            android:layout_marginBottom="20dp"
-            android:paddingHorizontal="14dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:background="@drawable/round_background"
-            android:backgroundTint="@color/main">
-            <ImageView
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_gravity="center"
-                android:src="@drawable/icon_mail"/>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/button_google_login"
+                android:layout_width="312dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/round_background"
+                android:backgroundTint="@color/main"
+                android:clickable="true"
+                android:elevation="2dp"
+                android:focusable="true"
                 android:gravity="center"
-                android:text="@string/email_login"
-                android:textColor="@color/gray_01"/>
+                android:orientation="horizontal"
+                android:paddingHorizontal="14dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="구글 로그인"
+                    android:textColor="@color/gray_01"/>
+                <!--구글 이미지로 바꾸면 됨-->
+<!--                <ImageView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:src="@drawable/kakao_login_medium_narrow"/>-->
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/button_kakao_login"
+                android:layout_width="312dp"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/round_background"
+                android:backgroundTint="@color/kakao_main"
+                android:clickable="true"
+                android:elevation="2dp"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="14dp">
+                <!--카카오 디자인 문서에서 사용하는 이미지를 사용하고 싶다면 추천하는 방법-->
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/kakao_login_medium_narrow"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/button_email_login"
+                android:layout_width="312dp"
+                android:layout_height="48dp"
+                android:paddingHorizontal="14dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:background="@drawable/round_background"
+                android:backgroundTint="@color/main">
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/icon_mail"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/email_login"
+                    android:textColor="@color/gray_01"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
