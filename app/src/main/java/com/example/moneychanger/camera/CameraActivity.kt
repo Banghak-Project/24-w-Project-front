@@ -75,8 +75,8 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
     private lateinit var previewView: PreviewView
     private lateinit var captureButton: FrameLayout
     private lateinit var cameraExecutor: ExecutorService
+
     private var imageCapture: ImageCapture? = null
-    private val selectedTexts = mutableListOf<String>() // 사용자가 선택한 텍스트 저장
 
     private var selectedProductName: String? = null
     private var selectedProductPrice: String? = null
@@ -91,7 +91,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
     private var latestListId = -1L
     private var saveedList: CreateListResponseDto? = null
-
     private var productList: MutableList<ProductResponseDto> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -130,9 +129,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
         captureButton.setOnClickListener {
             takePicture()
-            binding.defaultText.visibility = GONE
-            binding.newText.visibility = VISIBLE
-            binding.offButton.visibility = VISIBLE
         }
 
         binding.galleryButton.setOnClickListener {
@@ -246,6 +242,10 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             return
         }
 
+        binding.defaultText.visibility = GONE
+        binding.newText.visibility = VISIBLE
+        binding.offButton.visibility = VISIBLE
+
         val imageCapture = imageCapture ?: return
         val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis())
 
@@ -316,40 +316,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
-    private fun hasCameraPermission(): Boolean {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun requestCameraPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_PERMISSION_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startCamera()
-            } else {
-                Toast.makeText(this, "카메라 권한이 필요합니다.", Toast.LENGTH_LONG).show()
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == LOCATION_PERMISSION_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // 권한이 승인되었을 때 다시 위치 요청
-                getLocation { address ->
-                    Log.d("Debug", "✔ 권한 승인 후 위치: $address")
-                }
-            } else {
-                Toast.makeText(this, "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
     private fun recognizeTextFromBitmap(bitmap: Bitmap) {
         val image = InputImage.fromBitmap(bitmap, 0)
         val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
@@ -366,7 +332,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
     private fun displayRecognizedText(visionText: Text, bitmap: Bitmap) {
         binding.textOverlay.removeAllViews()
-        selectedTexts.clear()
 
         binding.capturedImageView.post {
             val viewWidth = binding.capturedImageView.width.toFloat()
@@ -436,7 +401,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                     selectedProductPrice = null
                     selectedProductNameView = null
                     selectedProductPriceView = null
-                    selectedTexts.clear()
                     isSelectingPrice = false
 
                     binding.productName.text = "상품명"
@@ -463,7 +427,6 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
                 selectedProductPrice = null
                 selectedProductNameView = null
                 selectedProductPriceView = null
-                selectedTexts.clear()
                 isSelectingPrice = false
 
                 binding.defaultText.visibility = VISIBLE
@@ -472,6 +435,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             }
         }
     }
+
     private fun getLocation(onLocationReady: (String) -> Unit) {
         Log.d("Debug", "위치 함수 실행 시작")
         LocationUtil.getCurrentLocation(
@@ -586,6 +550,15 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        if (currencyIdFrom == -1L || currencyIdTo == -1L) {
+            Toast.makeText(this, "두 통화를 모두 선택해주세요.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        binding.defaultText.visibility = GONE
+        binding.newText.visibility = VISIBLE
+        binding.offButton.visibility = VISIBLE
+
         if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
             val selectedImageUri = data.data
             if (selectedImageUri != null) {
@@ -597,6 +570,56 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
                 recognizeTextFromBitmap(bitmap)
             }
+        }
+    }
+
+    private fun hasCameraPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestCameraPermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startCamera()
+            } else {
+                Toast.makeText(this, "카메라 권한이 필요합니다.", Toast.LENGTH_LONG).show()
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 권한이 승인되었을 때 다시 위치 요청
+                getLocation { address ->
+                    Log.d("Debug", "✔ 권한 승인 후 위치: $address")
+                }
+            } else {
+                Toast.makeText(this, "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun checkAndRequestLocationPermission(onGranted: () -> Unit) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_CODE
+            )
+        } else {
+            onGranted()
         }
     }
 
@@ -767,6 +790,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val CAMERA_PERMISSION_CODE: Int = 10
         private const val GALLERY_REQUEST_CODE: Int = 100
+        private val LOCATION_PERMISSION_CODE = 1001
 
     }
 

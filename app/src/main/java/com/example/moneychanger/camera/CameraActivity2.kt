@@ -29,6 +29,8 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.camera.core.AspectRatio
@@ -65,7 +67,10 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
     private lateinit var captureButton: FrameLayout
     private lateinit var cameraExecutor: ExecutorService
     private var imageCapture: ImageCapture? = null
-    private val selectedTexts = mutableListOf<String>()
+
+    private var currencyIdFrom = -1L
+    private var currencyIdTo = -1L
+    private var listId = -1L
 
     private var selectedProductName: String? = null
     private var selectedProductPrice: String? = null
@@ -88,9 +93,9 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         // 리스트에서 가져온 정보들
-        var currencyIdFrom = intent.getLongExtra("currencyIdFrom", -1L)
-        var currencyIdTo = intent.getLongExtra("currencyIdTo", -1L)
-        val listId = intent.getLongExtra("listId", -1L)
+        currencyIdFrom = intent.getLongExtra("currencyIdFrom", -1L)
+        currencyIdTo = intent.getLongExtra("currencyIdTo", -1L)
+        listId = intent.getLongExtra("listId", -1L)
         val selectedList = intent.getSerializableExtra("selectedList") as? ListModel
 
         if (!hasCameraPermission()) {
@@ -104,6 +109,9 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             binding.defaultText.visibility = View.GONE
             binding.newText.visibility = View.VISIBLE
             binding.offButton.visibility = View.VISIBLE
+            takePicture()
+        }
+
         }
 
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
@@ -223,11 +231,15 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         }, ContextCompat.getMainExecutor(this))
     }
 
-    private fun takePicture(currencyIdFrom : Long, currencyIdTo : Long, listId: Long) {
+    private fun takePicture() {
         if (currencyIdFrom == -1L || currencyIdTo == -1L) {
             Toast.makeText(this, "두 통화를 모두 선택해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
+
+        binding.defaultText.visibility = View.GONE
+        binding.newText.visibility = View.VISIBLE
+        binding.offButton.visibility = View.VISIBLE
 
         val imageCapture = imageCapture ?: return
         val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis())
@@ -266,7 +278,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                         binding.capturedImageView.visibility = View.VISIBLE
                     }
 
-                    recognizeTextFromBitmap(bitmap, currencyIdFrom, currencyIdTo, listId)
+                    recognizeTextFromBitmap(bitmap)
                 }
             }
         )
@@ -296,32 +308,13 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
-    private fun hasCameraPermission(): Boolean {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun requestCameraPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_PERMISSION_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startCamera()
-            } else {
-                Toast.makeText(this, "카메라 권한이 필요합니다.", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    private fun recognizeTextFromBitmap(bitmap: Bitmap, currencyIdFrom : Long, currencyIdTo : Long,listId: Long) {
+    private fun recognizeTextFromBitmap(bitmap: Bitmap) {
         val image = InputImage.fromBitmap(bitmap, 0)
         val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
 
         recognizer.process(image)
             .addOnSuccessListener { visionText ->
-                displayRecognizedText(visionText, bitmap, currencyIdFrom, currencyIdTo, listId)
+                displayRecognizedText(visionText, bitmap)
             }
             .addOnFailureListener { e ->
                 Log.e("OCR", "텍스트 인식 실패: ${e.localizedMessage}")
@@ -331,7 +324,6 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
 
     private fun displayRecognizedText(visionText: Text, bitmap: Bitmap) {
         binding.textOverlay.removeAllViews()
-        selectedTexts.clear()
 
         binding.capturedImageView.post {
             val viewWidth = binding.capturedImageView.width.toFloat()
@@ -499,6 +491,25 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             binding.productOriginPrice.text = cleanPrice.toString()
             binding.productCalcPrice.text = calculateExchangeRate(currencyIdFrom, currencyIdTo, cleanPrice).toString()
             Toast.makeText(this, "선택 완료: $selectedProductName", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun hasCameraPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestCameraPermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startCamera()
+            } else {
+                Toast.makeText(this, "카메라 권한이 필요합니다.", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
