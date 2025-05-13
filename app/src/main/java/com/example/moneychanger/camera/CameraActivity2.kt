@@ -386,10 +386,6 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                     selectedProductPriceView = null
                     isSelectingPrice = false
 
-                binding.defaultText.visibility = View.VISIBLE
-                binding.newText.visibility = View.GONE
-                binding.offButton.visibility = View.GONE
-            }
                     binding.productName.text = "상품명"
                     binding.productOriginPrice.text = "원래 가격"
                     binding.productCalcPrice.text = "계산된 가격"
@@ -426,27 +422,39 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         }
     }
 
-    private fun toggleSelection(view: View, text: String, currencyIdFrom : Long, currencyIdTo : Long) {
-        if (selectedTexts.contains(text)) {
-            selectedTexts.remove(text)
+    private fun toggleSelection(view: View, text: String) {
+        // 이미 상품명 선택된 박스를 다시 누르면 해제
+        if (view == selectedProductNameView) {
             view.setBackgroundResource(R.drawable.ocr_border)
+            selectedProductName = null
+            selectedProductNameView = null
+            isSelectingPrice = false
 
-            if (selectedProductName == text) {
-                selectedProductName = null
-                selectedProductNameView = null
-                isSelectingPrice = false
-                Toast.makeText(this, "상품명이 선택 해제되었습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
-            } else if (selectedProductPrice == text) {
-                selectedProductPrice = null
-                selectedProductPriceView = null
-                isSelectingPrice = true
-                Toast.makeText(this, "상품 가격이 선택 해제되었습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
-            }
+            // 가격도 초기화
+            selectedProductPrice = null
+            selectedProductPriceView?.setBackgroundResource(R.drawable.ocr_border)
+            selectedProductPriceView = null
+
+            binding.productName.text = "상품명"
+            binding.productOriginPrice.text = "원래 가격"
+            binding.productCalcPrice.text = "계산된 가격"
+
+            Toast.makeText(this, "상품명이 선택 해제되었습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        selectedTexts.add(text)
-        view.setBackgroundResource(R.drawable.ocr_border_selected)
+        // 이미 상품 가격 선택된 박스를 다시 누르면 해제
+        if (view == selectedProductPriceView) {
+            view.setBackgroundResource(R.drawable.ocr_border)
+            selectedProductPrice = null
+            selectedProductPriceView = null
+
+            binding.productOriginPrice.text = "원래 가격"
+            binding.productCalcPrice.text = "계산된 가격"
+
+            Toast.makeText(this, "상품 가격이 선택 해제되었습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         if (selectedProductName == null) {
             if (!text.any { it.isLetter() }) {
@@ -454,12 +462,12 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                 return
             }
 
-            // 기존 선택한 뷰가 있으면 초기화
             selectedProductNameView?.setBackgroundResource(R.drawable.ocr_border)
-
             selectedProductName = text
             selectedProductNameView = view
             isSelectingPrice = true
+
+            view.setBackgroundResource(R.drawable.ocr_border_selected)
             Toast.makeText(this, "상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
 
         } else {
@@ -469,12 +477,12 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                 return
             }
 
-            // 기존 가격 선택 뷰 초기화
             selectedProductPriceView?.setBackgroundResource(R.drawable.ocr_border)
-
             selectedProductPrice = text
             selectedProductPriceView = view
-            updateSelectedText(currencyIdFrom, currencyIdTo)
+
+            view.setBackgroundResource(R.drawable.ocr_border_selected)
+            updateSelectedText()
         }
     }
 
@@ -484,7 +492,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         return price
     }
 
-    private fun updateSelectedText(currencyIdFrom : Long, currencyIdTo : Long) {
+    private fun updateSelectedText() {
         if (selectedProductName != null && selectedProductPrice != null) {
             val cleanPrice = cleanPriceText(selectedProductPrice!!).toDouble()
             binding.productName.text = selectedProductName
@@ -697,6 +705,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         private const val TAG = "CameraXApp"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val CAMERA_PERMISSION_CODE: Int = 10
+        private const val GALLERY_REQUEST_CODE: Int = 100
 
     }
 
