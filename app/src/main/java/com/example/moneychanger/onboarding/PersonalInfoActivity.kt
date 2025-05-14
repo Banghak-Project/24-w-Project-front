@@ -13,6 +13,9 @@ import com.example.moneychanger.databinding.ActivityPersonalInfoBinding
 import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.currency.CurrencyManager
+import com.example.moneychanger.network.currency.CurrencyModel
+import com.example.moneychanger.network.currency.CurrencyResponseDto
+import com.example.moneychanger.network.user.ApiResponse
 import com.example.moneychanger.network.user.SignUpRequest
 import com.example.moneychanger.network.user.SignUpResponse
 import com.google.gson.Gson
@@ -21,7 +24,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.HttpException
+import retrofit2.Response
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -35,6 +41,10 @@ class PersonalInfoActivity : AppCompatActivity() {
     private lateinit var agreedTerms: List<Boolean> // 이용약관 동의 내역
     private var selectedGender: Boolean? = null // true: 남성, false: 여성
     private var selectedDateOfBirth: String = "" // "yyyy-MM-dd" 포맷
+    private var defaultCurrencyId: Long = 14L
+    private val currencyDisplayList = mutableListOf<String>()
+    private val currencyIdMap = mutableMapOf<String, Long>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,24 +101,11 @@ class PersonalInfoActivity : AppCompatActivity() {
         // 날짜 선택 기능
         setupDatePicker()
 
+        loadCurrencyOptions()
+
         // 다음 버튼 클릭 시 회원가입 요청
         binding.buttonNext.setOnClickListener {
             sendSignUpRequest()
-        }
-
-        // 통화 Spinner 데이터 설정
-        val currencyList = listOf("KRW", "USD", "JPY", "THB", "EUR", "GBP", "CHF", "AUD", "CNH", "HKD",
-            "AED", "BHD", "BND", "CAD", "DKK", "IDR", "KWD", "MYR", "NOK", "NZD",
-            "SAR", "SEK", "SGD")
-
-        // 바꿀 통화 Spinner 항목 선택 이벤트
-        binding.inputCurrency.setOnClickListener {
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle("통화")
-            builder.setItems(currencyList.toTypedArray()) { _, which ->
-                binding.inputCurrency.setHint(currencyList[which].toString())
-            }
-            builder.show()
         }
     }
 
@@ -129,6 +126,53 @@ class PersonalInfoActivity : AppCompatActivity() {
             datePickerDialog.show()
         }
     }
+
+    private fun loadCurrencyOptions() {
+        RetrofitClient.apiService.findAll().enqueue(object :
+            Callback<ApiResponse<List<CurrencyResponseDto>>> {
+            override fun onResponse(
+                call: Call<com.example.moneychanger.network.user.ApiResponse<List<com.example.moneychanger.network.currency.CurrencyResponseDto>>>,
+                response: Response<ApiResponse<List<CurrencyResponseDto>>>
+            ) {
+                if (response.isSuccessful) {
+                    val dtoList = response.body()?.data ?: emptyList()
+                    val modelList = dtoList.map { dto ->
+                        CurrencyModel(
+                            currencyId = dto.currencyId,
+                            curUnit = dto.curUnit,
+                            dealBasR = dto.dealBasR.toDoubleOrNull() ?: 0.0,
+                            curNm = dto.curNm
+                        )
+                    }
+                    CurrencyManager.setCurrencies(modelList)
+                    currencyDisplayList.clear()
+                    currencyIdMap.clear()
+                    modelList.forEach {
+                        val display = it.toString()
+                        currencyDisplayList.add(display)
+                        currencyIdMap[display] = it.currencyId
+                    }
+                    binding.inputCurrency.setOnClickListener {
+                        AlertDialog.Builder(this@PersonalInfoActivity)
+                            .setTitle("기본 통화 선택")
+                            .setItems(currencyDisplayList.toTypedArray()) { _, index ->
+                                val selected = currencyDisplayList[index]
+                                binding.inputCurrency.hint = selected
+                                defaultCurrencyId = currencyIdMap[selected] ?: 14L
+                            }.show()
+                    }
+                }
+            }
+
+            override fun onFailure(
+                call: Call<ApiResponse<List<CurrencyResponseDto>>>,
+                t: Throwable
+            ) {
+                Toast.makeText(this@PersonalInfoActivity, "통화 정보를 불러오지 못했습니다.", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
 
     //     회원가입 요청
     private fun sendSignUpRequest() {
@@ -152,7 +196,8 @@ class PersonalInfoActivity : AppCompatActivity() {
             userEmail = email, // ✅ 소문자로 변환된 이메일 사용
             userPassword = password,
             otp = otp,
-            agreedTerms = agreedTerms
+            agreedTerms = agreedTerms,
+            defaultCurrencyId = defaultCurrencyId
         )
 
         Log.d("PersonalInfoActivity", "📩 보낼 회원가입 요청 데이터: $signUpRequest")
