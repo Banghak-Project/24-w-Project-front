@@ -9,7 +9,8 @@ data class SignUpRequest(
     @SerializedName("userEmail") val userEmail: String,
     @SerializedName("userPassword") val userPassword: String,
     @SerializedName("otp") val otp: String,
-    @SerializedName("agreedTerms") val agreedTerms: List<Boolean>
+    @SerializedName("agreedTerms") val agreedTerms: List<Boolean>,
+    @SerializedName("defaultCurrencyId") val defaultCurrencyId: Long
 )
 
 data class SignUpResponse(
@@ -17,7 +18,9 @@ data class SignUpResponse(
     @SerializedName("userName") val userName: String? = null,
     @SerializedName("userEmail") val userEmail: String? = null,
     @SerializedName("userGender") val userGender: Boolean? = null,
-    @SerializedName("userDateOfBirth") val userDateOfBirth: String? = null
+    @SerializedName("userDateOfBirth") val userDateOfBirth: String? = null,
+    @SerializedName("defaultCurrencyId") val defaultCurrencyId: Long? = null
+
 )
 
 data class SignInRequest(@SerializedName("userEmail") val userEmail: String? = "",
@@ -63,5 +66,8 @@ data class ResetPasswordRequest(
     val newPassword: String,
     val confirmPassword: String
 )
+
+
+
 
 

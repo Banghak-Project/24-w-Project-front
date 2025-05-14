@@ -120,4 +120,9 @@ dependencies {
 
     // 구글 위치
     implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    // 구글 로그인
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+
 }

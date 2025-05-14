@@ -175,4 +175,8 @@ interface ApiService {
     @POST("/api/auth/kakao/withdrawal")
     suspend fun kakaoWithdrawal(): Response<ApiResponse<String>>
 
+    @POST("/api/auth/google/signin")
+    suspend fun googleSignIn(@Body request: Map<String, String>): Response<ApiResponse<SignInResponse>>
+
+
 }
