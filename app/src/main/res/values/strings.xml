@@ -304,6 +304,7 @@
     <string name="percentage">%</string>
     <string name="tilde">~</string>
 
-    <string name="default_web_client_id">205649175703-3r26fjueksug4s4tgn129m5ocf4ce1un.apps.googleusercontent.com</string>
+<!--    <string name="default_web_client_id">205649175703-3r26fjueksug4s4tgn129m5ocf4ce1un.apps.googleusercontent.com</string>-->
+    <string name="default_web_client_id">205649175703-q44g5tc3sf1o0bqt4r25t0ohmin9j2qt.apps.googleusercontent.com</string>
 
 </resources>
