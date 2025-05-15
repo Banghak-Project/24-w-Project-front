@@ -29,8 +29,9 @@ class GoogleLoginActivity : AppCompatActivity() {
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
-            .requestIdToken(getString(R.string.default_web_client_id)) // 보안적으로 안전하게 접근
+            .requestIdToken("205649175703-q44g5tc3sf1o0bqt4r25t0ohmin9j2qt.apps.googleusercontent.com")
             .build()
+
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
