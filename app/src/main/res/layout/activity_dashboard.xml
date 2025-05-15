@@ -100,13 +100,13 @@
                         android:orientation="horizontal"
                         android:background="@drawable/round_background2"
                         android:backgroundTint="@color/gray_01"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:layout_marginBottom="8dp">
                         <LinearLayout
                             android:id="@+id/first"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:background="@drawable/round_background2"
                             android:backgroundTint="@color/white"
                             android:elevation="2dp"
                             android:padding="4dp"
@@ -125,7 +125,6 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:background="@drawable/round_background2"
                             android:backgroundTint="@color/white"
                             android:elevation="2dp"
                             android:padding="4dp"
@@ -144,7 +143,6 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:background="@drawable/round_background2"
                             android:backgroundTint="@color/white"
                             android:elevation="2dp"
                             android:padding="4dp"
@@ -163,7 +161,6 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:background="@drawable/round_background2"
                             android:backgroundTint="@color/white"
                             android:elevation="2dp"
                             android:padding="4dp"
@@ -182,7 +179,6 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:background="@drawable/round_background2"
                             android:backgroundTint="@color/white"
                             android:elevation="2dp"
                             android:padding="4dp"
@@ -213,6 +209,7 @@
                             android:orientation="horizontal"
                             android:layout_marginBottom="2dp">
                             <TextView
+                                android:id="@+id/weekly_total"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="000,000"
@@ -296,11 +293,111 @@
                         </LinearLayout>
                     </LinearLayout>
                     <com.github.mikephil.charting.charts.BarChart
-                        android:id="@+id/barChart"
+                        android:id="@+id/week_chart"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:layout_marginTop="16dp"/>
-
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/second_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/round_background2"
+                    android:backgroundTint="@color/white"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/compare_month_title"
+                        style="@style/TextBodyXS"
+                        android:textColor="@color/gray_08"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/compare_month_label"
+                            android:layout_marginEnd="4dp"
+                            style="@style/TextLabelM"
+                            android:textColor="@color/gray_08"/>
+                        <TextView
+                            android:id="@+id/comapare_month_num"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00"
+                            style="@style/TextLabelL"
+                            android:textColor="@color/main"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/percentage"
+                            android:layout_marginEnd="4dp"
+                            style="@style/TextLabelL"
+                            android:textColor="@color/main"/>
+                        <TextView
+                            android:id="@+id/compare_month_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/up"
+                            android:layout_marginEnd="4dp"
+                            style="@style/TextLabelM"
+                            android:textColor="@color/gray_08"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/end"
+                            style="@style/TextLabelM"
+                            android:textColor="@color/gray_08"/>
+                    </LinearLayout>
+                    <com.github.mikephil.charting.charts.CombinedChart
+                        android:id="@+id/month_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:layout_marginTop="16dp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/third_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/round_background2"
+                    android:backgroundTint="@color/white"
+                    android:padding="16dp"
+                    android:layout_marginBottom="16dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/compare_year_title"
+                        style="@style/TextBodyXS"
+                        android:textColor="@color/gray_08"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/compare_year_label"
+                            android:layout_marginEnd="4dp"
+                            style="@style/TextLabelM"
+                            android:textColor="@color/gray_08"/>
+                        <TextView
+                            android:id="@+id/compare_year_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/end2"
+                            style="@style/TextLabelM"
+                            android:textColor="@color/gray_08"/>
+                    </LinearLayout>
+                    <com.github.mikephil.charting.charts.HorizontalBarChart
+                        android:id="@+id/year_chart"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

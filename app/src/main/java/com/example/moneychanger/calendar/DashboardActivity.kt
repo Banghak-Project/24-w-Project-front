@@ -3,6 +3,7 @@ package com.example.moneychanger.calendar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.LinearLayout
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.example.moneychanger.R
@@ -12,17 +13,21 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.CombinedData
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.temporal.WeekFields
-import java.util.Locale
+import com.github.mikephil.charting.formatter.ValueFormatter
 
 class DashboardActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDashboardBinding
     private lateinit var productList: List<ProductModel>
+    private lateinit var weekLayouts: List<LinearLayout>
 
     private var currentYear = 0
     private var currentMonth = 0
@@ -42,13 +47,24 @@ class DashboardActivity : AppCompatActivity() {
         val initialWeek = DateUtils.getWeekOfMonth(today)
         currentYear = today.year
         currentMonth = today.monthValue
-        updateChartForWeek(initialWeek)
+        updateWeeklyChart(initialWeek)
 
-        binding.first.setOnClickListener { updateChartForWeek(1) }
-        binding.second.setOnClickListener { updateChartForWeek(2) }
-        binding.third.setOnClickListener { updateChartForWeek(3) }
-        binding.forth.setOnClickListener { updateChartForWeek(4) }
-        binding.fifth.setOnClickListener { updateChartForWeek(5) }
+        weekLayouts = listOf(
+            binding.first,
+            binding.second,
+            binding.third,
+            binding.forth,
+            binding.fifth
+        )
+
+        weekLayouts.forEachIndexed { index, layout ->
+            layout.setOnClickListener {
+                updateSelectedWeek(layout)
+                updateWeeklyChart(index + 1)
+            }
+        }
+
+        updateSelectedWeek(weekLayouts[initialWeek - 1])
 
         // 왼쪽 화살표(이전 달)
         binding.leftArrow.setOnClickListener {
@@ -56,8 +72,10 @@ class DashboardActivity : AppCompatActivity() {
             currentYear = newYear
             currentMonth = newMonth
 
-            updateChartForWeek(1)  // ← 예: 첫째 주로 리셋
+            updateWeeklyChart(1)  // ← 예: 첫째 주로 리셋
             updateHeaderTexts()
+            updateMonthlyChart()
+            updateYearlyChart()
         }
 
         // 오른쪽 화살표(다음 달)
@@ -66,19 +84,31 @@ class DashboardActivity : AppCompatActivity() {
             currentYear = newYear
             currentMonth = newMonth
 
-            updateChartForWeek(1)  // ← 예: 첫째 주로 리셋
+            updateWeeklyChart(1)  // ← 예: 첫째 주로 리셋
             updateHeaderTexts()
+            updateMonthlyChart()
+            updateYearlyChart()
         }
 
         updateHeaderTexts()
-
+        updateMonthlyChart()
+        updateYearlyChart()
+    }
+    private fun updateSelectedWeek(selectedLayout: LinearLayout) {
+        weekLayouts.forEach { layout ->
+            if (layout == selectedLayout) {
+                layout.setBackgroundResource(R.drawable.round_background2)
+            } else {
+                layout.background = null
+            }
+        }
     }
     private fun updateHeaderTexts() {
         binding.calendarYearText.text = currentYear.toString()
         binding.calendarMonthText.text = currentMonth.toString()
     }
 
-    private fun updateChartForWeek(week:Int) {
+    private fun updateWeeklyChart(week:Int) {
         Log.d("chart", "productList.size = ${productList.size}")
 
         val selectedYear = currentYear
@@ -108,35 +138,236 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         val dataSet = BarDataSet(entries, "")
-        binding.barChart.legend.isEnabled = false
+        binding.weekChart.legend.isEnabled = false
         dataSet.color = ContextCompat.getColor(this, R.color.main)
         val barData = BarData(dataSet)
 
-        val xAxis = binding.barChart.xAxis
+        val xAxis = binding.weekChart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM // 🔽 아래쪽에 위치
         xAxis.setDrawAxisLine(true)
         xAxis.setDrawGridLines(false)
-        binding.barChart.description.isEnabled = false
+        xAxis.textColor = ContextCompat.getColor(this, R.color.gray_07)
+        binding.weekChart.description.isEnabled = false
 
-        val yAxisLeft = binding.barChart.axisLeft
+        val yAxisLeft = binding.weekChart.axisLeft
         yAxisLeft.isEnabled = false
         yAxisLeft.setDrawGridLines(false)                // 그리드 보이기
 
-        binding.barChart.axisRight.isEnabled = false    // 오른쪽 Y축 숨기기
+        binding.weekChart.axisRight.isEnabled = false    // 오른쪽 Y축 숨기기
 
-        binding.barChart.data = barData
-        binding.barChart.xAxis.valueFormatter = IndexAxisValueFormatter(listOf("월", "화", "수", "목", "금", "토", "일"))
-        binding.barChart.invalidate()
+        binding.weekChart.data = barData
+        binding.weekChart.xAxis.valueFormatter = IndexAxisValueFormatter(listOf("월", "화", "수", "목", "금", "토", "일"))
+        binding.weekChart.invalidate()
 
         binding.startMonth.text = start.monthValue.toString().padStart(2, '0')
         binding.startDate.text = start.dayOfMonth.toString().padStart(2, '0')
 
         binding.endMonth.text = end.monthValue.toString().padStart(2, '0')
         binding.endDate.text = end.dayOfMonth.toString().padStart(2, '0')
+
+        val totalWeeklySum = filteredProducts.sumOf { it.originPrice }
+        binding.weeklyTotal.text = totalWeeklySum.toString()
+
     }
 
+    private fun updateMonthlyChart() {
+        val formatter = DateTimeFormatter.ISO_DATE_TIME
+        val thisMonth = LocalDate.of(currentYear, currentMonth, 1)
+        val lastMonth = thisMonth.minusMonths(1)
+
+        // 지출 합계 계산
+        fun sumForMonth(month: LocalDate): Double {
+            return productList.filter {
+                val date = LocalDateTime.parse(it.createdAt, formatter).toLocalDate()
+                !it.deletedYn && date.year == month.year && date.month == month.month
+            }.sumOf { it.originPrice }
+        }
+
+        val lastSum = sumForMonth(lastMonth)
+        val thisSum = sumForMonth(thisMonth)
+
+        val percentChange: Double
+        val rounded: String
+        if (lastSum == 0.0 && thisSum > 0.0) {
+            percentChange = 100.0
+            rounded = "100"
+        } else if (lastSum == 0.0 && thisSum == 0.0) {
+            percentChange = 0.0
+            rounded = "0"
+        } else {
+            percentChange = ((thisSum - lastSum) / lastSum) * 100
+            rounded = String.format("%.0f", kotlin.math.abs(percentChange))
+        }
+
+        binding.comapareMonthNum.text = when {
+            percentChange > 0 -> rounded
+            percentChange < 0 -> rounded
+            else -> "0"
+        }
+        binding.compareMonthText.text = when {
+            percentChange > 0 -> "상승"
+            percentChange < 0 -> "하락"
+            else -> "변화"
+        }
+
+        val labels = listOf("${lastMonth.monthValue}월", "${thisMonth.monthValue}월")
+
+        // Bar chart entry
+        val barEntries = listOf(
+            BarEntry(0f, lastSum.toFloat()),
+            BarEntry(1f, thisSum.toFloat())
+        )
+        val barDataSet = BarDataSet(barEntries, "지출 합계").apply {
+            setColors(
+                ContextCompat.getColor(this@DashboardActivity, R.color.gray_02),  // 지난달
+                ContextCompat.getColor(this@DashboardActivity, R.color.main)      // 이번달
+            )
+            valueTextSize = 10f
+        }
+        val barData = BarData(barDataSet)
+        barData.barWidth = 0.4f
+
+        // Line chart entry
+        val lineEntries = listOf(
+            Entry(0f, lastSum.toFloat()),
+            Entry(1f, thisSum.toFloat())
+        )
+        val lineDataSet = LineDataSet(lineEntries, "지출 추이").apply {
+            color = ContextCompat.getColor(this@DashboardActivity, R.color.blue_03)
+            setCircleColor(ContextCompat.getColor(this@DashboardActivity, R.color.blue_03))
+            circleRadius = 3f
+            setDrawValues(false)
+            setDrawCircles(true)
+            setDrawCircleHole(false)
+            setDrawFilled(false)
+            mode = LineDataSet.Mode.LINEAR
+
+        }
+        val lineData = LineData(lineDataSet)
+
+        // Combined chart
+        val combinedData = CombinedData().apply {
+            setData(barData)
+            setData(lineData)
+        }
+
+        binding.monthChart.apply {
+            data = combinedData
+            xAxis.apply {
+                valueFormatter = IndexAxisValueFormatter(labels)
+                position = XAxis.XAxisPosition.BOTTOM
+                granularity = 1f
+                setDrawGridLines(false)
+                axisMinimum = -0.5f
+                axisMaximum = 1.5f
+                textColor = ContextCompat.getColor(context, R.color.gray_07)
+            }
+            axisLeft.isEnabled = false
+            axisRight.isEnabled = false
+            description.isEnabled = false
+            legend.isEnabled = false
+            isHighlightPerTapEnabled = false
+            isHighlightPerDragEnabled = false
+            invalidate()
+        }
+    }
+
+    private fun updateYearlyChart() {
+        val formatter = DateTimeFormatter.ISO_DATE_TIME
+
+        val thisYear = currentYear
+        val lastYear = thisYear - 1
+        val yearList = listOf(lastYear, thisYear)
+
+        val yearSumMap = yearList.associateWith { year ->
+            productList
+                .filter {
+                    val date = LocalDateTime.parse(it.createdAt, formatter).toLocalDate()
+                    !it.deletedYn && date.year == year
+                }
+                .sumOf { it.originPrice }
+        }
+
+        val lastAvg = yearSumMap[lastYear]
+        val thisAvg = yearSumMap[thisYear]
+
+        val epsilon = 0.0001
+        val last = lastAvg ?: Double.NaN
+        val thisY = thisAvg ?: Double.NaN
+
+        val percentChange: Double
+        binding.compareYearText.text = when {
+            last.isNaN() && !thisY.isNaN() && thisY > epsilon -> {
+                percentChange = 100.0
+                "늘었어요"
+            }
+            last.isNaN() && (thisY.isNaN() || thisY <= epsilon) -> {
+                percentChange = 0.0
+                "없어요"
+            }
+            !last.isNaN() && !thisY.isNaN() -> {
+                percentChange = ((thisY - last) / last) * 100
+                when {
+                    percentChange > epsilon -> "늘었어요"
+                    percentChange < -epsilon -> "줄었어요"
+                    else -> "같아요"
+                }
+            }
+            else -> {
+                "없어요"
+            }
+        }
+
+        val entryLastYear = BarEntry(0f, yearSumMap[lastYear]?.toFloat() ?: 0f)
+        val entryThisYear = BarEntry(1f, yearSumMap[thisYear]?.toFloat() ?: 0f)
+
+        val setLast = BarDataSet(listOf(entryLastYear), "").apply {
+            color = ContextCompat.getColor(this@DashboardActivity, R.color.gray_03)
+            valueTextColor = ContextCompat.getColor(this@DashboardActivity, R.color.gray_07)
+        }
+
+        val setThis = BarDataSet(listOf(entryThisYear), "").apply {
+            color = ContextCompat.getColor(this@DashboardActivity, R.color.main)
+            valueTextColor = ContextCompat.getColor(this@DashboardActivity, R.color.white)
+        }
+
+        val barData = BarData(setLast, setThis)
+        barData.barWidth = 0.5f
+        binding.yearChart.data = barData
+
+
+        binding.yearChart.apply {
+            data = barData
+
+            setDrawValueAboveBar(false)
+
+            xAxis.apply {
+                isEnabled = true
+                position = XAxis.XAxisPosition.BOTTOM
+                granularity = 1f
+                setDrawGridLines(false)
+                valueFormatter = IndexAxisValueFormatter(yearList.map { "${it}년" })
+                textColor = ContextCompat.getColor(context, R.color.gray_07)
+            }
+
+            axisLeft.isEnabled = false
+            axisRight.isEnabled = false
+            description.isEnabled = false
+            legend.isEnabled = false
+            setFitBars(true)
+            invalidate()
+        }
+    }
     private fun getProductListFromSource(): List<ProductModel> {
         return listOf(
+            ProductModel(
+                productId = 1L,
+                listId = 101L,
+                name = "사과",
+                originPrice = 1500.0,
+                deletedYn = false,
+                createdAt = "2024-04-30T10:23:45"
+            ),
             ProductModel(
                 productId = 1L,
                 listId = 101L,
@@ -192,7 +423,31 @@ class DashboardActivity : AppCompatActivity() {
                 originPrice = 3000.0,
                 deletedYn = false,
                 createdAt = "2025-04-29T18:45:00"
-            )
+            ),
+            ProductModel(
+                productId = 1L,
+                listId = 101L,
+                name = "사과3",
+                originPrice = 1500.0,
+                deletedYn = false,
+                createdAt = "2025-05-15T10:23:45"
+            ),
+            ProductModel(
+                productId = 1L,
+                listId = 101L,
+                name = "사과3",
+                originPrice = 1500.0,
+                deletedYn = false,
+                createdAt = "2025-05-15T10:23:45"
+            ),
+            ProductModel(
+                productId = 1L,
+                listId = 101L,
+                name = "사과3",
+                originPrice = 1500.0,
+                deletedYn = false,
+                createdAt = "2025-05-15T10:23:45"
+            ),
         )
     }
 }
