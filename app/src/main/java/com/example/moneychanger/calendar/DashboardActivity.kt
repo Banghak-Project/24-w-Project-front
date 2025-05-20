@@ -4,11 +4,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityDashboardBinding
-import com.example.moneychanger.network.product.ProductModel
+import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
+import com.example.moneychanger.network.RetrofitClient.apiService
+import com.example.moneychanger.network.product.ProductWithCurrencyDto
+import com.example.moneychanger.network.user.ApiResponse
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -22,15 +26,20 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import com.github.mikephil.charting.formatter.ValueFormatter
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import kotlin.math.floor
 
 class DashboardActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDashboardBinding
-    private lateinit var productList: List<ProductModel>
+    private lateinit var productList: List<ProductWithCurrencyDto>
     private lateinit var weekLayouts: List<LinearLayout>
 
+    private var userDefaultCurrency = 0.toLong()
     private var currentYear = 0
     private var currentMonth = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDashboardBinding.inflate(layoutInflater)
@@ -40,59 +49,73 @@ class DashboardActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
 
-        // 샘플용
-        productList = getProductListFromSource()
-
-        val today = LocalDate.now()
-        val initialWeek = DateUtils.getWeekOfMonth(today)
-        currentYear = today.year
-        currentMonth = today.monthValue
-        updateWeeklyChart(initialWeek)
-
-        weekLayouts = listOf(
-            binding.first,
-            binding.second,
-            binding.third,
-            binding.forth,
-            binding.fifth
-        )
-
-        weekLayouts.forEachIndexed { index, layout ->
-            layout.setOnClickListener {
-                updateSelectedWeek(layout)
-                updateWeeklyChart(index + 1)
+        getUserDefaultCurrency { defaultCurrency ->
+            if (defaultCurrency != 0.toLong() && defaultCurrency != null) {
+                userDefaultCurrency = defaultCurrency
+                Log.d("통화", "사용자 통화 ID: $defaultCurrency")
+            } else {
+                Toast.makeText(this, "기본 통화 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
             }
+
+            getProductList { result ->
+                productList = result
+                Log.i("m",productList.toString())
+                val today = LocalDate.now()
+                val initialWeek = DateUtils.getWeekOfMonth(today)
+                currentYear = today.year
+                currentMonth = today.monthValue
+                updateWeeklyChart(initialWeek)
+
+                weekLayouts = listOf(
+                    binding.first,
+                    binding.second,
+                    binding.third,
+                    binding.forth,
+                    binding.fifth
+                )
+
+                weekLayouts.forEachIndexed { index, layout ->
+                    layout.setOnClickListener {
+                        updateSelectedWeek(layout)
+                        updateWeeklyChart(index + 1)
+                    }
+                }
+
+                updateSelectedWeek(weekLayouts[initialWeek - 1])
+
+                // 왼쪽 화살표(이전 달)
+                binding.leftArrow.setOnClickListener {
+                    val (newYear, newMonth) = DateUtils.moveToPreviousMonth(currentYear, currentMonth)
+                    currentYear = newYear
+                    currentMonth = newMonth
+
+                    updateWeeklyChart(1)  // ← 예: 첫째 주로 리셋
+                    updateHeaderTexts()
+                    updateMonthlyChart()
+                    updateYearlyChart()
+                }
+
+                // 오른쪽 화살표(다음 달)
+                binding.rightArrow.setOnClickListener {
+                    val (newYear, newMonth) = DateUtils.moveToNextMonth(currentYear, currentMonth)
+                    currentYear = newYear
+                    currentMonth = newMonth
+
+                    updateWeeklyChart(1)  // ← 예: 첫째 주로 리셋
+                    updateHeaderTexts()
+                    updateMonthlyChart()
+                    updateYearlyChart()
+                }
+
+                updateHeaderTexts()
+                updateMonthlyChart()
+                updateYearlyChart()
+            }
+
         }
 
-        updateSelectedWeek(weekLayouts[initialWeek - 1])
 
-        // 왼쪽 화살표(이전 달)
-        binding.leftArrow.setOnClickListener {
-            val (newYear, newMonth) = DateUtils.moveToPreviousMonth(currentYear, currentMonth)
-            currentYear = newYear
-            currentMonth = newMonth
 
-            updateWeeklyChart(1)  // ← 예: 첫째 주로 리셋
-            updateHeaderTexts()
-            updateMonthlyChart()
-            updateYearlyChart()
-        }
-
-        // 오른쪽 화살표(다음 달)
-        binding.rightArrow.setOnClickListener {
-            val (newYear, newMonth) = DateUtils.moveToNextMonth(currentYear, currentMonth)
-            currentYear = newYear
-            currentMonth = newMonth
-
-            updateWeeklyChart(1)  // ← 예: 첫째 주로 리셋
-            updateHeaderTexts()
-            updateMonthlyChart()
-            updateYearlyChart()
-        }
-
-        updateHeaderTexts()
-        updateMonthlyChart()
-        updateYearlyChart()
     }
     private fun updateSelectedWeek(selectedLayout: LinearLayout) {
         weekLayouts.forEach { layout ->
@@ -130,7 +153,7 @@ class DashboardActivity : AppCompatActivity() {
         for (product in filteredProducts) {
             val date = LocalDateTime.parse(product.createdAt, formatter).toLocalDate()
             val day = date.dayOfWeek
-            daySums[day] = daySums[day]!! + product.originPrice
+            daySums[day] = daySums[day]!! + calculateExchangeRate(product.currencyId, userDefaultCurrency, product.originPrice)
         }
 
         val entries = DayOfWeek.entries.toTypedArray().mapIndexed { index, day ->
@@ -165,8 +188,8 @@ class DashboardActivity : AppCompatActivity() {
         binding.endMonth.text = end.monthValue.toString().padStart(2, '0')
         binding.endDate.text = end.dayOfMonth.toString().padStart(2, '0')
 
-        val totalWeeklySum = filteredProducts.sumOf { it.originPrice }
-        binding.weeklyTotal.text = totalWeeklySum.toString()
+        val totalWeeklySum = filteredProducts.sumOf { calculateExchangeRate(it.currencyId, userDefaultCurrency, it.originPrice) }
+        binding.weeklyTotal.text = floor(totalWeeklySum).toString()
 
     }
 
@@ -180,7 +203,7 @@ class DashboardActivity : AppCompatActivity() {
             return productList.filter {
                 val date = LocalDateTime.parse(it.createdAt, formatter).toLocalDate()
                 !it.deletedYn && date.year == month.year && date.month == month.month
-            }.sumOf { it.originPrice }
+            }.sumOf { calculateExchangeRate(it.currencyId, userDefaultCurrency, it.originPrice) }
         }
 
         val lastSum = sumForMonth(lastMonth)
@@ -285,7 +308,7 @@ class DashboardActivity : AppCompatActivity() {
                     val date = LocalDateTime.parse(it.createdAt, formatter).toLocalDate()
                     !it.deletedYn && date.year == year
                 }
-                .sumOf { it.originPrice }
+                .sumOf { calculateExchangeRate(it.currencyId, userDefaultCurrency, it.originPrice) }
         }
 
         val lastAvg = yearSumMap[lastYear]
@@ -358,96 +381,52 @@ class DashboardActivity : AppCompatActivity() {
             invalidate()
         }
     }
-    private fun getProductListFromSource(): List<ProductModel> {
-        return listOf(
-            ProductModel(
-                productId = 1L,
-                listId = 101L,
-                name = "사과",
-                originPrice = 1500.0,
-                deletedYn = false,
-                createdAt = "2024-04-30T10:23:45"
-            ),
-            ProductModel(
-                productId = 1L,
-                listId = 101L,
-                name = "사과",
-                originPrice = 1500.0,
-                deletedYn = false,
-                createdAt = "2025-04-30T10:23:45"
-            ),
-            ProductModel(
-                productId = 1L,
-                listId = 101L,
-                name = "사과2",
-                originPrice = 1500.0,
-                deletedYn = false,
-                createdAt = "2025-04-30T10:23:45"
-            ),
-            ProductModel(
-                productId = 1L,
-                listId = 101L,
-                name = "사과3",
-                originPrice = 1500.0,
-                deletedYn = false,
-                createdAt = "2025-04-30T10:23:45"
-            ),
-            ProductModel(
-                productId = 1L,
-                listId = 101L,
-                name = "사과4",
-                originPrice = 1500.0,
-                deletedYn = false,
-                createdAt = "2025-04-30T10:23:45"
-            ),
-            ProductModel(
-                productId = 2L,
-                listId = 101L,
-                name = "바나나",
-                originPrice = 2000.0,
-                deletedYn = false,
-                createdAt = "2025-04-30T12:11:07"
-            ),
-            ProductModel(
-                productId = 3L,
-                listId = 102L,
-                name = "우유",
-                originPrice = 1200.0,
-                deletedYn = false,
-                createdAt = "2025-04-30T09:00:00"
-            ),
-            ProductModel(
-                productId = 4L,
-                listId = 102L,
-                name = "커피",
-                originPrice = 3000.0,
-                deletedYn = false,
-                createdAt = "2025-04-29T18:45:00"
-            ),
-            ProductModel(
-                productId = 1L,
-                listId = 101L,
-                name = "사과3",
-                originPrice = 1500.0,
-                deletedYn = false,
-                createdAt = "2025-05-15T10:23:45"
-            ),
-            ProductModel(
-                productId = 1L,
-                listId = 101L,
-                name = "사과3",
-                originPrice = 1500.0,
-                deletedYn = false,
-                createdAt = "2025-05-15T10:23:45"
-            ),
-            ProductModel(
-                productId = 1L,
-                listId = 101L,
-                name = "사과3",
-                originPrice = 1500.0,
-                deletedYn = false,
-                createdAt = "2025-05-15T10:23:45"
-            ),
-        )
+
+    private fun getProductList(onFinished: (List<ProductWithCurrencyDto>) -> Unit) {
+        apiService.getAllProducts().enqueue(object : Callback<ApiResponse<List<ProductWithCurrencyDto>>> {
+            override fun onResponse(
+                call: Call<ApiResponse<List<ProductWithCurrencyDto>>>,
+                response: Response<ApiResponse<List<ProductWithCurrencyDto>>>
+            ) {
+                Log.d("DashboardActivity", "API 응답 성공: ${response.body()}")
+                if (response.isSuccessful) {
+                    val productList = response.body()?.data?: emptyList()
+                    onFinished(productList)
+                }else{
+                    onFinished(emptyList())
+                }
+            }
+
+            override fun onFailure(
+                call: Call<ApiResponse<List<ProductWithCurrencyDto>>>,
+                t: Throwable
+            ) {
+                Log.e("DashboardActivity", "getProductList API 호출 실패: ${t.message}")
+                onFinished(emptyList())
+            }
+        })
+    }
+
+    private fun getUserDefaultCurrency(onFinished: (Long?) -> Unit){
+        apiService.getUserCurrency().enqueue(object : Callback<ApiResponse<Long>> {
+            override fun onResponse(
+                call:Call<ApiResponse<Long>>,
+                response: Response<ApiResponse<Long>>
+            ){
+                if (response.isSuccessful){
+                    val currencyId = response.body()?.data
+                    onFinished(currencyId)
+                }
+                else{
+                    Log.e("DashboardActivity", "통화 ID 조회 실패: ${response.code()}")
+                    onFinished(null)
+                }
+            }
+
+            override fun onFailure(p0: Call<ApiResponse<Long>>, t: Throwable) {
+                Log.e("DashboardActivity", "API 호출 실패: ${t.message}")
+                onFinished(null)
+            }
+        })
     }
 }

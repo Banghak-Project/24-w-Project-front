@@ -5,7 +5,6 @@ import com.example.moneychanger.network.currency.CurrencyResponseDto
 import com.example.moneychanger.network.list.CreateListRequestDto
 import com.example.moneychanger.network.list.CreateListResponseDto
 import com.example.moneychanger.network.list.CreateListWithNameRequestDto
-import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.network.list.ListsResponseDto
 import com.example.moneychanger.network.list.UpdateRequestDto
 import com.example.moneychanger.network.list.UpdateResponseDto
@@ -14,8 +13,8 @@ import com.example.moneychanger.network.product.CreateProductRequestDto
 import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.product.DeleteProductsRequestDto
 import com.example.moneychanger.network.product.ImageProductResponseDto
-import com.example.moneychanger.network.product.ProductModel
 import com.example.moneychanger.network.product.ProductResponseDto
+import com.example.moneychanger.network.product.ProductWithCurrencyDto
 import com.example.moneychanger.network.product.UpdateProductRequestDto
 import com.example.moneychanger.network.user.ApiResponse
 import com.example.moneychanger.network.user.EmailRequest
@@ -95,7 +94,7 @@ interface ApiService {
     fun getProductByListsId(@Path("id") productId:Long): Call<ApiResponse<List<ProductResponseDto>>>
     //모든 상품 조회
     @GET("/api/products")
-    fun getAllProducts(): Response<ApiResponse<Call<List<ProductModel>>>>
+    fun getAllProducts(): Call<ApiResponse<List<ProductWithCurrencyDto>>>
 
     //아이디에 맞는 상품 수정
     @PATCH("/api/products/update")
@@ -143,6 +142,9 @@ interface ApiService {
     @GET("/api/auth/user-info")
     suspend fun getUserInfo(): Response<ApiResponse<UserInfoResponse>>
 
+    // 회원 default Currency 조회
+    @GET("/api/auth/user-currency")
+    fun getUserCurrency():Call<ApiResponse<Long>>
 
     //  회원정보 수정
     @POST("/api/auth/update-user-info")
