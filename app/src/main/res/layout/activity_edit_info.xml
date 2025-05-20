@@ -16,6 +16,7 @@
         android:orientation="vertical"
         android:padding="20dp">
 
+        <!-- 타이틀 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,10 +31,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/personal_info_title2"
                 style="@style/TextHeadingXL"/>
+
             <Space
                 android:layout_width="wrap_content"
                 android:layout_height="28dp"/>
 
+            <!-- 생년월일 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -56,6 +59,8 @@
                     android:focusable="false"
                     android:clickable="true" />
             </LinearLayout>
+
+            <!-- 이름 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -78,6 +83,32 @@
                     android:maxLines="1"
                     style="@style/TextBodyL"/>
             </LinearLayout>
+
+            <!-- 기본 통화 선택 (추가됨) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="8dp" >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/currency1"
+                    style="@style/TextBodyS"/>
+                <EditText
+                    android:id="@+id/input_currency"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:paddingHorizontal="24dp"
+                    android:hint="@string/currency2"
+                    android:background="@drawable/round_background"
+                    style="@style/TextBodyL"
+                    android:focusable="false"
+                    android:clickable="true" />
+            </LinearLayout>
+
+            <!-- 이메일 (읽기 전용) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -100,6 +131,8 @@
                     android:padding="10dp"
                     android:text="@string/ex_email"/>
             </LinearLayout>
+
+            <!-- 비밀번호 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -112,6 +145,7 @@
                     android:text="@string/pw_kor"
                     style="@style/TextBodyS"/>
                 <EditText
+                    android:id="@+id/input_password"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:paddingHorizontal="24dp"

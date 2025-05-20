@@ -44,9 +44,10 @@ data class UserInfoResponse(
 )
 data class UpdateUserInfoRequest(
     @SerializedName("userEmail") val userEmail: String,
-    @SerializedName("userDateOfBirth") val userDateOfBirth: String? , // Timestamp (밀리초)
+    @SerializedName("userDateOfBirth") val userDateOfBirth: String?,
     @SerializedName("userName") val userName: String?,
-    @SerializedName("userPassword") val userPassword: String? // 선택사항
+    @SerializedName("userPassword") val userPassword: String?,
+    @SerializedName("defaultCurrencyId") val defaultCurrencyId: Long
 )
 
 data class EmailRequest(val email: String)
