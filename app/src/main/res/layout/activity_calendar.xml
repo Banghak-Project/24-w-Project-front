@@ -9,7 +9,6 @@
         android:id="@+id/main_toolbar"
         layout="@layout/main_toolbar"/>
 
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -103,18 +102,21 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"/>
                     <TextView
+                        android:id="@+id/monthTotalTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="00,000,000"
                         style="@style/TextHeadingXXL"
                         android:layout_marginRight="8dp"
                         android:textColor="@color/main"/>
+
                     <TextView
+                        android:id="@+id/monthCurrencyTextView"
+                        style="@style/TextHeadingXL"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="₩"
-                        style="@style/TextHeadingXL"
-                        android:textColor="@color/gray_07"/>
+                        android:textColor="@color/gray_07" />
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/calendar"
@@ -288,6 +290,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"/>
                         <TextView
+                            android:id="@+id/total_spend_text_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="00,000,000"
@@ -295,6 +298,7 @@
                             android:layout_marginRight="8dp"
                             android:textColor="@color/main"/>
                         <TextView
+                            android:id="@+id/convertedCurrencyTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="₩"
@@ -310,12 +314,14 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"/>
+
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0000.00"
+                            android:id="@+id/convertedTotalTextView"
                             style="@style/TextHeadingL"
-                            android:layout_marginRight="8dp"/>
+                            android:layout_width="wrap_content"
+                            android:layout_height="11dp"
+                            android:layout_marginRight="8dp"
+                            android:text="0000.00" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

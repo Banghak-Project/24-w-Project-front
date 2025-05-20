@@ -38,14 +38,16 @@ data class UserInfoResponse(
     @SerializedName("userName") val userName: String,
     @SerializedName("userEmail") val userEmail: String,
     @SerializedName("userDateOfBirth") val userDateOfBirth: String?,
-    @SerializedName("kakaoUser") val isKakaoUser: Boolean // ✅ 요거 추가
-
+    @SerializedName("kakaoUser") val isKakaoUser: Boolean,
+    @SerializedName("GoogleUser") val isGoogleUser: Boolean,
+    @SerializedName("defaultCurrencyId") val defaultCurrencyId: Long
 )
 data class UpdateUserInfoRequest(
     @SerializedName("userEmail") val userEmail: String,
-    @SerializedName("userDateOfBirth") val userDateOfBirth: String? , // Timestamp (밀리초)
+    @SerializedName("userDateOfBirth") val userDateOfBirth: String?,
     @SerializedName("userName") val userName: String?,
-    @SerializedName("userPassword") val userPassword: String? // 선택사항
+    @SerializedName("userPassword") val userPassword: String?,
+    @SerializedName("defaultCurrencyId") val defaultCurrencyId: Long
 )
 
 data class EmailRequest(val email: String)

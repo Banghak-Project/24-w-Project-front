@@ -3,6 +3,9 @@ package com.example.moneychanger.network.list
 import com.google.gson.annotations.SerializedName
 
 import com.example.moneychanger.network.currency.CurrencyModel
+import com.example.moneychanger.network.currency.CurrencyResponseDto
+import com.example.moneychanger.network.product.ProductModel
+import com.example.moneychanger.network.product.ProductResponseDto
 
 import java.io.Serializable
 
@@ -80,3 +83,16 @@ data class CreateListResponseDto(
     @SerializedName("currencyTo") val currencyTo: CurrencyModel,
     @SerializedName("deletedYn") val deletedYn: Boolean
 )
+
+data class ListWithProductsDto(
+    @SerializedName("listId"         ) val listId: Long,
+    @SerializedName("name"           ) val name: String,
+    @SerializedName("location"       ) val location: String,
+    @SerializedName("createdAt"      ) val createdAt: String,
+    @SerializedName("products"       ) val products: List<ProductResponseDto>,
+    @SerializedName("currencyFromId" ) val currencyFromId: Long,
+    @SerializedName("currencyToId"   ) val currencyToId: Long
+)
+
+
+

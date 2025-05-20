@@ -46,8 +46,6 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
     private lateinit var viewModel: CurrencyViewModel
     private lateinit var productAdapter: ProductAdapter
 
-    private val userId = TokenManager.getUserId() ?: -1L
-
     private var productList: MutableList<ProductModel> = mutableListOf()
     private var selectedList: ListModel? = null
 

@@ -36,6 +36,7 @@ class GoogleLoginActivity : AppCompatActivity() {
 
         Log.d("GoogleLogin", "client_id = ${getString(R.string.default_web_client_id)}")
 
+
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         val googleLoginButton = findViewById<LinearLayout>(R.id.button_google_login)
