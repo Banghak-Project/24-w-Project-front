@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.moneychanger.R
+import com.example.moneychanger.home.MainActivity
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
 import com.example.moneychanger.network.user.SignInResponse
@@ -28,10 +29,12 @@ class GoogleLoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login_select)
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
-            .requestIdToken("205649175703-q44g5tc3sf1o0bqt4r25t0ohmin9j2qt.apps.googleusercontent.com")
+            .requestProfile()
             .build()
 
+        Log.d("GoogleLogin", "client_id = ${getString(R.string.default_web_client_id)}")
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
@@ -49,8 +52,14 @@ class GoogleLoginActivity : AppCompatActivity() {
             try {
                 val account = task.getResult(ApiException::class.java)
                 val idToken = account?.idToken
-                if (idToken != null) {
-                    sendTokenToServer(idToken)
+                val name = account?.displayName
+                val email = account?.email
+                val photoUrl = account?.photoUrl?.toString()
+                Log.d("GoogleLogin", "이름: $name, 이메일: $email, 사진: $photoUrl")
+
+                val serverAuthCode = account?.serverAuthCode  // 필요하면 accessToken 요청에 사용
+                if (idToken != null && name != null) {
+                    sendTokenToServer(idToken, name)
                 } else {
                     Toast.makeText(this, "ID Token 없음", Toast.LENGTH_SHORT).show()
                 }
@@ -61,10 +70,15 @@ class GoogleLoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendTokenToServer(idToken: String) {
+    private fun sendTokenToServer(idToken: String, name: String) {
+        val body = mapOf(
+            "idToken" to idToken,
+            "name" to name
+        )
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = RetrofitClient.apiService.googleSignIn(mapOf("accessToken" to idToken))
+                val response = RetrofitClient.apiService.googleSignIn(body)
+
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful && response.body()?.status == "success") {
                         val result: SignInResponse? = response.body()?.data
@@ -74,7 +88,8 @@ class GoogleLoginActivity : AppCompatActivity() {
                             TokenManager.saveSignInInfo(it)
                             TokenManager.saveUserId(it.userId)
                             Toast.makeText(this@GoogleLoginActivity, "구글 로그인 성공", Toast.LENGTH_SHORT).show()
-                            // TODO: 메인 액티비티로 이동
+                            startActivity(Intent(this@GoogleLoginActivity, MainActivity::class.java))
+                            finish()
                         }
                     } else {
                         Toast.makeText(this@GoogleLoginActivity, "서버 응답 오류", Toast.LENGTH_SHORT).show()
