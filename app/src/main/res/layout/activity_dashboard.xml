@@ -217,6 +217,7 @@
                                 style="@style/TextHeadingXXXXL"
                                 android:textColor="@color/main"/>
                             <TextView
+                                android:id="@+id/weeklyCurrencyTextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="통화"

@@ -11,6 +11,7 @@ import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityDashboardBinding
 import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
 import com.example.moneychanger.network.RetrofitClient.apiService
+import com.example.moneychanger.network.currency.CurrencyManager
 import com.example.moneychanger.network.product.ProductWithCurrencyDto
 import com.example.moneychanger.network.user.ApiResponse
 import com.github.mikephil.charting.components.XAxis
@@ -53,6 +54,17 @@ class DashboardActivity : AppCompatActivity() {
             if (defaultCurrency != 0.toLong() && defaultCurrency != null) {
                 userDefaultCurrency = defaultCurrency
                 Log.d("통화", "사용자 통화 ID: $defaultCurrency")
+
+                val curModel = CurrencyManager.getById(defaultCurrency)
+                    ?: error("Unknown currency id=$defaultCurrency")
+                val codeKey = curModel.curUnit
+                    .replace(Regex("\\(.*\\)"), "")
+                    .trim()
+                val resId = resources.getIdentifier(codeKey, "string", packageName)
+                val symbol = if (resId != 0) getString(resId) else codeKey
+
+                binding.weeklyCurrencyTextView.text = symbol
+
             } else {
                 Toast.makeText(this, "기본 통화 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
             }

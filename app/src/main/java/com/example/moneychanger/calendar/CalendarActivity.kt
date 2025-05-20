@@ -42,26 +42,21 @@ class CalendarActivity : AppCompatActivity() {
         binding = ActivityCalendarBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 툴바
         val toolbar: Toolbar = findViewById(R.id.main_toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        // 오늘 날짜
         selectedDate = LocalDate.now()
         currentYear  = selectedDate.year
         currentMonth = selectedDate.monthValue
 
-        // 히스토리 리스트 어댑터
         historyAdapter = HistoryAdapter(allProducts, allLists)
         binding.historyList.layoutManager = LinearLayoutManager(this)
         binding.historyList.adapter        = historyAdapter
 
-        // 이전/다음 월 버튼
         binding.leftArrow .setOnClickListener { prevMonth() }
         binding.rightArrow.setOnClickListener { nextMonth() }
 
-        // ① 유저 정보에서 기본통화 로드 → ② 캘린더 초기화
         lifecycleScope.launch {
             RetrofitClient.apiService.getUserInfo().takeIf { it.isSuccessful }?.body()?.data
                 ?.let { info: UserInfoResponse ->
@@ -113,7 +108,6 @@ class CalendarActivity : AppCompatActivity() {
         binding.calendarMonthText.text = currentMonth.toString().padStart(2, '0')
     }
 
-    /** 하루치 조회 */
     private fun fetchByDate(date: LocalDate) {
         val uid = TokenManager.getUserId().takeIf { it != -1L } ?: return
         val d   = date.toString()
@@ -142,11 +136,9 @@ class CalendarActivity : AppCompatActivity() {
                 )
             }
 
-            // 원화 합계
             val total = allProducts.sumOf { it.originPrice }
             binding.totalSpendTextView.text = "%,d".format(total.toInt())
 
-            // 사용자 기본 통화로 변환
             defaultCurrency?.let { targetCur ->
                 val originCurId = allLists.firstOrNull()?.currencyFrom?.currencyId ?: return@let
                 val converted = ExchangeRateUtil.calculateExchangeRate(
@@ -165,7 +157,6 @@ class CalendarActivity : AppCompatActivity() {
         }
     }
 
-    /** 한달치 조회 */
     private fun fetchMonthlyTotal() {
         val uid = TokenManager.getUserId().takeIf { it != -1L } ?: return
         val start = LocalDate.of(currentYear, currentMonth, 1).toString()
@@ -196,10 +187,6 @@ class CalendarActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * "USD" → R.string.USD 가 있으면 getString(…)
-     * 없으면 그냥 "USD" 를 리턴
-     */
     private fun getCurrencySymbol(code: String): String {
         val key = code.replace(Regex("\\(.*\\)"), "").trim()
         val resId = resources.getIdentifier(key, "string", packageName)

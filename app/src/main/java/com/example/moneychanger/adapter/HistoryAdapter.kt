@@ -23,7 +23,7 @@ class HistoryAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(product: ProductResponseDto, list: ListModel) {
-            // 1) 장소명 / 시간 / 상품명
+
             binding.placeName.text = list.name
             val dateTime = try {
                 LocalDateTime.parse(product.createdAt, DateTimeFormatter.ISO_DATE_TIME)
@@ -34,15 +34,8 @@ class HistoryAdapter(
             binding.productTime.text = dateTime.format(DateTimeFormatter.ofPattern("HH시 mm분"))
             binding.productName.text = product.name
 
-            // 2) 원래 금액
             binding.productPrice.text = String.format("%,d", product.originPrice.toInt())
 
-            // —————————————————————————————————————————————
-            // 3) curUnit 기반 리소스 조회해서 심볼 표시
-            //
-            //    list.currencyTo.curUnit  = ex) "USD" or "JPY(100)"
-            //    list.currencyFrom.curUnit = ex) "KRW"
-            //
             val ctx = binding.root.context
             val toKey   = list.currencyTo.curUnit.replace(Regex("\\(.*\\)"), "").trim()
             val fromKey = list.currencyFrom.curUnit.replace(Regex("\\(.*\\)"), "").trim()
@@ -53,11 +46,9 @@ class HistoryAdapter(
             val toSymbol   = if (toResId   != 0) ctx.getString(toResId)   else toKey
             val fromSymbol = if (fromResId != 0) ctx.getString(fromResId) else fromKey
 
-            binding.currencyTo.text   = toSymbol   // 원래 금액 통화 로고
-            binding.currencyFrom.text = fromSymbol // 변환 후 통화 로고
-            // —————————————————————————————————————————————
+            binding.currencyTo.text   = toSymbol
+            binding.currencyFrom.text = fromSymbol
 
-            // 4) 환율 변환 → original 통화(list.currencyTo) → 목표 통화(list.currencyFrom)
             CoroutineScope(Dispatchers.Main).launch {
                 Log.d("HistConv",
                     "from=${list.currencyTo.currencyId}($toSymbol) " +
