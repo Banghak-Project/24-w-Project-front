@@ -6,6 +6,7 @@ import com.example.moneychanger.network.list.CreateListRequestDto
 import com.example.moneychanger.network.list.CreateListResponseDto
 import com.example.moneychanger.network.list.CreateListWithNameRequestDto
 import com.example.moneychanger.network.list.ListModel
+import com.example.moneychanger.network.list.ListWithProductsDto
 import com.example.moneychanger.network.list.ListsResponseDto
 import com.example.moneychanger.network.list.UpdateRequestDto
 import com.example.moneychanger.network.list.UpdateResponseDto
@@ -177,6 +178,17 @@ interface ApiService {
 
     @POST("/api/auth/google/signin")
     suspend fun googleSignIn(@Body request: Map<String, String>): Response<ApiResponse<SignInResponse>>
+
+    @GET("/api/lists/date")
+    suspend fun getListsByDate(
+        @Query("startDate") startDate: String,
+        @Query("endDate") endDate: String
+    ): Response<ApiResponse<List<ListWithProductsDto>>>
+
+    @GET("/api/lists/date/one")
+    suspend fun getListsBySingleDate(
+        @Query("date") date: String
+    ): Response<ApiResponse<List<ListWithProductsDto>>>
 
 
 }
