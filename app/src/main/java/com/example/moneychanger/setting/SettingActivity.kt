@@ -14,6 +14,7 @@ import com.example.moneychanger.etc.BaseActivity
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
 import com.example.moneychanger.onboarding.LoginActivity
+import com.example.moneychanger.onboarding.LoginSelectActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -138,7 +139,7 @@ class SettingActivity : BaseActivity() {
 
     private fun logout() {
         TokenManager.clearTokens()
-        val intent = Intent(this, LoginActivity::class.java)
+        val intent = Intent(this, LoginSelectActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()

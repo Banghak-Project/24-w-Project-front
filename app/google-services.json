@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "448954475495",
+    "project_id": "moneylens-fda24",
+    "storage_bucket": "moneylens-fda24.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:448954475495:android:1271f7c6cb9fad14eb5342",
+        "android_client_info": {
+          "package_name": "com.example.moneychanger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgDf9EMf29btIPD3lgcr_GJ8dLJxrlgBU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
