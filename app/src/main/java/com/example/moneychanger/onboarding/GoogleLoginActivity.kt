@@ -89,6 +89,9 @@ class GoogleLoginActivity : AppCompatActivity() {
                             TokenManager.saveSignInInfo(it)
                             TokenManager.saveUserId(it.userId)
                             Toast.makeText(this@GoogleLoginActivity, "구글 로그인 성공", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@GoogleLoginActivity,
+                                "소셜 계정 최초 로그인입니다. 설정 메뉴에서 기본 통화를 지정해주세요.",
+                                Toast.LENGTH_LONG).show()
                             startActivity(Intent(this@GoogleLoginActivity, MainActivity::class.java))
                             finish()
                         }
