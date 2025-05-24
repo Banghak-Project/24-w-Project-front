@@ -97,7 +97,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/total_spend"
                         style="@style/TextHeadingXL"
-                        android:textColor="@color/gray_07"/>
+                        android:textColor="@color/gray_07"
+                        android:layout_marginEnd="8dp"/>
                     <Space
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -108,7 +109,8 @@
                         android:text="00,000,000"
                         style="@style/TextHeadingXXL"
                         android:layout_marginRight="8dp"
-                        android:textColor="@color/main"/>
+                        android:textColor="@color/main"
+                        android:singleLine="true"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -262,14 +264,16 @@
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="56dp"
                     android:orientation="vertical"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="16dp"
+                    android:gravity="center_horizontal">
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:layout_gravity="center">
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -282,7 +286,8 @@
                             android:layout_height="wrap_content"
                             android:text="@string/total_spend"
                             style="@style/TextHeadingXL"
-                            android:textColor="@color/gray_07"/>
+                            android:textColor="@color/gray_07"
+                            android:layout_marginEnd="8dp"/>
                         <Space
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -293,7 +298,8 @@
                             android:text="00,000,000"
                             style="@style/TextHeadingXXL"
                             android:layout_marginRight="8dp"
-                            android:textColor="@color/main"/>
+                            android:textColor="@color/main"
+                            android:singleLine="true"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -304,8 +310,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
+                        android:orientation="horizontal"
+                        android:layout_gravity="center">
                         <Space
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -315,7 +321,8 @@
                             android:layout_height="wrap_content"
                             android:text="0000.00"
                             style="@style/TextHeadingL"
-                            android:layout_marginRight="8dp"/>
+                            android:layout_marginRight="8dp"
+                            android:singleLine="true"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

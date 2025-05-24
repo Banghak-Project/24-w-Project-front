@@ -7,7 +7,6 @@ import android.widget.ImageView
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityUnsubscribeSuccessBinding
 import com.example.moneychanger.home.MainActivity
-import com.example.moneychanger.onboarding.LoginSelectActivity
 
 class UnsubscribeSuccessActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUnsubscribeSuccessBinding

@@ -7,8 +7,8 @@ import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.example.moneychanger.R
 import com.example.moneychanger.home.MainActivity
+import com.example.moneychanger.home.NaviContainerActivity
 import com.example.moneychanger.network.TokenManager
-import com.example.moneychanger.onboarding.LoginSelectActivity
 
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +22,7 @@ class SplashActivity : AppCompatActivity() {
             val nextActivity = if (TokenManager.getAccessToken().isNullOrBlank()) {
                 Intent(this, LoginSelectActivity::class.java) // 로그인 안 된 상태
             } else {
-                Intent(this, MainActivity::class.java) // 로그인 유지
+                Intent(this, NaviContainerActivity::class.java) // 로그인 유지
             }
             startActivity(nextActivity)
             finish()

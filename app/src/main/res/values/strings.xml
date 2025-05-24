@@ -305,6 +305,14 @@
     <string name="percentage">%</string>
     <string name="tilde">~</string>
 
+    <string name="list">리스트</string>
+    <string name="finan">가계부</string>
+    <string name="camera">카메라</string>
+    <string name="dashboard">대시보드</string>
+    <string name="mypage">마이페이지</string>
+
     <string name="default_web_client_id">205649175703-3r26fjueksug4s4tgn129m5ocf4ce1un.apps.googleusercontent.com</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
