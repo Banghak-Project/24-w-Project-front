@@ -6,10 +6,5 @@
         android:icon="@drawable/icon_delete"
         android:title="삭제"
         app:showAsAction="always"/>
-    <item
-        android:id="@+id/button_setting"
-        android:icon="@drawable/icon_setting"
-        android:title="설정"
-        app:showAsAction="always"/>
 
 </menu>

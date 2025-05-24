@@ -3,17 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/blue_00">
 
-    <include
+    <androidx.appcompat.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+
         android:id="@+id/main_toolbar"
-        layout="@layout/main_toolbar"/>
-
-<!--    <LinearLayout-->
-<!--        android:contentDescription="가름선"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="1dp"-->
-<!--        android:background="@color/black"/>-->
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        app:menu="@menu/menu"
+        android:background="@color/white">
+        <ImageView
+            android:layout_width="124dp"
+            android:layout_height="22dp"
+            android:src="@drawable/logo"/>
+    </androidx.appcompat.widget.Toolbar>
 
     <LinearLayout
         android:id="@+id/main_content"
@@ -26,7 +33,8 @@
             android:layout_height="0dp"
             android:layout_weight="6"
             android:background="@color/blue_00"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginBottom="90dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -85,34 +93,9 @@
                         android:layout_height="wrap_content"
                         android:contentDescription="임시버튼"
                         android:text="대시보드로 이동" />
-                    <TextView
-                        android:id="@+id/sampletext"
-                        android:layout_width="match_parent"
-                        android:layout_height="20dp"
-                        android:text="sample"/>
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
 
         </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:contentDescription="nav바"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:gravity="center"
-        android:background="@color/white">
-        <FrameLayout
-            android:id="@+id/button_camera"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/round_button"
-            android:backgroundTint="@color/main"
-            android:gravity="center">
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/icon_camera"
-                android:layout_gravity="center" />
-        </FrameLayout>
     </LinearLayout>
 </LinearLayout>

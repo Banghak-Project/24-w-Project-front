@@ -7,7 +7,7 @@ import android.widget.ImageView
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityUnsubscribeSuccessBinding
 import com.example.moneychanger.home.MainActivity
-import com.example.moneychanger.onboarding.LoginSelectActivity
+import com.example.moneychanger.home.NaviContainerActivity
 
 class UnsubscribeSuccessActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUnsubscribeSuccessBinding
@@ -28,7 +28,7 @@ class UnsubscribeSuccessActivity : AppCompatActivity() {
 
         // 처음으로 (메인)
         binding.buttonToStart.setOnClickListener{
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, NaviContainerActivity::class.java)
             startActivity(intent)
         }
     }
