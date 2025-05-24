@@ -3,12 +3,18 @@ package com.example.moneychanger.calendar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityDashboardBinding
+import com.example.moneychanger.databinding.FragmentDashboardBinding
+import com.example.moneychanger.databinding.FragmentMainBinding
 import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
 import com.example.moneychanger.network.RetrofitClient.apiService
 import com.example.moneychanger.network.currency.CurrencyManager
@@ -32,8 +38,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import kotlin.math.floor
 
-class DashboardActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityDashboardBinding
+class DashboardFragment : Fragment() {
+    private var _binding: FragmentDashboardBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var productList: List<ProductWithCurrencyDto>
     private lateinit var weekLayouts: List<LinearLayout>
 
@@ -41,14 +49,16 @@ class DashboardActivity : AppCompatActivity() {
     private var currentYear = 0
     private var currentMonth = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityDashboardBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        val toolbar: Toolbar = findViewById(R.id.main_toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false) // 툴바에 타이틀 안보이게
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         getUserDefaultCurrency { defaultCurrency ->
             if (defaultCurrency != 0.toLong() && defaultCurrency != null) {
@@ -60,13 +70,13 @@ class DashboardActivity : AppCompatActivity() {
                 val codeKey = curModel.curUnit
                     .replace(Regex("\\(.*\\)"), "")
                     .trim()
-                val resId = resources.getIdentifier(codeKey, "string", packageName)
+                val resId = resources.getIdentifier(codeKey, "string", requireContext().packageName)
                 val symbol = if (resId != 0) getString(resId) else codeKey
 
                 binding.weeklyCurrencyTextView.text = symbol
 
             } else {
-                Toast.makeText(this, "기본 통화 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "기본 통화 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
             }
 
             getProductList { result ->
@@ -174,14 +184,14 @@ class DashboardActivity : AppCompatActivity() {
 
         val dataSet = BarDataSet(entries, "")
         binding.weekChart.legend.isEnabled = false
-        dataSet.color = ContextCompat.getColor(this, R.color.main)
+        dataSet.color = ContextCompat.getColor(requireContext(), R.color.main)
         val barData = BarData(dataSet)
 
         val xAxis = binding.weekChart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM // 🔽 아래쪽에 위치
         xAxis.setDrawAxisLine(true)
         xAxis.setDrawGridLines(false)
-        xAxis.textColor = ContextCompat.getColor(this, R.color.gray_07)
+        xAxis.textColor = ContextCompat.getColor(requireContext(), R.color.gray_07)
         binding.weekChart.description.isEnabled = false
 
         val yAxisLeft = binding.weekChart.axisLeft
@@ -254,8 +264,8 @@ class DashboardActivity : AppCompatActivity() {
         )
         val barDataSet = BarDataSet(barEntries, "지출 합계").apply {
             setColors(
-                ContextCompat.getColor(this@DashboardActivity, R.color.gray_02),  // 지난달
-                ContextCompat.getColor(this@DashboardActivity, R.color.main)      // 이번달
+                ContextCompat.getColor(requireContext(), R.color.gray_02),  // 지난달
+                ContextCompat.getColor(requireContext(), R.color.main)      // 이번달
             )
             valueTextSize = 10f
         }
@@ -268,8 +278,8 @@ class DashboardActivity : AppCompatActivity() {
             Entry(1f, thisSum.toFloat())
         )
         val lineDataSet = LineDataSet(lineEntries, "지출 추이").apply {
-            color = ContextCompat.getColor(this@DashboardActivity, R.color.blue_03)
-            setCircleColor(ContextCompat.getColor(this@DashboardActivity, R.color.blue_03))
+            color = ContextCompat.getColor(requireContext(), R.color.blue_03)
+            setCircleColor(ContextCompat.getColor(requireContext(), R.color.blue_03))
             circleRadius = 3f
             setDrawValues(false)
             setDrawCircles(true)
@@ -357,13 +367,13 @@ class DashboardActivity : AppCompatActivity() {
         val entryThisYear = BarEntry(1f, yearSumMap[thisYear]?.toFloat() ?: 0f)
 
         val setLast = BarDataSet(listOf(entryLastYear), "").apply {
-            color = ContextCompat.getColor(this@DashboardActivity, R.color.gray_03)
-            valueTextColor = ContextCompat.getColor(this@DashboardActivity, R.color.gray_07)
+            color = ContextCompat.getColor(requireContext(), R.color.gray_03)
+            valueTextColor = ContextCompat.getColor(requireContext(), R.color.gray_07)
         }
 
         val setThis = BarDataSet(listOf(entryThisYear), "").apply {
-            color = ContextCompat.getColor(this@DashboardActivity, R.color.main)
-            valueTextColor = ContextCompat.getColor(this@DashboardActivity, R.color.white)
+            color = ContextCompat.getColor(requireContext(), R.color.main)
+            valueTextColor = ContextCompat.getColor(requireContext(), R.color.white)
         }
 
         val barData = BarData(setLast, setThis)

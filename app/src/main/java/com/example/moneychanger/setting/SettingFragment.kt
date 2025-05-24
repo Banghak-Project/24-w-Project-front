@@ -3,13 +3,18 @@ package com.example.moneychanger.setting
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivitySettingBinding
+import com.example.moneychanger.databinding.FragmentDashboardBinding
+import com.example.moneychanger.databinding.FragmentSettingBinding
 import com.example.moneychanger.etc.BaseActivity
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
@@ -20,44 +25,40 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SettingActivity : BaseActivity() {
-    private lateinit var binding: ActivitySettingBinding
+class SettingFragment : Fragment() {
+    private  var _binding: FragmentSettingBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySettingBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSettingBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        // ✅ TokenManager가 초기화되지 않았다면 강제 초기화
-        TokenManager.init(applicationContext)
+    override fun onViewCreated(view:View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        TokenManager.init(requireContext().applicationContext)
 
         val accessToken = TokenManager.getAccessToken()
         Log.d("SettingActivity", "✅ accessToken = $accessToken")
 
-        // 이후에 getUserInfo 호출
         fetchUserInfo()
 
-        binding.loginToolbar.pageText.text = "프로필 수정"
-
-        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.login_toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-
-        val backButton: ImageView = toolbar.findViewById(R.id.button_back)
-        backButton.setOnClickListener { finish() }
-
         binding.buttonEdit.setOnClickListener {
-            val intent = Intent(this, EditInfoActivity::class.java)
+            val intent = Intent(requireContext(), EditInfoActivity::class.java)
             startActivity(intent)
         }
 
         binding.buttonNotice.setOnClickListener {
-            val intent = Intent(this, NoticeActivity::class.java)
+            val intent = Intent(requireContext(), NoticeActivity::class.java)
             startActivity(intent)
         }
 
         binding.buttonTerm.setOnClickListener {
-            val intent = Intent(this, TermActivity::class.java)
+            val intent = Intent(requireContext(), TermActivity::class.java)
             startActivity(intent)
         }
 
@@ -67,17 +68,14 @@ class SettingActivity : BaseActivity() {
             val isKakao = TokenManager.isKakaoUser()
 
             if (isKakao) {
-                // 카카오 유저: 안내 팝업 → 확인 누르면 탈퇴 API 호출
                 showUnsubscribePopup()
             } else {
-                // 일반 유저: 비밀번호 입력 액티비티로 이동
-                val intent = Intent(this, UnsubscribeActivity::class.java)
+                val intent = Intent(requireContext(), UnsubscribeActivity::class.java)
                 startActivity(intent)
             }
         }
     }
 
-    // ✅ 사용자 정보 요청
     private fun fetchUserInfo() {
         val accessToken = TokenManager.getAccessToken()
         if (accessToken.isNullOrBlank()) return
@@ -93,16 +91,15 @@ class SettingActivity : BaseActivity() {
                             TokenManager.saveUserInfo(userInfo)
                             updateUserInfo()
 
-                            // 🔥 fetch 완료 후 버튼 리스너 다시 세팅
                             setupUnsubscribeButton()
                         }
                     } else {
-                        Toast.makeText(this@SettingActivity, "회원 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "회원 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@SettingActivity, "네트워크 오류 발생", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "네트워크 오류 발생", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -114,11 +111,9 @@ class SettingActivity : BaseActivity() {
             Log.d("SettingActivity", "👤 isKakaoUser: $isKakao")
 
             if (isKakao) {
-                // ✅ 카카오 유저 → 안내 팝업 → API 호출
                 showKakaoUnsubscribeDialog()
             } else {
-                // ✅ 일반 유저 → 비밀번호 입력 액티비티
-                val intent = Intent(this, UnsubscribeActivity::class.java)
+                val intent = Intent(requireContext(), UnsubscribeActivity::class.java)
                 startActivity(intent)
             }
         }
@@ -139,15 +134,15 @@ class SettingActivity : BaseActivity() {
 
     private fun logout() {
         TokenManager.clearTokens()
-        val intent = Intent(this, LoginSelectActivity::class.java)
+        val intent = Intent(requireContext(), LoginSelectActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
-        finish()
+        requireActivity().onBackPressedDispatcher.onBackPressed()
     }
 
     private fun showUnsubscribePopup() {
         val dialogView = layoutInflater.inflate(R.layout.unsubscribe_popup, null)
-        val dialog = AlertDialog.Builder(this, R.style.PopupDialogTheme)
+        val dialog = AlertDialog.Builder(requireContext(), R.style.PopupDialogTheme)
             .setView(dialogView)
             .create()
 
@@ -155,7 +150,7 @@ class SettingActivity : BaseActivity() {
             dialog.dismiss()
         }
         dialogView.findViewById<TextView>(R.id.button_yes).setOnClickListener {
-            val intent = Intent(this, UnsubscribeActivity::class.java)
+            val intent = Intent(requireContext(), UnsubscribeActivity::class.java)
             startActivity(intent)
         }
 
@@ -168,7 +163,7 @@ class SettingActivity : BaseActivity() {
 
     private fun showKakaoUnsubscribeDialog() {
         val dialogView = layoutInflater.inflate(R.layout.unsubscribe_popup, null)
-        val dialog = AlertDialog.Builder(this, R.style.PopupDialogTheme)
+        val dialog = AlertDialog.Builder(requireContext(), R.style.PopupDialogTheme)
             .setView(dialogView)
             .create()
 
@@ -196,17 +191,17 @@ class SettingActivity : BaseActivity() {
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful && response.body()?.status == "success") {
                         TokenManager.clearTokens()
-                        Toast.makeText(this@SettingActivity, "회원탈퇴가 완료되었습니다.", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this@SettingActivity, UnsubscribeSuccessActivity::class.java)
+                        Toast.makeText(requireContext(), "회원탈퇴가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(requireContext(), UnsubscribeSuccessActivity::class.java)
                         startActivity(intent)
-                        finish()
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
                     } else {
-                        Toast.makeText(this@SettingActivity, "탈퇴 실패: ${response.body()?.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "탈퇴 실패: ${response.body()?.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@SettingActivity, "네트워크 오류: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "네트워크 오류: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }

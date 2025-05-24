@@ -5,6 +5,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     id("org.jetbrains.kotlin.kapt")
+    id("com.google.gms.google-services") version "4.4.2" apply false
 }
 val localProperties = Properties().apply {
     val localPropertiesFile = rootProject.file("local.properties")
@@ -124,5 +125,7 @@ dependencies {
     // 구글 로그인
     implementation ("com.google.android.gms:play-services-auth:20.7.0")
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+//    implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
+//    implementation("com.google.firebase:firebase-analytics")
 
 }

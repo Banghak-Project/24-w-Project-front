@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityLoginBinding
 import com.example.moneychanger.home.MainActivity
+import com.example.moneychanger.home.NaviContainerActivity
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
 import com.example.moneychanger.network.user.ApiResponse
@@ -156,7 +157,7 @@ class LoginActivity : AppCompatActivity() {
             CoroutineScope(Dispatchers.Main).launch {
                 Toast.makeText(this@LoginActivity, "로그인 성공!", Toast.LENGTH_SHORT).show()
 
-                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                val intent = Intent(this@LoginActivity, NaviContainerActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
                 finish()

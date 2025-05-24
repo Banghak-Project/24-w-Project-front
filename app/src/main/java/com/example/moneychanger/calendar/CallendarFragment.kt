@@ -2,8 +2,12 @@ package com.example.moneychanger.calendar
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +15,8 @@ import com.example.moneychanger.R
 import com.example.moneychanger.adapter.CalendarDateAdapter
 import com.example.moneychanger.adapter.HistoryAdapter
 import com.example.moneychanger.databinding.ActivityCalendarBinding
+import com.example.moneychanger.databinding.FragmentCallendarBinding
+import com.example.moneychanger.databinding.FragmentMainBinding
 import com.example.moneychanger.etc.ExchangeRateUtil
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
@@ -25,8 +31,9 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
-class CalendarActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityCalendarBinding
+class CallendarFragment : Fragment() {
+    private var _binding: FragmentCallendarBinding? = null
+    private val binding get() = _binding!!
     private lateinit var historyAdapter: HistoryAdapter
 
     private var allProducts = emptyList<ProductResponseDto>()
@@ -37,21 +44,22 @@ class CalendarActivity : AppCompatActivity() {
     private var currentMonth = 0
     private var selectedDate: LocalDate = LocalDate.now()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityCalendarBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        val toolbar: Toolbar = findViewById(R.id.main_toolbar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentCallendarBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         selectedDate = LocalDate.now()
         currentYear  = selectedDate.year
         currentMonth = selectedDate.monthValue
 
         historyAdapter = HistoryAdapter(allProducts, allLists)
-        binding.historyList.layoutManager = LinearLayoutManager(this)
+        binding.historyList.layoutManager = LinearLayoutManager(requireContext())
         binding.historyList.adapter        = historyAdapter
 
         binding.leftArrow .setOnClickListener { prevMonth() }
@@ -93,7 +101,7 @@ class CalendarActivity : AppCompatActivity() {
             }
             .eachCount()
 
-        binding.date.layoutManager = GridLayoutManager(this, 7)
+        binding.date.layoutManager = GridLayoutManager(requireContext(), 7)
         binding.date.adapter = CalendarDateAdapter(
             dateList       = dateList,
             recordCountMap = recordCountMap,
@@ -189,7 +197,7 @@ class CalendarActivity : AppCompatActivity() {
 
     private fun getCurrencySymbol(code: String): String {
         val key = code.replace(Regex("\\(.*\\)"), "").trim()
-        val resId = resources.getIdentifier(key, "string", packageName)
+        val resId = resources.getIdentifier(key, "string", requireContext().packageName)
         return if (resId != 0) getString(resId) else key
     }
 }

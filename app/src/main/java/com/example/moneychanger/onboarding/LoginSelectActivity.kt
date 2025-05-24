@@ -8,6 +8,7 @@ import com.example.moneychanger.databinding.ActivityLoginSelectBinding
 class LoginSelectActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginSelectBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityLoginSelectBinding.inflate(layoutInflater)

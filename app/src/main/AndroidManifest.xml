@@ -110,17 +110,23 @@
             android:exported="true" />
         <activity
             android:name=".onboarding.LoginSelectActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity android:name=".onboarding.LoginActivity" />
         <activity
             android:name=".onboarding.PolicyActivity"
             android:exported="false" />
         <activity
             android:name=".onboarding.LoginAuthActivity"
-            android:exported="false" /> <!-- 카카오 로그인을 위한 부분 -->
+            android:exported="false" />
+        <activity android:name=".onboarding.GoogleLoginActivity"
+            android:exported="true"/>
+
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_native_app_key" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"

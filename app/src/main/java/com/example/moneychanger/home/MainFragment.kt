@@ -6,13 +6,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.moneychanger.R
@@ -70,11 +76,6 @@ class MainFragment : Fragment(), OnStoreNameUpdatedListener {
             slideNewList.show(parentFragmentManager, slideNewList.tag)
         }
 
-        binding.buttonCamera.setOnClickListener {
-            val intent = Intent(requireContext(), CameraActivity::class.java)
-            addListLauncher.launch(intent)
-        }
-
         adapter = ListAdapter(lists) { item ->
             val intent = Intent(requireContext(), ListActivity::class.java)
             intent.putExtra("list_id", item.listId)
@@ -122,7 +123,23 @@ class MainFragment : Fragment(), OnStoreNameUpdatedListener {
                 fetchListsFromApi()
             }
         }
+
+        parentFragmentManager.setFragmentResultListener("camera_done", viewLifecycleOwner) { _, _ ->
+            fetchListsFromApi()
+        }
+
+        binding.mainToolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.button_delete -> {
+                    adapter.toggledeleteMode()
+                    Log.d("deletebutton", "clicked")
+                    true
+                }
+                else -> false
+            }
+        }
     }
+
 
     private fun fetchAndStoreCurrencyData(onFinished: () -> Unit) {
         apiService.findAll().enqueue(object : Callback<ApiResponse<List<CurrencyResponseDto>>> {

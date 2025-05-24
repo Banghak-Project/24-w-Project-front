@@ -202,11 +202,11 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.button_setting -> { // 설정 버튼 클릭 처리
-                val intent = Intent(this, SettingActivity::class.java)
-                startActivity(intent)
-                true
-            }
+//            R.id.button_setting -> {
+//                val intent = Intent(this, SettingActivity::class.java)
+//                startActivity(intent)
+//                true
+//            }
 
             R.id.button_delete -> {
                 adapter.toggledeleteMode()
