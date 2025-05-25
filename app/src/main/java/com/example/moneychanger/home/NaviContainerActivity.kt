@@ -13,9 +13,10 @@ import com.example.moneychanger.databinding.ActivityNaviContainerBinding
 import com.example.moneychanger.calendar.CallendarFragment
 import com.example.moneychanger.calendar.DashboardFragment
 import com.example.moneychanger.camera.CameraActivity
+import com.example.moneychanger.etc.OnStoreNameUpdatedListener
 import com.example.moneychanger.setting.SettingFragment
 
-class NaviContainerActivity : AppCompatActivity() {
+class NaviContainerActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
 
     private lateinit var binding: ActivityNaviContainerBinding
     private lateinit var addListLauncher: ActivityResultLauncher<Intent>
@@ -84,5 +85,12 @@ class NaviContainerActivity : AppCompatActivity() {
             textView.setTextColor(ContextCompat.getColor(this, colorRes))
         }
     }
+
+    override fun onStoreNameUpdated(name: String) {
+        // Fragment로 위임
+        val fragment = supportFragmentManager.findFragmentByTag("MainFragmentTag") as? MainFragment
+        fragment?.onStoreNameUpdated(name)
+    }
+
 
 }
