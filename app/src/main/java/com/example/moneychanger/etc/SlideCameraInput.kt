@@ -1,18 +1,21 @@
 package com.example.moneychanger.etc
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.example.moneychanger.databinding.SlideCameraInputBinding
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.product.CreateProductRequestDto
 import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
 import androidx.fragment.app.activityViewModels
+import com.example.moneychanger.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import retrofit2.Call
@@ -85,6 +88,52 @@ class SlideCameraInput(
 
             if (price > 0) {
                 addProductToList(listId, productName, price)
+            }
+        }
+
+        var pieces = 1
+        binding.countText.text = pieces.toString()
+        binding.buttonMinus.setOnClickListener {
+            if (pieces > 1) {
+                pieces -= 1
+                binding.countText.text = pieces.toString()
+            }
+
+            if (pieces > 1) {
+                binding.rectMinus.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.main)
+                )
+                binding.minusSign.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.main)
+                )
+            } else {
+                binding.rectMinus.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.gray_02)
+                )
+                binding.minusSign.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.gray_02)
+                )
+            }
+        }
+
+        binding.buttonPlus.setOnClickListener {
+            pieces += 1
+            binding.countText.text = pieces.toString()
+
+            if (pieces > 1) {
+                binding.rectMinus.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.main)
+                )
+                binding.minusSign.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.main)
+                )
+            }else {
+                binding.rectMinus.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.gray_03)
+                )
+                binding.minusSign.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.gray_03)
+                )
             }
         }
     }

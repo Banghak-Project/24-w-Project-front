@@ -54,7 +54,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:paddingHorizontal="24dp"
-                    android:hint="N00,000,000"
+                    android:hint="@string/price"
                     android:background="@drawable/round_background"
                     android:textColor="@color/gray_06"
                     style="@style/TextBodyL"
@@ -71,6 +71,66 @@
                     android:paddingRight="24dp"
                     android:textColor="@color/gray_05"
                     style="@style/TextBodyL"/>
+            </FrameLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/count"
+                android:layout_gravity="center"
+                style="@style/TextHeadingL"/>
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+            <FrameLayout
+                android:id="@+id/button_minus"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/round_background"
+                android:backgroundTint="@color/white">
+                <ImageView
+                    android:id="@+id/rect_minus"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/rectangle_unclicked"/>
+                <ImageView
+                    android:id="@+id/minus_sign"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/icon_minus"/>
+            </FrameLayout>
+            <TextView
+                android:id="@+id/count_text"
+                android:layout_width="45dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/num"
+                style="@style/TextHeadingXL"
+                android:textColor="@color/main"/>
+            <FrameLayout
+                android:id="@+id/button_plus"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/round_background"
+                android:backgroundTint="@color/white">
+                <ImageView
+                    android:id="@+id/rect_plus"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/rectangle_clicked"/>
+                <ImageView
+                    android:id="@+id/plus_sign"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/icon_plus"/>
             </FrameLayout>
         </LinearLayout>
         <LinearLayout
@@ -109,8 +169,7 @@
                     android:id="@+id/changed_text"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="N00,000,000"
-                    android:textColor="@color/gray_06"
+                    android:text="@string/price"
                     style="@style/TextBodyL"/>
                 <Space
                     android:layout_width="0dp"
@@ -122,8 +181,7 @@
                     style="@style/TextBodyL"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="₩"
-                    android:textColor="@color/gray_05" />
+                    android:text="₩" />
             </LinearLayout>
         </LinearLayout>
         <Space

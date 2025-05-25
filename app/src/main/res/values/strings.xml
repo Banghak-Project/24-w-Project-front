@@ -144,6 +144,12 @@
     <!--카메라 리스트-->
     <string name="product_name">상품명</string>
     <string name="product_price">상품 금액</string>
+    <string name="price">N00,000,000</string>
+    <string name="num">1</string>
+
+    <string name="total_price">총 금액</string>
+    <string name="count">수량</string>
+    <string name="submit">적용</string>
 
     <string name="origin_price">원래 가격</string>
     <string name="calc_price">계산된 가격</string>

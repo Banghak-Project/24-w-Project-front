@@ -1,6 +1,7 @@
 package com.example.moneychanger.list
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,6 +9,7 @@ import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.R
@@ -97,6 +99,43 @@ class AddActivity : AppCompatActivity() {
             if (amount > 0) {
                 addProductToList(listId, "", amount)
             }
+        }
+
+        var pieces = 1
+        binding.countText.text = pieces.toString()
+        binding.buttonMinus.setOnClickListener {
+            if (pieces > 1) {
+                pieces -= 1
+                binding.countText.text = pieces.toString()
+            }
+
+            if (pieces > 1) {
+                binding.rectMinus.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(this, R.color.main)
+                )
+                binding.minusSign.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(this, R.color.main)
+                )
+            } else {
+                binding.rectMinus.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(this, R.color.gray_03)
+                )
+                binding.minusSign.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(this, R.color.gray_03)
+                )
+            }
+        }
+
+        binding.buttonPlus.setOnClickListener {
+            pieces += 1
+            binding.countText.text = pieces.toString()
+
+            binding.rectMinus.imageTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.main)
+            )
+            binding.minusSign.imageTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.main)
+            )
         }
     }
 
