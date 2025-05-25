@@ -1,8 +1,10 @@
 package com.example.moneychanger.home
 
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +17,7 @@ import android.widget.LinearLayout
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -86,7 +89,9 @@ class MainFragment : Fragment(), OnStoreNameUpdatedListener {
         binding.listContainer.layoutManager = LinearLayoutManager(requireContext())
         binding.listContainer.adapter = adapter
 
-        showAccessPopup()
+        if (!hasAllPermissions()) {
+            showAccessPopup()
+        }
 
         currencyViewModel = ViewModelProvider(this)[CurrencyViewModel::class.java]
         fetchAndStoreCurrencyData {
@@ -195,6 +200,23 @@ class MainFragment : Fragment(), OnStoreNameUpdatedListener {
     private fun getCurrentDateTime(): String {
         return LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString()
     }
+
+    private fun hasAllPermissions(): Boolean {
+        val permissions = listOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+
+        Log.d("PermissionCheck", "CAMERA: " +
+                (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED))
+        Log.d("PermissionCheck", "STORAGE: " +
+                (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED))
+
+        return permissions.all {
+            ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
 
     private fun showAccessPopup() {
         val dialogView = layoutInflater.inflate(R.layout.access_popup, null)
