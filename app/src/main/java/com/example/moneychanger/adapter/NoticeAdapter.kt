@@ -8,9 +8,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moneychanger.R
+import com.example.moneychanger.network.notice.NoticeResponseDto
 
 class NoticeAdapter(
-    private val items: List<ExpandableItem>
+    private val items: List<NoticeResponseDto>
 ) : RecyclerView.Adapter<NoticeAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -21,7 +22,7 @@ class NoticeAdapter(
         val content: TextView = view.findViewById(R.id.notice_detail_content)
         val arrow: ImageView = view.findViewById(R.id.notice_arrow) // 화살표 추가
 
-        fun bind(item: ExpandableItem, position: Int) {
+        fun bind(item: NoticeResponseDto, position: Int) {
             date.text = item.date
             title.text = item.title
             content.text = item.content
@@ -48,5 +49,3 @@ class NoticeAdapter(
 
     override fun getItemCount() = items.size
 }
-
-data class ExpandableItem(val title: String, val date: String, val content: String, var isExpanded: Boolean = false)

@@ -10,11 +10,8 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
-import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityAddBinding
-import com.example.moneychanger.etc.ExchangeRateUtil
 import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.currency.CurrencyManager
@@ -27,7 +24,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.Locale
-import com.example.moneychanger.network.currency.CurrencyViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -92,15 +88,6 @@ class AddActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        binding.buttonAdd.setOnClickListener {
-            val inputText = binding.inputField.text.toString().replace(",", "")
-            val amount = inputText.toDoubleOrNull() ?: 0.0
-
-            if (amount > 0) {
-                addProductToList(listId, "", amount)
-            }
-        }
-
         var pieces = 1
         binding.countText.text = pieces.toString()
         binding.buttonMinus.setOnClickListener {
@@ -123,6 +110,17 @@ class AddActivity : AppCompatActivity() {
                 binding.minusSign.imageTintList = ColorStateList.valueOf(
                     ContextCompat.getColor(this, R.color.gray_03)
                 )
+            }
+        }
+
+        binding.buttonAdd.setOnClickListener {
+            val inputText = binding.inputField.text.toString().replace(",", "")
+            val amount = inputText.toDoubleOrNull() ?: 0.0
+
+            if (amount > 0) {
+                for (i in 0 until pieces) {
+                    addProductToList(listId, "", amount)
+                }
             }
         }
 
@@ -155,31 +153,31 @@ class AddActivity : AppCompatActivity() {
                             val productResponse: CreateProductResponseDto? = try {
                                 Gson().fromJson(jsonData, CreateProductResponseDto::class.java)
                             } catch (e: JsonSyntaxException) {
-                                Log.e("CameraActivity", "🚨 JSON 변환 오류: ${e.message}")
+                                Log.e("CameraActivity", "JSON 변환 오류: ${e.message}")
                                 null
                             }
 
                             if (productResponse != null) {
                                 Toast.makeText(this@AddActivity, "상품 추가 완료!", Toast.LENGTH_SHORT).show()
-                                Log.d("CameraActivity", "✅ 상품 추가 성공: ${productResponse.name}")
+                                Log.d("CameraActivity", "상품 추가 성공: ${productResponse.name}")
 
                                 // 리스트로 돌아가서 업데이트하도록 결과 전달
                                 val resultIntent = Intent()
                                 setResult(RESULT_OK, resultIntent)
                                 finish()
                             } else {
-                                Log.e("CameraActivity", "🚨 상품 응답 데이터 변환 실패")
+                                Log.e("CameraActivity", "상품 응답 데이터 변환 실패")
                             }
                         } else {
-                            Log.e("CameraActivity", "🚨 상품 추가 실패: ${apiResponse?.message ?: "알 수 없는 오류"}")
+                            Log.e("CameraActivity", "상품 추가 실패: ${apiResponse?.message ?: "알 수 없는 오류"}")
                         }
                     } else {
-                        Log.e("CameraActivity", "🚨 응답 실패: ${response.errorBody()?.string()}")
+                        Log.e("CameraActivity", "응답 실패: ${response.errorBody()?.string()}")
                     }
                 }
 
                 override fun onFailure(call: Call<ApiResponse<CreateProductResponseDto>>, t: Throwable) {
-                    Log.e("CameraActivity", "🚨 서버 요청 실패: ${t.message}")
+                    Log.e("CameraActivity", "서버 요청 실패: ${t.message}")
                 }
             })
     }

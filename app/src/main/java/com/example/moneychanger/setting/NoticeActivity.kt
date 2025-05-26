@@ -1,18 +1,24 @@
 package com.example.moneychanger.setting
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.moneychanger.R
-import com.example.moneychanger.adapter.ExpandableItem
 import com.example.moneychanger.adapter.NoticeAdapter
 import com.example.moneychanger.databinding.ActivityNoticeBinding
 import com.example.moneychanger.etc.BaseActivity
+import com.example.moneychanger.network.RetrofitClient.apiService
+import com.example.moneychanger.network.notice.NoticeResponseDto
+import com.example.moneychanger.network.user.ApiResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class NoticeActivity : BaseActivity() {
     private lateinit var binding: ActivityNoticeBinding
+    private lateinit var noticeList: List<NoticeResponseDto>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityNoticeBinding.inflate(layoutInflater)
@@ -30,16 +36,37 @@ class NoticeActivity : BaseActivity() {
             finish()
         }
 
-        // 더미 데이터
-        val noticeList = listOf(
-            ExpandableItem("공지사항 1", "25/02/01","이것은 공지사항 1의 내용입니다."),
-            ExpandableItem("공지사항 2", "25/02/02","이것은 공지사항 2의 내용입니다."),
-            ExpandableItem("공지사항 3", "25/02/03","이것은 공지사항 3의 내용입니다."),
-            ExpandableItem("공지사항 4", "25/02/04","이것은 공지사항 4의 내용입니다.")
-        )
+        fetchNotice()
 
-        // recyclerView 연결
-        binding.noticeContainer.layoutManager = LinearLayoutManager(this)
-        binding.noticeContainer.adapter = NoticeAdapter(noticeList)
     }
+    private fun fetchNotice() {
+        apiService.getAllNotice().enqueue(object :
+            Callback<ApiResponse<List<NoticeResponseDto>>> {
+
+            override fun onResponse(
+                call: Call<ApiResponse<List<NoticeResponseDto>>>,
+                response: Response<ApiResponse<List<NoticeResponseDto>>>
+            ) {
+                if (response.isSuccessful && response.body()?.status == "success") {
+                    noticeList = response.body()?.data ?: emptyList()
+                    Log.d("NoticeActivity", "응답 파싱 성공: $noticeList")
+
+                    // recyclerView 연결
+                    binding.noticeContainer.layoutManager = LinearLayoutManager(this@NoticeActivity)
+                    binding.noticeContainer.adapter = NoticeAdapter(noticeList)
+                } else {
+                    Toast.makeText(this@NoticeActivity, "공지사항 불러오기 실패", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(
+                call: Call<ApiResponse<List<NoticeResponseDto>>>,
+                t: Throwable
+            ) {
+                Log.e("NoticeActivity", "API 실패", t)
+                Toast.makeText(this@NoticeActivity, "네트워크 오류", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
 }

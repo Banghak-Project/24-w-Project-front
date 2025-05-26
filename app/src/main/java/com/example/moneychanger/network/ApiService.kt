@@ -10,6 +10,7 @@ import com.example.moneychanger.network.list.ListsResponseDto
 import com.example.moneychanger.network.list.UpdateRequestDto
 import com.example.moneychanger.network.list.UpdateResponseDto
 import com.example.moneychanger.network.location.GeocodeResponse
+import com.example.moneychanger.network.notice.NoticeResponseDto
 import com.example.moneychanger.network.product.CreateProductRequestDto
 import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.product.DeleteProductsRequestDto
@@ -34,13 +35,11 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -191,6 +190,10 @@ interface ApiService {
     suspend fun getListsBySingleDate(
         @Query("date") date: String
     ): Response<ApiResponse<List<ListWithProductsDto>>>
+
+    //공지사항
+    @GET("/api/notice")
+    fun getAllNotice(): Call<ApiResponse<List<NoticeResponseDto>>>
 
 
 }
