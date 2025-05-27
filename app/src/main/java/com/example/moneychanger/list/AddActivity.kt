@@ -115,11 +115,12 @@ class AddActivity : AppCompatActivity() {
 
         binding.buttonAdd.setOnClickListener {
             val inputText = binding.inputField.text.toString().replace(",", "")
+            val inputName = binding.inputName.text.toString().trim()
             val amount = inputText.toDoubleOrNull() ?: 0.0
 
             if (amount > 0) {
                 for (i in 0 until pieces) {
-                    addProductToList(listId, "", amount)
+                    addProductToList(listId, inputName, amount)
                 }
             }
         }

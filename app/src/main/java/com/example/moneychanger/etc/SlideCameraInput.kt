@@ -81,13 +81,13 @@ class SlideCameraInput(
         binding.currencySymbol.text = fromSymbol
 
         binding.buttonAdd.setOnClickListener {
-            val productName = ""
+            val inputName = binding.inputName.text.toString().trim()
 
             val inputText = binding.inputPrice.text.toString().replace(",", "")
             val price = inputText.toDoubleOrNull() ?: 0.0
 
             if (price > 0) {
-                addProductToList(listId, productName, price)
+                addProductToList(listId, inputName, price)
             }
         }
 
