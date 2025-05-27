@@ -98,19 +98,6 @@ class MainFragment : Fragment(), OnStoreNameUpdatedListener {
             fetchListsFromApi()
         }
 
-        binding.b1.setOnClickListener {
-            startActivity(Intent(requireContext(), CalendarActivity::class.java))
-        }
-        binding.b2.setOnClickListener {
-            startActivity(Intent(requireContext(), NewPwActivity::class.java))
-        }
-        binding.b3.setOnClickListener {
-            startActivity(Intent(requireContext(), LocationActivity::class.java))
-        }
-        binding.b4.setOnClickListener {
-            startActivity(Intent(requireContext(), DashboardActivity::class.java))
-        }
-
         parentFragmentManager.setFragmentResultListener("requestKey", viewLifecycleOwner) { _, bundle ->
             val listAdded = bundle.getBoolean("listAdded")
             if (listAdded) {
