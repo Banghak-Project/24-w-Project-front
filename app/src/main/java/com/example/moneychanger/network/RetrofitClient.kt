@@ -19,7 +19,7 @@ object RetrofitClient {
         .addInterceptor(AuthInterceptor())
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
-        }) // 📌 Retrofit API 요청/응답 로그 확인 가능
+        }) // Retrofit API 요청/응답 로그 확인 가능
         .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(15, TimeUnit.SECONDS)
         .writeTimeout(15, TimeUnit.SECONDS)
