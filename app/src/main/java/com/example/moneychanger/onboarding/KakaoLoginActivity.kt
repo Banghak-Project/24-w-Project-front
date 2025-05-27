@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.moneychanger.R
 import com.example.moneychanger.home.MainActivity
+import com.example.moneychanger.home.NaviContainerActivity
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
 import com.example.moneychanger.network.user.KakaoLoginRequest
@@ -90,7 +91,7 @@ class KakaoLoginActivity : AppCompatActivity() {
                                 "소셜 계정 최초 로그인입니다. 설정 메뉴에서 기본 통화를 지정해주세요.",
                                 Toast.LENGTH_LONG).show()
 
-                            startActivity(Intent(this@KakaoLoginActivity, MainActivity::class.java))
+                            startActivity(Intent(this@KakaoLoginActivity, NaviContainerActivity::class.java))
                             finish()
                         } else {
                             Log.e("KakaoLoginActivity", "🚨 로그인 실패: data가 null")
