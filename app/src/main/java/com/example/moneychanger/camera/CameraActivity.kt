@@ -45,6 +45,7 @@ import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
 import com.example.moneychanger.etc.OnProductAddedListener
 import com.example.moneychanger.etc.SlideCameraList
+import com.example.moneychanger.etc.SlideNewList
 import com.example.moneychanger.location.LocationUtil
 import com.example.moneychanger.location.getAddressFromLatLng
 import com.example.moneychanger.network.RetrofitClient.apiService
@@ -68,6 +69,7 @@ import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.example.moneychanger.etc.SlideCameraCount
 
 import retrofit2.Call
 import retrofit2.Callback
@@ -408,42 +410,48 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             binding.textOverlay.visibility = View.VISIBLE
 
             binding.confirmButton.setOnClickListener {
-                val productNameCopy = selectedProductName
-                val productPriceCopy = selectedProductPrice
+                val slideCount = SlideCameraCount()
+                slideCount.productAddListener = object : SlideCameraCount.OnProductAddListener {
+                    override fun onProductAdd() {
+                        val productNameCopy = selectedProductName
+                        val productPriceCopy = selectedProductPrice
 
-                if (productNameCopy != null && productPriceCopy != null) {
-                    if (latestListId != -1L) {
-                        addProductToList(latestListId, productNameCopy, productPriceCopy)
-                    } else {
-                        checkAndRequestLocationPermission {
-                            getLocation { address ->
-                                location = address
-                                addNewList(userId, currencyIdFrom, currencyIdTo, location, productNameCopy, productPriceCopy)
+                        if (productNameCopy != null && productPriceCopy != null) {
+                            if (latestListId != -1L) {
+                                addProductToList(latestListId, productNameCopy, productPriceCopy)
+                            } else {
+                                checkAndRequestLocationPermission {
+                                    getLocation { address ->
+                                        location = address
+                                        addNewList(userId, currencyIdFrom, currencyIdTo, location, productNameCopy, productPriceCopy)
+                                    }
+                                }
                             }
+
+                            // 상태 초기화 코드 그대로 유지
+                            binding.textOverlay.removeAllViews()
+                            binding.capturedImageView.visibility = GONE
+                            binding.previewView.visibility = VISIBLE
+
+                            selectedProductName = null
+                            selectedProductPrice = null
+                            selectedProductNameView = null
+                            selectedProductPriceView = null
+                            isSelectingPrice = false
+
+                            binding.productName.text = "상품명"
+                            binding.productOriginPrice.text = "원래 가격"
+                            binding.productCalcPrice.text = "계산된 가격"
+
+                            binding.defaultText.visibility = VISIBLE
+                            binding.newText.visibility = GONE
+                            binding.offButton.visibility = GONE
+                        } else {
+                            Toast.makeText(this@CameraActivity, "상품명과 상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
                         }
                     }
-
-                    // 상태 초기화
-                    binding.textOverlay.removeAllViews()
-                    binding.capturedImageView.visibility = GONE
-                    binding.previewView.visibility = VISIBLE
-
-                    selectedProductName = null
-                    selectedProductPrice = null
-                    selectedProductNameView = null
-                    selectedProductPriceView = null
-                    isSelectingPrice = false
-
-                    binding.productName.text = "상품명"
-                    binding.productOriginPrice.text = "원래 가격"
-                    binding.productCalcPrice.text = "계산된 가격"
-
-                    binding.defaultText.visibility = VISIBLE
-                    binding.newText.visibility = GONE
-                    binding.offButton.visibility = GONE
-                } else {
-                    Toast.makeText(this@CameraActivity, "상품명과 상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
                 }
+                slideCount.show(supportFragmentManager, slideCount.tag)
             }
 
             Toast.makeText(this@CameraActivity, "상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()

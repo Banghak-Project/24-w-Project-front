@@ -44,7 +44,7 @@ class SlideCameraInput(
             behavior.state = BottomSheetBehavior.STATE_EXPANDED // 슬라이드 최대 크기로 시작
 
             val layoutParams = it.layoutParams
-            layoutParams.height = dpToPx(368f).toInt() // 전체 높이 설정
+            layoutParams.height = dpToPx(500f).toInt() // 전체 높이 설정
             it.layoutParams = layoutParams
         }
     }
