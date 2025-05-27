@@ -7,14 +7,14 @@
 
     <!-- Onboarding_01 -->
     <string name="access_title">Guide des autorisations</string>
-    <string name="access_title1"><![CDATA[Autorisation d&#39;utilisation de la position, GPS]]></string>
-    <string name="access_title2"><![CDATA[Autorisation d&#39;utilisation de la caméra et des photos]]></string>
-    <string name="access_body1"><![CDATA[Vérifier la position lors de la création d&#39;une liste]]></string>
+    <string name="access_title1"><![CDATA[Autorisation d’utilisation de la position, GPS]]></string>
+    <string name="access_title2"><![CDATA[Autorisation d’utilisation de la caméra et des photos]]></string>
+    <string name="access_body1"><![CDATA[Vérifier la position lors de la création d’une liste]]></string>
     <string name="access_body2">Gérer les photos et le stockage lors de la vérification du taux de change</string>
 
     <!-- Onboarding_02 -->
     <string name="app_explain1">Il suffit de pointer la caméra</string>
-    <string name="app_explain2"><![CDATA[Prix et taux de change en un coup d&#39;œil]]></string>
+    <string name="app_explain2"><![CDATA[Prix et taux de change en un coup d’œil]]></string>
     <string name="app_explain3">Avec MONEY LENS</string>
     <string name="app_explain4">Vérifiez facilement</string>
     <string name="kakao_login">Connexion avec Kakao</string>
@@ -24,19 +24,19 @@
     <string name="login">Connexion</string>
     <string name="id_eng">EMAIL</string>
     <string name="pw_eng">MDP</string>
-    <string name="find_idpw"><![CDATA[Trouver l&#39;identifiant ou le mot de passe]]></string>
+    <string name="find_idpw"><![CDATA[Trouver l’identifiant ou le mot de passe]]></string>
     <string name="signin">SE CONNECTER</string>
     <string name="join_merbership">Nouveau membre ?</string>
 
     <!-- Onboarding_04 -->
     <string name="policy_title1">Veuillez accepter</string>
-    <string name="policy_title2"><![CDATA[les conditions d&#39;utilisation.]]></string>
-    <string name="accept_all"><![CDATA[Oui, j&#39;accepte tout]]></string>
+    <string name="policy_title2"><![CDATA[les conditions d’utilisation.]]></string>
+    <string name="accept_all"><![CDATA[Oui, j’accepte tout]]></string>
     <string name="essential">[Obligatoire]</string>
     <string name="optional">[Optionnel]</string>
     <string name="policy_content1">Acceptation des conditions</string>
     <string name="policy_content2">Consentement à la collecte des données personnelles</string>
-    <string name="policy_content3"><![CDATA[Consentement à l&#39;utilisation des cookies et technologies similaires]]></string>
+    <string name="policy_content3"><![CDATA[Consentement à l’utilisation des cookies et technologies similaires]]></string>
 
     <!-- Onboarding_05,06 -->
     <string name="login_auth_title1">Veuillez saisir votre</string>
@@ -63,19 +63,19 @@
     <string name="pw_kor">Mot de passe</string>
 
     <!-- ID/Mot de passe -->
-    <string name="button_id"><![CDATA[Trouver l&#39;ID]]></string>
+    <string name="button_id"><![CDATA[Trouver l’ID]]></string>
     <string name="button_pw">Réinitialiser le mot de passe</string>
-    <string name="find_id_title1"><![CDATA[Avec les informations d&#39;inscription]]></string>
+    <string name="find_id_title1"><![CDATA[Avec les informations d’inscription]]></string>
     <string name="find_id_title2">vérifiez votre identifiant</string>
     <string name="find_pw_title1">Pour réinitialiser votre mot de passe,</string>
     <string name="find_pw_title2">obtenez un mot de passe temporaire</string>
-    <string name="submit_button_id"><![CDATA[Trouver l&#39;ID]]></string>
-    <string name="submit_button_pw"><![CDATA[Demander l&#39;e-mail de réinitialisation]]></string>
+    <string name="submit_button_id"><![CDATA[Trouver l’ID]]></string>
+    <string name="submit_button_pw"><![CDATA[Demander l’e-mail de réinitialisation]]></string>
 
     <!-- Résultat ID -->
     <string name="id_result_title1">Votre identifiant est</string>
     <string name="id_result_title2">.</string>
-    <string name="button_to_login"><![CDATA[Aller à l&#39;écran de connexion]]></string>
+    <string name="button_to_login"><![CDATA[Aller à l’écran de connexion]]></string>
 
     <!-- Résultat mot de passe -->
     <string name="pw_result_title1">Le mot de passe a été envoyé à</string>
@@ -94,7 +94,7 @@
     <string name="total_price">Prix total</string>
     <string name="count">Quantité</string>
     <string name="submit">Appliquer</string>
-    <string name="origin_price"><![CDATA[Prix d&#39;origine]]></string>
+    <string name="origin_price"><![CDATA[Prix d’origine]]></string>
     <string name="calc_price">Prix calculé</string>
 
     <!-- Accueil -->
@@ -123,24 +123,24 @@
     <string name="edit_title2">Veuillez les saisir.</string>
 
     <!-- Paramètres_03 -->
-    <string name="term1"><![CDATA[Conditions d&#39;utilisation]]></string>
+    <string name="term1"><![CDATA[Conditions d’utilisation]]></string>
     <string name="term2">Politique de confidentialité</string>
     <string name="term3">Consentement à la géolocalisation</string>
     <string name="term4">Autres</string>
 
     <string name="term_detail1"><![CDATA[
-Les présentes conditions définissent les règles d&#39;utilisation du service (ci-après le &quot;Service&quot;) fondé sur les données de localisation et les autorisations de la caméra fournies par l&#39;utilisateur。\n
+Les présentes conditions définissent les règles d’utilisation du service (ci-après le &quot;Service&quot;) fondé sur les données de localisation et les autorisations de la caméra fournies par l’utilisateur。\n
 \n
 1-1. Objectif du service\n
 ・Le service enregistre automatiquement les informations du magasin via la localisation, et gère les dépenses après lecture des reçus via la caméra。\n
 \n
-1-2. Obligations de l&#39;utilisateur\n
-・L&#39;utilisateur doit saisir des données exactes et ne pas collecter/utiliser les informations d&#39;autrui sans autorisation。\n
+1-2. Obligations de l’utilisateur\n
+・L’utilisateur doit saisir des données exactes et ne pas collecter/utiliser les informations d’autrui sans autorisation。\n
 ・Les autorisations de localisation et de caméra sont nécessaires。En cas de refus, certaines fonctions peuvent être limitées。\n
 ]]></string>
 
     <string name="term_detail2"><![CDATA[
-Le Service s&#39;engage à protéger la vie privée des utilisateurs et à respecter la législation applicable。\n
+Le Service s’engage à protéger la vie privée des utilisateurs et à respecter la législation applicable。\n
 \n
 2-1. Informations collectées\n
 1. Localisation\n
@@ -152,7 +152,7 @@ Le Service s&#39;engage à protéger la vie privée des utilisateurs et à respe
 3. Données de dépenses et de change\n
 ・Utilisées pour fournir les fonctions de gestion de dépenses et de conversion。\n
 \n
-2-2. Finalité de l&#39;utilisation\n
+2-2. Finalité de l’utilisation\n
 ・Enregistrement automatique des magasins visités。\n
 ・Conversion des reçus via OCR et taux de change。\n
 ・Résumé des dépenses dans la devise choisie。\n
@@ -162,8 +162,8 @@ Le Service s&#39;engage à protéger la vie privée des utilisateurs et à respe
 ・Certaines données peuvent être transmises à des API externes de taux de change。\n
 \n
 2-4. Stockage et suppression\n
-・Les données sont conservées pendant l&#39;utilisation du service et supprimées lors de la suppression du compte。\n
-・L&#39;utilisateur peut gérer ou demander la suppression à tout moment via les paramètres。\n
+・Les données sont conservées pendant l’utilisation du service et supprimées lors de la suppression du compte。\n
+・L’utilisateur peut gérer ou demander la suppression à tout moment via les paramètres。\n
 ]]></string>
 
     <string name="term_detail3"><![CDATA[
@@ -173,14 +173,14 @@ En cas de retrait du consentement, certaines fonctions peuvent être limitées�
 
     <string name="term_detail4"><![CDATA[
 1. Cookies et technologies similaires\n
-Le Service peut utiliser des cookies pour améliorer l&#39;expérience utilisateur。Vous pouvez les bloquer ou modifier les paramètres。\n
+Le Service peut utiliser des cookies pour améliorer l’expérience utilisateur。Vous pouvez les bloquer ou modifier les paramètres。\n
 \n
 2. Gestion des données\n
 Les données sont protégées par SSL et un système de sécurité empêche les accès non autorisés。\n
 \n
 3. Limitation de responsabilité\n
-・Bien que le service veille à l&#39;exactitude des données, des écarts peuvent exister à cause des variations du marché。\n
-・Le service n&#39;est pas responsable des erreurs d&#39;entrée ou refus de permissions。\n
+・Bien que le service veille à l’exactitude des données, des écarts peuvent exister à cause des variations du marché。\n
+・Le service n’est pas responsable des erreurs d’entrée ou refus de permissions。\n
 ]]></string>
 
 
@@ -189,7 +189,7 @@ Les données sont protégées par SSL et un système de sécurité empêche les 
     <string name="unsubscribe_title">Souhaitez-vous vraiment vous désinscrire ?</string>
     <string name="unsubscribe_content_title">Points importants avant la désinscription</string>
     <string name="unsubscribe_content1">&#8226; Les données du compte et les enregistrements de dépenses seront définitivement supprimés</string>
-    <string name="unsubscribe_content2"><![CDATA[&#8226; Les informations et l&#39;historique des magasins enregistrés seront supprimés]]></string>
+    <string name="unsubscribe_content2"><![CDATA[&#8226; Les informations et l’historique des magasins enregistrés seront supprimés]]></string>
     <string name="unsubscribe_content3">&#8226; Les données précédentes ne seront pas récupérées en cas de réinscription</string>
     <string name="no">Non</string>
     <string name="yes">Oui</string>
@@ -201,10 +201,10 @@ Les données sont protégées par SSL et un système de sécurité empêche les 
 
     <!-- Paramètres_06 -->
     <string name="unsubscribe_success">La désinscription a été effectuée</string>
-    <string name="to_start"><![CDATA[Retour à l&#39;accueil]]></string>
+    <string name="to_start"><![CDATA[Retour à l’accueil]]></string>
 
     <string name="find_pw">Réinitialiser le mot de passe</string>
-    <string name="find_id"><![CDATA[Trouver l&#39;ID]]></string>
+    <string name="find_id"><![CDATA[Trouver l’ID]]></string>
 
     <!-- Calendrier -->
     <string name="total_spend">Dépense totale</string>
@@ -223,7 +223,7 @@ Les données sont protégées par SSL et un système de sécurité empêche les 
     <string name="sat">Sam</string>
 
     <!-- Tableau de bord -->
-    <string name="title"><![CDATA[Consultez votre historique d&#39;utilisation]]></string>
+    <string name="title"><![CDATA[Consultez votre historique d’utilisation]]></string>
     <string name="first_week">Semaine 1</string>
     <string name="second_week">Semaine 2</string>
     <string name="third_week">Semaine 3</string>
@@ -234,8 +234,8 @@ Les données sont protégées par SSL et un système de sécurité empêche les 
     <string name="compare_month_label">Les dépenses de ce mois</string>
     <string name="up">ont augmenté</string>
     <string name="end">.</string>
-    <string name="compare_year_title"><![CDATA[Comparé à l&#39;année dernière]]></string>
-    <string name="compare_year_label"><![CDATA[Les dépenses de cette année sont plus élevées que l&#39;année dernière]]></string>
+    <string name="compare_year_title"><![CDATA[Comparé à l’année dernière]]></string>
+    <string name="compare_year_label"><![CDATA[Les dépenses de cette année sont plus élevées que l’année dernière]]></string>
     <string name="end2">.</string>
 
     <string name="list">Liste</string>

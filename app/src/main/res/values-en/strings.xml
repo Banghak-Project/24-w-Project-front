@@ -169,9 +169,9 @@ SSL encryption protects data and blocks unauthorized access.\n
     <string name="find_pw">Reset Password</string>
     <string name="find_id">Find ID</string>
     <string name="total_spend">Total Spend</string>
-    <string name="year"> </string>
-    <string name="month"> </string>
-    <string name="date"> </string>
+    <string name="year" />
+    <string name="month" />
+    <string name="date" />
     <string name="history">Spending History</string>
     <string name="add_sum">Cumulative Total</string>
     <string name="sun">Sun</string>
@@ -189,11 +189,11 @@ SSL encryption protects data and blocks unauthorized access.\n
     <string name="fifth_week">Week 5</string>
     <string name="avg">Average</string>
     <string name="compare_month_title">Compared to Last Month</string>
-    <string name="compare_month_label"><![CDATA[This month's spending has]]></string>
+    <string name="compare_month_label">This month’s spending has</string>
     <string name="up">increased</string>
     <string name="end">.</string>
     <string name="compare_year_title">Compared to Last Year</string>
-    <string name="compare_year_label"><![CDATA[This year's spending is higher than last year's]]></string>
+    <string name="compare_year_label"><![CDATA[This year’s spending is higher than last year’s]]></string>
     <string name="end2">increased</string>
     <string name="list">List</string>
     <string name="finan">Ledger</string>
