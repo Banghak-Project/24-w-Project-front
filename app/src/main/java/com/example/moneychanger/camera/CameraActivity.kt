@@ -37,12 +37,12 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.AspectRatio
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.moneychanger.R
 import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
+import com.example.moneychanger.etc.ExchangeRateUtil.getUserDefaultCurrency
 import com.example.moneychanger.etc.OnProductAddedListener
 import com.example.moneychanger.etc.SlideCameraList
 import com.example.moneychanger.etc.SlideNewList
@@ -115,6 +115,23 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             showAccessPopup()
         } else {
             startCamera()
+        }
+        getUserDefaultCurrency{ defaultCurrency ->
+            if (defaultCurrency != 0.toLong() && defaultCurrency != null) {
+                val curModel = CurrencyManager.getById(defaultCurrency)
+                    ?: error("Unknown currency id=$defaultCurrency")
+                val selected = curModel.curUnit
+                binding.currencyName2.text = selected
+                viewModel.updateCurrency(selected)
+                val selectedCurrency = CurrencyManager.getByUnit(selected)
+                currencyIdTo = selectedCurrency.currencyId
+                if (latestListId != -1L) {
+                    updateListCurrency(currencyIdFrom, currencyIdTo)
+                }
+            } else {
+                Toast.makeText(this, "기본 통화 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
+            }
+
         }
 
         binding.listButton.setOnClickListener {

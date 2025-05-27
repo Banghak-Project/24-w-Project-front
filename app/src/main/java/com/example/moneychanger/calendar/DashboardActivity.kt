@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityDashboardBinding
 import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
+import com.example.moneychanger.etc.ExchangeRateUtil.getUserDefaultCurrency
 import com.example.moneychanger.network.RetrofitClient.apiService
 import com.example.moneychanger.network.currency.CurrencyManager
 import com.example.moneychanger.network.product.ProductWithCurrencyDto
@@ -419,26 +420,5 @@ class DashboardActivity : AppCompatActivity() {
         })
     }
 
-    private fun getUserDefaultCurrency(onFinished: (Long?) -> Unit){
-        apiService.getUserCurrency().enqueue(object : Callback<ApiResponse<Long>> {
-            override fun onResponse(
-                call:Call<ApiResponse<Long>>,
-                response: Response<ApiResponse<Long>>
-            ){
-                if (response.isSuccessful){
-                    val currencyId = response.body()?.data
-                    onFinished(currencyId)
-                }
-                else{
-                    Log.e("DashboardActivity", "통화 ID 조회 실패: ${response.code()}")
-                    onFinished(null)
-                }
-            }
 
-            override fun onFailure(p0: Call<ApiResponse<Long>>, t: Throwable) {
-                Log.e("DashboardActivity", "API 호출 실패: ${t.message}")
-                onFinished(null)
-            }
-        })
-    }
 }
