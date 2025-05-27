@@ -31,9 +31,13 @@ import android.net.Uri
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.AspectRatio
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.moneychanger.R
@@ -105,8 +109,8 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        if (!hasCameraPermission()) {
-            requestCameraPermission()
+        if (!hasCameraPermission() || !hasLocationPermission()) {
+            showAccessPopup()
         } else {
             startCamera()
         }
@@ -198,10 +202,37 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         if (latestListId != -1L) {
             fetchProductsAndShowDialog(latestListId)
         } else {
-            Toast.makeText(this, "리스트를 먼저 생성해주세요.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "통화를 먼저 선택해주세요.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showAccessPopup() {
+        val dialogView = layoutInflater.inflate(R.layout.access_popup, null)
+        val dialog = AlertDialog.Builder(this, R.style.PopupDialogTheme)
+            .setView(dialogView)
+            .create()
+
+        // 허용 버튼
+        val buttonAllow = dialogView.findViewById<LinearLayout>(R.id.button_submit)
+        buttonAllow.setOnClickListener {
+            dialog.dismiss()
+            // 카메라 권한 요청 실행
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ),
+                CAMERA_PERMISSION_CODE
+            )
         }
 
+        dialog.show()
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.8).toInt(),
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
     }
+
 
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
@@ -572,9 +603,11 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
     private fun hasCameraPermission(): Boolean {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
     }
-
-    private fun requestCameraPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
+    private fun hasLocationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onRequestPermissionsResult(
@@ -583,22 +616,23 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_PERMISSION_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                startCamera()
-            } else {
-                Toast.makeText(this, "카메라 권한이 필요합니다.", Toast.LENGTH_LONG).show()
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == LOCATION_PERMISSION_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // 권한이 승인되었을 때 다시 위치 요청
-                getLocation { address ->
-                    Log.d("Debug", "✔ 권한 승인 후 위치: $address")
+        when (requestCode) {
+            CAMERA_PERMISSION_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startCamera()
+                } else {
+                    Toast.makeText(this, "카메라 권한이 필요합니다.", Toast.LENGTH_LONG).show()
                 }
-            } else {
-                Toast.makeText(this, "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+            }
+
+            LOCATION_PERMISSION_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getLocation { address ->
+                        Log.d("Debug", "✔ 권한 승인 후 위치: $address")
+                    }
+                } else {
+                    Toast.makeText(this, "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

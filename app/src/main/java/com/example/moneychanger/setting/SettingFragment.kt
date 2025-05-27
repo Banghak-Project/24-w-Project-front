@@ -62,7 +62,11 @@ class SettingFragment : Fragment() {
             startActivity(intent)
         }
 
-        binding.buttonLogout.setOnClickListener { logout() }
+        binding.buttonLogout.setOnClickListener {
+            logout()
+            val intent = Intent(requireContext(), LoginSelectActivity::class.java)
+            startActivity(intent)
+        }
 
         binding.buttonUnsubscribe.setOnClickListener {
             val isKakao = TokenManager.isKakaoUser()
@@ -70,8 +74,9 @@ class SettingFragment : Fragment() {
             if (isKakao) {
                 showUnsubscribePopup()
             } else {
-                val intent = Intent(requireContext(), UnsubscribeActivity::class.java)
-                startActivity(intent)
+                showUnsubscribePopup()
+//                val intent = Intent(requireContext(), UnsubscribeActivity::class.java)
+//                startActivity(intent)
             }
         }
     }

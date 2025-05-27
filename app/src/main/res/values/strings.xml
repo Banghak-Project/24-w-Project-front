@@ -2,55 +2,54 @@
     <string name="app_name" translatable="false">Money Lens</string>
 
     <!--통화표시-->
-    <string name="KRW">₩</string>
-    <string name="JPY">￥</string>
-    <string name="USD">＄</string>
-    <string name="THB">฿</string>
-    <string name="EUR">€</string>
-    <string name="GBP">£</string>
-    <string name="CHF">Fr</string>
-    <string name="AUD">＄</string>
-    <string name="CNH">￥</string>
-    <string name="HKD">＄</string>
-    <string name="AED">د.إ</string>
-    <string name="BHD">ب.د</string>
-    <string name="BND">$</string>
-    <string name="CAD">＄</string>
-    <string name="DKK">kr</string>
-    <string name="IDR">Rp</string>
-    <string name="KWD">د.ك</string>
-    <string name="MYR">RM</string>
-    <string name="NOK">kr</string>
-    <string name="NZD">＄</string>
-    <string name="SAR">ر.س</string>
-    <string name="SEK">kr</string>
-    <string name="SGD">＄</string>
-
+    <string name="KRW" translatable="false">₩</string>
+    <string name="JPY" translatable="false">￥</string>
+    <string name="USD" translatable="false">＄</string>
+    <string name="THB" translatable="false">฿</string>
+    <string name="EUR" translatable="false">€</string>
+    <string name="GBP" translatable="false">£</string>
+    <string name="CHF" translatable="false">Fr</string>
+    <string name="AUD" translatable="false">＄</string>
+    <string name="CNH" translatable="false">￥</string>
+    <string name="HKD" translatable="false">＄</string>
+    <string name="AED" translatable="false">د.إ</string>
+    <string name="BHD" translatable="false">ب.د</string>
+    <string name="BND" translatable="false">$</string>
+    <string name="CAD" translatable="false">＄</string>
+    <string name="DKK" translatable="false">kr</string>
+    <string name="IDR" translatable="false">Rp</string>
+    <string name="KWD" translatable="false">د.ك</string>
+    <string name="MYR" translatable="false">RM</string>
+    <string name="NOK" translatable="false">kr</string>
+    <string name="NZD" translatable="false">＄</string>
+    <string name="SAR" translatable="false">ر.س</string>
+    <string name="SEK" translatable="false">kr</string>
+    <string name="SGD" translatable="false">＄</string>
 
     <!--통화이름-->
-    <string name="korea">KRW</string>
-    <string name="japan">JPY</string>
-    <string name="usa">USD</string>
-    <string name="thailand">THB</string>
-    <string name="uk">GBP</string>
-    <string name="swiss">CHF</string>
-    <string name="austraila">AUD</string>
-    <string name="europe">EUR</string>
-    <string name="china">CNH</string>
-    <string name="hongkong">HKD</string>
-    <string name="uae">AED</string>
-    <string name="bahrain">BHD</string>
-    <string name="brunei">BND</string>
-    <string name="canada">CAD</string>
-    <string name="denmark">DKK</string>
-    <string name="indonesia">IDR</string>
-    <string name="kuwait">KWD</string>
-    <string name="malaysia">MYR</string>
-    <string name="norway">NOK</string>
-    <string name="newzealand">NZD</string>
-    <string name="saudiarabia">SAR</string>
-    <string name="sweden">SEK</string>
-    <string name="singapore">SGD</string>
+    <string name="korea" translatable="false">KRW</string>
+    <string name="japan" translatable="false">JPY</string>
+    <string name="usa" translatable="false">USD</string>
+    <string name="thailand" translatable="false">THB</string>
+    <string name="uk" translatable="false">GBP</string>
+    <string name="swiss" translatable="false">CHF</string>
+    <string name="austraila" translatable="false">AUD</string>
+    <string name="europe" translatable="false">EUR</string>
+    <string name="china" translatable="false">CNH</string>
+    <string name="hongkong" translatable="false">HKD</string>
+    <string name="uae" translatable="false">AED</string>
+    <string name="bahrain" translatable="false">BHD</string>
+    <string name="brunei" translatable="false">BND</string>
+    <string name="canada" translatable="false">CAD</string>
+    <string name="denmark" translatable="false">DKK</string>
+    <string name="indonesia" translatable="false">IDR</string>
+    <string name="kuwait" translatable="false">KWD</string>
+    <string name="malaysia" translatable="false">MYR</string>
+    <string name="norway" translatable="false">NOK</string>
+    <string name="newzealand" translatable="false">NZD</string>
+    <string name="saudiarabia" translatable="false">SAR</string>
+    <string name="sweden" translatable="false">SEK</string>
+    <string name="singapore" translatable="false">SGD</string>
 
     <string name="confirm">확인</string>
     <string name="next">다음</string>
@@ -98,7 +97,7 @@
     <string name="ex_email">---@mju.ac.kr</string>
     <string name="enter_code">인증번호 입력</string>
     <string name="enter_4number">인증코드를 입력하세요</string>
-    <string name="clock_max">3:00</string>
+    <string name="clock_max" translatable="false">3:00</string>
     <string name="new_code">새로운 코드 받기</string>
 
     <!--온보딩_07-->
@@ -144,8 +143,8 @@
     <!--카메라 리스트-->
     <string name="product_name">상품명</string>
     <string name="product_price">상품 금액</string>
-    <string name="price">N00,000,000</string>
-    <string name="num">1</string>
+    <string name="price" translatable="false">N00,000,000</string>
+    <string name="num" translatable="false">1</string>
 
     <string name="total_price">총 금액</string>
     <string name="count">수량</string>
@@ -158,7 +157,7 @@
     <string name="home_title">가게 별 소비 리스트</string>
 
     <!--홈_02-->
-    <string name="one">1</string>
+    <string name="one" translatable="false">1</string>
     <string name="per">당</string>
     <string name="direct">직접</string>
     <string name="edit_long">수정하기</string>
@@ -175,12 +174,12 @@
     <string name="notice">공지사항</string>
     <string name="policy">약관 및 정책</string>
     <string name="ver_info">버전 정보</string>
-    <string name="ver">ver. </string>
+    <string name="ver" translatable="false">ver. </string>
     <string name="logout">로그아웃</string>
     <string name="delete_account">회원 탈퇴</string>
 
     <string name="place_name">가게명</string>
-    <string name="place_ex">H MART</string>
+    <string name="place_ex" translatable="false">H MART</string>
 
     <!--list-->
     <string name="before">분 전</string>
@@ -305,11 +304,11 @@
     <string name="compare_year_label">올해 지출 금액이 작년 보다</string>
     <string name="end2">늘었어요</string>
 
-    <string name="plus">+</string>
-    <string name="dot">•</string>
-    <string name="colon">:</string>
-    <string name="percentage">%</string>
-    <string name="tilde">~</string>
+    <string name="plus" translatable="false">+</string>
+    <string name="dot" translatable="false">•</string>
+    <string name="colon" translatable="false">:</string>
+    <string name="percentage" translatable="false">%</string>
+    <string name="tilde" translatable="false">~</string>
 
     <string name="list">리스트</string>
     <string name="finan">가계부</string>
@@ -317,8 +316,8 @@
     <string name="dashboard">대시보드</string>
     <string name="mypage">마이페이지</string>
 
-    <string name="default_web_client_id">205649175703-3r26fjueksug4s4tgn129m5ocf4ce1un.apps.googleusercontent.com</string>
+    <string name="default_web_client_id" translatable="false">205649175703-3r26fjueksug4s4tgn129m5ocf4ce1un.apps.googleusercontent.com</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
 
 </resources>

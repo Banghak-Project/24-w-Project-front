@@ -89,26 +89,9 @@ class MainFragment : Fragment(), OnStoreNameUpdatedListener {
         binding.listContainer.layoutManager = LinearLayoutManager(requireContext())
         binding.listContainer.adapter = adapter
 
-        if (!hasAllPermissions()) {
-            showAccessPopup()
-        }
-
         currencyViewModel = ViewModelProvider(this)[CurrencyViewModel::class.java]
         fetchAndStoreCurrencyData {
             fetchListsFromApi()
-        }
-
-        binding.b1.setOnClickListener {
-            startActivity(Intent(requireContext(), CalendarActivity::class.java))
-        }
-        binding.b2.setOnClickListener {
-            startActivity(Intent(requireContext(), NewPwActivity::class.java))
-        }
-        binding.b3.setOnClickListener {
-            startActivity(Intent(requireContext(), LocationActivity::class.java))
-        }
-        binding.b4.setOnClickListener {
-            startActivity(Intent(requireContext(), DashboardActivity::class.java))
         }
 
         parentFragmentManager.setFragmentResultListener("requestKey", viewLifecycleOwner) { _, bundle ->
@@ -199,41 +182,6 @@ class MainFragment : Fragment(), OnStoreNameUpdatedListener {
 
     private fun getCurrentDateTime(): String {
         return LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString()
-    }
-
-    private fun hasAllPermissions(): Boolean {
-        val permissions = listOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-
-        Log.d("PermissionCheck", "CAMERA: " +
-                (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED))
-        Log.d("PermissionCheck", "STORAGE: " +
-                (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED))
-
-        return permissions.all {
-            ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
-        }
-    }
-
-
-    private fun showAccessPopup() {
-        val dialogView = layoutInflater.inflate(R.layout.access_popup, null)
-        val dialog = AlertDialog.Builder(requireContext(), R.style.PopupDialogTheme)
-            .setView(dialogView)
-            .create()
-
-        val buttonSubmit = dialogView.findViewById<LinearLayout>(R.id.button_submit)
-        buttonSubmit.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.show()
-        dialog.window?.setLayout(
-            (resources.displayMetrics.widthPixels * 0.8).toInt(),
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
     }
 
     private fun fetchListsFromApi() {

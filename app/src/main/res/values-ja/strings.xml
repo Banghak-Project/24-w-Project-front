@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="confirm">確認</string>
+<string name="next">次へ</string>
+<string name="delete">削除</string>
+<string name="add">追加</string>
+
+    <!--オンボーディング_01-->
+<string name="access_title">アクセス権限の案内</string>
+<string name="access_title1">位置情報、GPSの使用権限</string>
+<string name="access_title2">写真、カメラの使用権限</string>
+<string name="access_body1">リスト作成時に位置情報を確認</string>
+<string name="access_body2">為替確認時に写真撮影および保存を管理</string>
+
+    <!--オンボーディング_02-->
+<string name="app_explain1">カメラをかざすだけで</string>
+<string name="app_explain2">価格と為替を一目で</string>
+<string name="app_explain3">MONEY LENSで</string>
+<string name="app_explain4">簡単に確認しましょう</string>
+<string name="kakao_login">カカオログイン</string>
+<string name="email_login">メールログイン</string>
+
+    <!--オンボーディング_03-->
+<string name="login">ログイン</string>
+<string name="id_eng">メールアドレス</string>
+<string name="pw_eng">パスワード</string>
+<string name="find_idpw">ID・パスワードを探す</string>
+<string name="signin">サインイン</string>
+<string name="join_merbership">初めての方ですか？</string>
+
+    <!--オンボーディング_04-->
+<string name="policy_title1">サービス利用規約に</string>
+<string name="policy_title2">同意してください。</string>
+<string name="accept_all">はい、すべて同意します</string>
+<string name="essential">【必須】</string>
+<string name="optional">【任意】</string>
+<string name="policy_content1">利用規約への同意</string>
+<string name="policy_content2">個人情報の収集・利用への同意</string>
+<string name="policy_content3">クッキーおよび類似技術の利用への同意</string>
+
+    <!--オンボーディング_05,06-->
+<string name="login_auth_title1">本人確認のために使用する</string>
+<string name="login_auth_title2">メールアドレスを入力してください。</string>
+<string name="email">メールアドレス</string>
+<string name="input_email">メールアドレスを入力してください</string>
+<string name="ex_email">---@mju.ac.kr</string>
+<string name="enter_code">認証コード入力</string>
+<string name="enter_4number">認証コードを入力してください</string>
+<string name="new_code">新しいコードを受け取る</string>
+
+    <!--オンボーディング_07-->
+<string name="personal_info_title1">会員情報を</string>
+<string name="personal_info_title2">入力してください。</string>
+<string name="sex">性別</string>
+<string name="male">男性</string>
+<string name="female">女性</string>
+<string name="birth_kor">生年月日</string>
+<string name="birth_eng">YY/MM/DD</string>
+<string name="id_kor">ID</string>
+<string name="name">名前</string>
+<string name="currency1">主要通貨</string>
+<string name="currency2">通貨</string>
+<string name="pw_kor">パスワード</string>
+
+    <!-- ID・PW 探し -->
+<string name="button_id">IDを探す</string>
+<string name="button_pw">パスワード再設定</string>
+<string name="find_id_title1">登録情報で</string>
+<string name="find_id_title2">IDを確認してください</string>
+<string name="find_pw_title1">パスワード再設定のために</string>
+<string name="find_pw_title2">仮パスワードを発行してください</string>
+<string name="submit_button_id">IDを探す</string>
+<string name="submit_button_pw">パスワード再設定メールを送信</string>
+
+    <!-- ID 探し 結果 -->
+<string name="id_result_title1">さんのIDは</string>
+<string name="id_result_title2">です。</string>
+<string name="button_to_login">ログイン画面へ</string>
+
+    <!-- パスワード 探し 結果 -->
+<string name="pw_result_title1">入力したメールに</string>
+<string name="pw_result_title2">パスワードが送信されました</string>
+
+    <!-- 新しいパスワード設定 -->
+<string name="new_pw_title">新しいパスワード設定</string>
+<string name="origin_pw">現在のパスワード</string>
+<string name="new_pw">新しいパスワード</string>
+<string name="new_pw_again">新しいパスワードの確認</string>
+<string name="new_pw_button">新しいパスワードを設定する</string>
+
+    <!-- カメラリスト -->
+<string name="product_name">商品名</string>
+<string name="product_price">商品価格</string>
+<string name="total_price">合計金額</string>
+<string name="count">数量</string>
+<string name="submit">適用</string>
+<string name="origin_price">元の価格</string>
+<string name="calc_price">計算された価格</string>
+
+    <!-- ホーム_01 -->
+<string name="home_title">店舗別の消費リスト</string>
+
+    <!-- ホーム_02 -->
+<string name="per">あたり</string>
+<string name="direct">直接</string>
+<string name="edit_long">編集する</string>
+
+    <!-- ホーム_02 -->
+<string name="select_all">すべて選択</string>
+
+    <!-- ホーム_04 -->
+<string name="input_money">価格を入力</string>
+<string name="output_money">計算結果</string>
+
+    <!-- ホーム_05 -->
+<string name="edit_short">編集</string>
+<string name="notice">お知らせ</string>
+<string name="policy">利用規約とポリシー</string>
+<string name="ver_info">バージョン情報</string>
+<string name="logout">ログアウト</string>
+<string name="delete_account">退会する</string>
+
+<string name="place_name">店舗名</string>
+
+    <!-- リスト -->
+<string name="before">分前</string>
+<string name="total">合計</string>
+<string name="select">選択</string>
+
+    <!-- 設定_04 -->
+<string name="edit_title1">修正する会員情報を</string>
+<string name="edit_title2">入力してください。</string>
+
+    <!-- 設定_03 -->
+<string name="term1">サービス利用規約</string>
+<string name="term2">個人情報処理方針</string>
+<string name="term3">位置情報サービス利用同意</string>
+<string name="term4">その他</string>
+
+<string name="term_detail1"><![CDATA[
+本規約は、ユーザーが提供する位置情報およびカメラ権限を基に、為替変換および支出管理を提供する本サービス（以下「サービス」）の利用条件を定めます。\n
+\n
+1-1. サービスの目的\n
+・本サービスは、ユーザーの位置情報を基に店舗情報を自動登録し、カメラでレシートや数値データを読み取り、為替換算後に支出を管理するツールです。\n
+\n
+1-2. ユーザーの義務\n
+・ユーザーはサービス利用時、正確なデータを入力し、他人の情報を無断で収集または使用してはいけません。\n
+・サービスの利用には正確な権限（位置およびカメラ）の許可が必要であり、拒否された場合、一部の機能が制限される可能性があります。\n
+]]></string>
+
+<string name="term_detail2"><![CDATA[
+本サービスは、ユーザーの個人情報保護に最大限努め、関連法令を遵守します。
+\n
+2-1. 収集する情報\n
+\t1. 位置情報\n
+\t・店舗情報登録や支出履歴の自動保存に使用されます。\n
+\t・明示的に許可された場合のみ収集されます。\n
+\t2. カメラ権限\n
+\t・レシートや数値情報の取得に使用されます。\n
+\t・画像は保存されず、OCR処理後に即時削除されます。\n
+\t3. 支出および為替情報\n
+\t・ユーザーが入力したデータは、支出管理および為替換算機能の提供のために使用されます。\n
+\n
+2-2. 収集した情報の利用目的\n
+・位置情報を基に訪問店舗を自動登録します。\n
+・OCR技術でレシート情報を認識し、為替により支出を変換します。\n
+・選択した通貨で支出内容をカートにまとめて表示します。\n
+\n
+2-3. 第三者提供\n
+・本サービスは、ユーザーの同意なしに個人情報を第三者に提供しません。\n
+・為替情報をリアルタイムで提供するため、外部APIと連携する場合があり、該当データは外部サービスへ送信される可能性があります。\n
+\n
+2-4. データ保存および削除\n
+・提供されたすべてのデータは、サービス利用期間中に保存され、アカウント削除時に即時削除されます。\n
+・ユーザーはいつでも設定内で自身のデータを管理または削除を要求できます。\n
+]]></string>
+
+<string name="term_detail3"><![CDATA[
+本サービスは、ユーザーの位置情報を使用し、よりパーソナライズされた店舗登録および支出管理を提供します。\n
+位置情報使用の同意を撤回した場合、一部機能が制限される可能性があります。
+]]></string>
+
+<string name="term_detail4"><![CDATA[
+1. クッキーおよび類似技術\n
+本サービスは、ユーザーのアプリ利用パターンを分析し、より良いユーザー体験を提供するためにクッキーおよび類似技術を使用することがあります。\n
+ユーザーはクッキーの収集をブロックしたり、設定を変更したりできます。\n
+\n
+2. データ管理\n
+本サービスはSSL暗号化技術を使用してデータを保護し、不正なアクセスを防ぐセキュリティ体制を備えています。\n
+\n
+3. 責任の制限\n
+・本サービスは提供する為替情報および店舗データの正確性を確保するよう努めますが、リアルタイムの変動により結果が異なる可能性があります。\n
+・ユーザーが誤ったデータを入力したり、権限許可を拒否したことによって発生する問題については責任を負いません。\n
+]]></string>
+
+    <!-- 設定_04 -->
+<string name="unsubscribe_title">本当に退会しますか？</string>
+<string name="unsubscribe_content_title">退会前の注意事項</string>
+<string name="unsubscribe_content1">• アカウントデータと支出履歴が永久に削除されます</string>
+<string name="unsubscribe_content2">• 登録された店舗情報および位置情報が削除されます</string>
+<string name="unsubscribe_content3">• 再登録時に以前のデータは復元されません</string>
+<string name="no">いいえ</string>
+<string name="yes">はい</string>
+
+    <!-- 設定_05 -->
+<string name="password_input_title1">本人確認のために</string>
+<string name="password_input_title2">パスワードを入力してください。</string>
+<string name="unsubscribe">退会する</string>
+
+    <!-- 設定_06 -->
+<string name="unsubscribe_success">会員退会が完了しました</string>
+<string name="to_start">最初に戻る</string>
+
+<string name="find_pw">パスワード再設定</string>
+<string name="find_id">IDを探す</string>
+
+    <!-- カレンダー -->
+<string name="total_spend">総支出額</string>
+<string name="year">年</string>
+<string name="month">月</string>
+<string name="date">日</string>
+<string name="history">支出履歴</string>
+<string name="add_sum">累積合計</string>
+
+<string name="sun">日</string>
+<string name="mon">月</string>
+<string name="tue">火</string>
+<string name="wed">水</string>
+<string name="thu">木</string>
+<string name="fri">金</string>
+<string name="sat">土</string>
+
+    <!-- ダッシュボード -->
+<string name="title">利用履歴をご確認ください</string>
+<string name="first_week">第1週</string>
+<string name="second_week">第2週</string>
+<string name="third_week">第3週</string>
+<string name="forth_week">第4週</string>
+<string name="fifth_week">第5週</string>
+<string name="avg">平均</string>
+<string name="compare_month_title">前月との比較</string>
+<string name="compare_month_label">今月の支出が</string>
+<string name="up">増加</string>
+<string name="end">しました</string>
+<string name="compare_year_title">前年との比較</string>
+<string name="compare_year_label">今年の支出額は昨年より</string>
+<string name="end2">増えました</string>
+
+    <!-- メニュー -->
+<string name="list">リスト</string>
+<string name="finan">家計簿</string>
+<string name="camera">カメラ</string>
+<string name="dashboard">ダッシュボード</string>
+<string name="mypage">マイページ</string>
+</resources>
+

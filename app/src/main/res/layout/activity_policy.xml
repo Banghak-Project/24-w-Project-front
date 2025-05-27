@@ -92,16 +92,14 @@
                             style="@style/TextBodyM_medium"/>
                         <TextView
                             android:id="@+id/content_first"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="@string/policy_content1"
                             android:layout_gravity="center"
                             android:textColor="@color/gray_08"
-                            style="@style/TextBodyM_medium"/>
-                        <Space
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"/>
+                            style="@style/TextBodyM_medium"
+                            android:singleLine="true"/>
                         <ImageView
                             android:id="@+id/arrow_first"
                             android:layout_width="24dp"
@@ -166,16 +164,14 @@
                             style="@style/TextBodyM_medium"/>
                         <TextView
                             android:id="@+id/content_second"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="@string/policy_content2"
                             android:layout_gravity="center"
                             android:textColor="@color/gray_08"
-                            style="@style/TextBodyM_medium"/>
-                        <Space
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"/>
+                            style="@style/TextBodyM_medium"
+                            android:singleLine="true"/>
                         <ImageView
                             android:id="@+id/arrow_second"
                             android:layout_width="24dp"
@@ -240,16 +236,14 @@
                             style="@style/TextBodyM_medium"/>
                         <TextView
                             android:id="@+id/content_third"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="@string/term3"
                             android:layout_gravity="center"
                             android:textColor="@color/gray_08"
-                            style="@style/TextBodyM_medium"/>
-                        <Space
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"/>
+                            style="@style/TextBodyM_medium"
+                            android:singleLine="true"/>
                         <ImageView
                             android:id="@+id/arrow_third"
                             android:layout_width="24dp"
