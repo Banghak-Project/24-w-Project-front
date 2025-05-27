@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="confirm">确认</string>
+    <string name="next">下一步</string>
+    <string name="delete">删除</string>
+    <string name="add">添加</string>
+
+    <!-- 引导页_01 -->
+    <string name="access_title">权限说明</string>
+    <string name="access_title1">位置、GPS使用权限</string>
+    <string name="access_title2">照片、摄像头使用权限</string>
+    <string name="access_body1">创建列表时确认位置</string>
+    <string name="access_body2">查看汇率时管理照片和存储</string>
+
+    <!-- 引导页_02 -->
+    <string name="app_explain1">只需对准相机</string>
+    <string name="app_explain2">价格和汇率一目了然</string>
+    <string name="app_explain3">使用 MONEY LENS</string>
+    <string name="app_explain4">轻松查看</string>
+    <string name="kakao_login">使用 Kakao 登录</string>
+    <string name="email_login">邮箱登录</string>
+
+    <!-- 引导页_03 -->
+    <string name="login">登录</string>
+    <string name="id_eng">邮箱</string>
+    <string name="pw_eng">密码</string>
+    <string name="find_idpw">找回账号或密码</string>
+    <string name="signin">登录</string>
+    <string name="join_merbership">首次使用？</string>
+
+    <!-- 引导页_04 -->
+    <string name="policy_title1">请同意</string>
+    <string name="policy_title2">服务条款</string>
+    <string name="accept_all">是的，我全部同意</string>
+    <string name="essential">【必填】</string>
+    <string name="optional">【可选】</string>
+    <string name="policy_content1">同意服务条款</string>
+    <string name="policy_content2">同意收集和使用个人信息</string>
+    <string name="policy_content3">同意使用 Cookie 及相关技术</string>
+
+    <!-- 引导页_05,06 -->
+    <string name="login_auth_title1">为验证身份，请输入</string>
+    <string name="login_auth_title2">您的邮箱</string>
+    <string name="email">邮箱</string>
+    <string name="input_email">请输入您的邮箱</string>
+    <string name="ex_email">---@mju.ac.kr</string>
+    <string name="enter_code">输入验证码</string>
+    <string name="enter_4number">请输入四位验证码</string>
+    <string name="new_code">获取新验证码</string>
+
+    <!-- 引导页_07 -->
+    <string name="personal_info_title1">请输入</string>
+    <string name="personal_info_title2">您的会员信息</string>
+    <string name="sex">性别</string>
+    <string name="male">男</string>
+    <string name="female">女</string>
+    <string name="birth_kor">出生日期</string>
+    <string name="birth_eng">YY/MM/DD</string>
+    <string name="id_kor">用户名</string>
+    <string name="name">姓名</string>
+    <string name="currency1">主要货币</string>
+    <string name="currency2">货币</string>
+    <string name="pw_kor">密码</string>
+
+    <!-- 账号/密码 -->
+    <string name="button_id">查找ID</string>
+    <string name="button_pw">重设密码</string>
+    <string name="find_id_title1">通过注册信息</string>
+    <string name="find_id_title2">确认您的账号</string>
+    <string name="find_pw_title1">为了重设密码</string>
+    <string name="find_pw_title2">请获取临时密码</string>
+    <string name="submit_button_id">查找账号</string>
+    <string name="submit_button_pw">请求重设密码邮件</string>
+
+    <!-- ID 查找结果 -->
+    <string name="id_result_title1">您的账号是</string>
+    <string name="id_result_title2">。</string>
+    <string name="button_to_login">返回登录画面</string>
+
+    <!-- 密码重设结果 -->
+    <string name="pw_result_title1">密码已发送至</string>
+    <string name="pw_result_title2">您的邮箱</string>
+
+    <!-- 新密码设置 -->
+    <string name="new_pw_title">设置新密码</string>
+    <string name="origin_pw">当前密码</string>
+    <string name="new_pw">新密码</string>
+    <string name="new_pw_again">确认新密码</string>
+    <string name="new_pw_button">完成密码设置</string>
+
+    <!-- 相机商品列表 -->
+    <string name="product_name">商品名称</string>
+    <string name="product_price">商品金额</string>
+    <string name="total_price">总金额</string>
+    <string name="count">数量</string>
+    <string name="submit">应用</string>
+    <string name="origin_price">原价</string>
+    <string name="calc_price">计算价格</string>
+
+    <!-- 首页 -->
+    <string name="home_title">按商家消费列表</string>
+    <string name="per">每</string>
+    <string name="direct">直接</string>
+    <string name="edit_long">编辑</string>
+    <string name="select_all">全选</string>
+    <string name="input_money">输入价格</string>
+    <string name="output_money">计算结果</string>
+    <string name="edit_short">编辑</string>
+    <string name="notice">公告</string>
+    <string name="policy">条款与政策</string>
+    <string name="ver_info">版本信息</string>
+    <string name="logout">注销</string>
+    <string name="delete_account">退出账户</string>
+    <string name="place_name">商店名称</string>
+
+
+    <!-- 列表 -->
+    <string name="before">分钟前</string>
+    <string name="total">总计</string>
+    <string name="select">选择</string>
+
+    <!-- 设置_04 -->
+    <string name="edit_title1">要修改的会员信息</string>
+    <string name="edit_title2">请输入。</string>
+
+    <!-- 设置_03 -->
+    <string name="term1">服务使用条款</string>
+    <string name="term2">隐私政策</string>
+    <string name="term3">位置服务使用同意</string>
+    <string name="term4">其他</string>
+
+    <string name="term_detail1"><![CDATA[
+本条款规定了用户在提供位置和摄像头权限的基础上，使用本服务（以下简称“服务”）进行汇率转换和支出管理的相关条件。\n
+\n
+1-1. 服务目的\n
+・本服务根据用户位置自动登记商家信息，使用摄像头读取收据或数字数据后进行汇率换算和支出管理。\n
+\n
+1-2. 用户义务\n
+・用户在使用服务时应诚实输入数据，不得未经授权收集或使用他人信息。\n
+・必须授予位置与摄像头权限，若拒绝授权，部分功能可能受限。\n
+]]></string>
+
+    <string name="term_detail2"><![CDATA[
+本服务高度重视用户隐私保护，并遵守相关法律法规。\n
+\n
+2-1. 收集的信息\n
+1. 位置信息\n
+・用于注册商家或自动保存支出信息。\n
+・仅在用户明确授权后收集。\n
+2. 摄像头权限\n
+・用于拍摄收据并提取数据。\n
+・拍摄图片不会保存，OCR分析后立即删除。\n
+3. 支出及汇率数据\n
+・用于提供支出管理与汇率换算功能。\n
+\n
+2-2. 使用目的\n
+・基于位置自动登记访问过的商家。\n
+・使用OCR识别收据信息并按汇率转换。\n
+・根据所选货币汇总支出并显示在购物清单中。\n
+\n
+2-3. 第三方提供\n
+・未经用户同意，不向第三方提供个人信息。\n
+・若需使用实时汇率API，相关数据可能发送至外部服务。\n
+\n
+2-4. 数据存储与删除\n
+・所有数据将在服务使用期间保存，用户注销账户后立即删除。\n
+・用户可随时通过设置管理或申请删除数据。\n
+]]></string>
+
+    <string name="term_detail3"><![CDATA[
+本服务通过位置信息提供个性化的商家登记和支出管理。\n
+若撤回同意使用位置数据，部分功能可能无法使用。\n
+]]></string>
+
+    <string name="term_detail4"><![CDATA[
+1. Cookie与类似技术\n
+本服务可能使用Cookie和类似技术来分析用户使用模式并提升体验。\n
+用户可以拒绝或更改设置。\n
+\n
+2. 数据管理\n
+使用SSL加密技术保护数据，防止未授权访问。\n
+\n
+3. 责任限制\n
+・本服务会努力确保汇率信息与商家数据的准确性，但因市场波动可能存在差异。\n
+・对用户输入错误或拒绝权限导致的问题概不负责。\n
+]]></string>
+
+
+
+    <!-- 设置_04 -->
+    <string name="unsubscribe_title">您确定要注销账户吗？</string>
+    <string name="unsubscribe_content_title">注销前请注意</string>
+    <string name="unsubscribe_content1">&#8226; 账户数据和消费记录将被永久删除</string>
+    <string name="unsubscribe_content2">&#8226; 所有商家信息和位置信息将被删除</string>
+    <string name="unsubscribe_content3">&#8226; 重新注册时无法恢复之前的数据</string>
+    <string name="no">否</string>
+    <string name="yes">是</string>
+
+    <!-- 设置_05 -->
+    <string name="password_input_title1">为了验证您的身份，</string>
+    <string name="password_input_title2">请输入您的密码。</string>
+    <string name="unsubscribe">注销账户</string>
+
+    <!-- 设置_06 -->
+    <string name="unsubscribe_success">您已成功注销</string>
+    <string name="to_start">回到首页</string>
+
+    <string name="find_pw">重设密码</string>
+    <string name="find_id">查找ID</string>
+
+    <!-- 日历 -->
+    <string name="total_spend">总消费额</string>
+    <string name="year">年</string>
+    <string name="month">月</string>
+    <string name="date">日</string>
+    <string name="history">消费记录</string>
+    <string name="add_sum">累计总额</string>
+
+    <string name="sun">日</string>
+    <string name="mon">一</string>
+    <string name="tue">二</string>
+    <string name="wed">三</string>
+    <string name="thu">四</string>
+    <string name="fri">五</string>
+    <string name="sat">六</string>
+
+    <!-- 仪表盘 -->
+    <string name="title">请查看您的使用记录</string>
+    <string name="first_week">第1周</string>
+    <string name="second_week">第2周</string>
+    <string name="third_week">第3周</string>
+    <string name="forth_week">第4周</string>
+    <string name="fifth_week">第5周</string>
+    <string name="avg">平均</string>
+    <string name="compare_month_title">与上月比较</string>
+    <string name="compare_month_label">本月支出</string>
+    <string name="up">增加</string>
+    <string name="end">了</string>
+    <string name="compare_year_title">与去年比较</string>
+    <string name="compare_year_label">今年的支出比去年</string>
+    <string name="end2">增加了</string>
+
+    <string name="list">列表</string>
+    <string name="finan">账本</string>
+    <string name="camera">相机</string>
+    <string name="dashboard">仪表盘</string>
+    <string name="mypage">我的页面</string>
+
+</resources>

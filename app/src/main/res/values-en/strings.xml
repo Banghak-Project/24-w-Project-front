@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="confirm">Confirm</string>
+    <string name="next">Next</string>
+    <string name="delete">Delete</string>
+    <string name="add">Add</string>
+    <string name="access_title">Permission Guide</string>
+    <string name="access_title1">Location, GPS permission</string>
+    <string name="access_title2">Photo, Camera permission</string>
+    <string name="access_body1">Check location when creating a list</string>
+    <string name="access_body2">Manage photos and storage when checking exchange rates</string>
+    <string name="app_explain1">Just point the camera</string>
+    <string name="app_explain2">See price and exchange rate at a glance</string>
+    <string name="app_explain3">With MONEY LENS</string>
+    <string name="app_explain4">Check easily</string>
+    <string name="kakao_login">Login with Kakao</string>
+    <string name="email_login">Login with Email</string>
+    <string name="login">Login</string>
+    <string name="id_eng">EMAIL</string>
+    <string name="pw_eng">PW</string>
+    <string name="find_idpw">Find ID or Password</string>
+    <string name="signin">SIGN IN</string>
+    <string name="join_merbership">New here?</string>
+    <string name="policy_title1">Please agree to</string>
+    <string name="policy_title2">the terms of service.</string>
+    <string name="accept_all">Yes, I agree to all</string>
+    <string name="essential">[Required]</string>
+    <string name="optional">[Optional]</string>
+    <string name="policy_content1">Agree to Terms of Service</string>
+    <string name="policy_content2">Agree to Personal Data Collection and Use</string>
+    <string name="policy_content3">Agree to Use of Cookies and Similar Technologies</string>
+    <string name="login_auth_title1">To verify identity, please</string>
+    <string name="login_auth_title2">enter your email.</string>
+    <string name="email">Email</string>
+    <string name="input_email">Please enter your email</string>
+    <string name="ex_email">---@mju.ac.kr</string>
+    <string name="enter_code">Enter Verification Code</string>
+    <string name="enter_4number">Please enter the 4-digit code</string>
+    <string name="new_code">Receive New Code</string>
+    <string name="personal_info_title1">Please enter</string>
+    <string name="personal_info_title2">your personal information.</string>
+    <string name="sex">Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="birth_kor">Date of Birth</string>
+    <string name="birth_eng">YY/MM/DD</string>
+    <string name="id_kor">ID</string>
+    <string name="name">Name</string>
+    <string name="currency1">Primary Currency</string>
+    <string name="currency2">Currency</string>
+    <string name="pw_kor">Password</string>
+    <string name="button_id">Find ID</string>
+    <string name="button_pw">Reset Password</string>
+    <string name="find_id_title1">Check your ID with</string>
+    <string name="find_id_title2">your registered info</string>
+    <string name="find_pw_title1">To reset your password,</string>
+    <string name="find_pw_title2">get a temporary password</string>
+    <string name="submit_button_id">Find ID</string>
+    <string name="submit_button_pw">Request Password Reset Email</string>
+    <string name="id_result_title1">Your ID is</string>
+    <string name="id_result_title2">.</string>
+    <string name="button_to_login">Go to Login Screen</string>
+    <string name="pw_result_title1">Password has been sent to</string>
+    <string name="pw_result_title2">your email</string>
+    <string name="new_pw_title">Set New Password</string>
+    <string name="origin_pw">Current Password</string>
+    <string name="new_pw">New Password</string>
+    <string name="new_pw_again">Confirm New Password</string>
+    <string name="new_pw_button">Complete Password Change</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_price">Product Price</string>
+    <string name="total_price">Total Amount</string>
+    <string name="count">Quantity</string>
+    <string name="submit">Apply</string>
+    <string name="origin_price">Original Price</string>
+    <string name="calc_price">Calculated Price</string>
+    <string name="home_title">Spending List by Store</string>
+    <string name="per">Per</string>
+    <string name="direct">Direct</string>
+    <string name="edit_long">Edit</string>
+    <string name="select_all">Select All</string>
+    <string name="input_money">Enter Price</string>
+    <string name="output_money">Calculated Value</string>
+    <string name="edit_short">Edit</string>
+    <string name="notice">Notice</string>
+    <string name="policy">Terms and Policies</string>
+    <string name="ver_info">Version Info</string>
+    <string name="logout">Logout</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="place_name">Store Name</string>
+    <string name="before">minutes ago</string>
+    <string name="total">Total</string>
+    <string name="select">Select</string>
+    <string name="edit_title1">Please enter</string>
+    <string name="edit_title2">the info you want to edit.</string>
+    <string name="term1">Terms of Service</string>
+    <string name="term2">Privacy Policy</string>
+    <string name="term3">Consent to Location-based Service</string>
+    <string name="term4">Others</string>
+    <string name="term_detail1"><![CDATA[
+These terms define the conditions for using this service (hereinafter referred to as "Service") based on the user&#39;s location and camera access, for currency conversion and expense tracking.\n
+\n
+1-1. Purpose of the Service\n
+・The Service automatically registers store information using location data and helps manage expenses by reading receipts or numeric data through the camera.\n
+\n
+1-2. User Obligations\n
+・Users must provide accurate data and not collect or use others&#39; information without consent.\n
+・Users must grant the necessary permissions (location and camera). If permissions are denied, some features may be restricted.\n
+]]></string>
+
+    <string name="term_detail2"><![CDATA[
+The Service prioritizes protecting user privacy and complies with relevant regulations.\n
+\n
+2-1. Collected Information\n
+1. Location Info\n
+・Used to register store info and automatically save expenses.\n
+・Collected only with user consent.\n
+2. Camera Access\n
+・Used to capture and extract data from receipts.\n
+・No images are stored; all are deleted immediately after OCR processing.\n
+3. Expense and Exchange Rate Info\n
+・Used to provide expense tracking and conversion services.\n
+\n
+2-2. Purpose of Use\n
+・Automatically registers visited stores based on location.\n
+・Uses OCR to convert receipts into expense records.\n
+・Summarizes expenses in the user-selected currency.\n
+\n
+2-3. Third-Party Disclosure\n
+・No personal data is shared without user consent.\n
+・However, exchange rate APIs may transmit related data to external services.\n
+\n
+2-4. Data Storage and Deletion\n
+・Data is stored during service use and deleted upon account removal.\n
+・Users may manage or request deletion anytime via settings.\n
+]]></string>
+
+    <string name="term_detail3"><![CDATA[
+The Service provides personalized store registration and expense tracking based on location data.\n
+If location permission is withdrawn, some features may be limited.\n
+]]></string>
+
+    <string name="term_detail4"><![CDATA[
+1. Cookies and Similar Technologies\n
+This service may use cookies and similar tech to analyze app usage and improve UX.\n
+Users can block or adjust these settings.\n
+\n
+2. Data Management\n
+SSL encryption protects data and blocks unauthorized access.\n
+\n
+3. Limitation of Liability\n
+・The service strives for accuracy but results may vary due to real-time exchange rate changes.\n
+・Not responsible for issues from incorrect input or denied permissions.\n
+]]></string>
+
+
+    <string name="unsubscribe_title">Are you sure you want to unsubscribe?</string>
+    <string name="unsubscribe_content_title">Important Notes Before Leaving</string>
+    <string name="unsubscribe_content1">&#8226; Account and spending history will be permanently deleted</string>
+    <string name="unsubscribe_content2">&#8226; Store and location history will be deleted</string>
+    <string name="unsubscribe_content3">&#8226; Deleted data cannot be restored after rejoining</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="password_input_title1">To verify your identity,</string>
+    <string name="password_input_title2">please enter your password.</string>
+    <string name="unsubscribe">Unsubscribe</string>
+    <string name="unsubscribe_success">Your account has been deleted</string>
+    <string name="to_start">Go to Start</string>
+    <string name="find_pw">Reset Password</string>
+    <string name="find_id">Find ID</string>
+    <string name="total_spend">Total Spend</string>
+    <string name="year"> </string>
+    <string name="month"> </string>
+    <string name="date"> </string>
+    <string name="history">Spending History</string>
+    <string name="add_sum">Cumulative Total</string>
+    <string name="sun">Sun</string>
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="title">Check Your Usage History</string>
+    <string name="first_week">Week 1</string>
+    <string name="second_week">Week 2</string>
+    <string name="third_week">Week 3</string>
+    <string name="forth_week">Week 4</string>
+    <string name="fifth_week">Week 5</string>
+    <string name="avg">Average</string>
+    <string name="compare_month_title">Compared to Last Month</string>
+    <string name="compare_month_label"><![CDATA[This month's spending has]]></string>
+    <string name="up">increased</string>
+    <string name="end">.</string>
+    <string name="compare_year_title">Compared to Last Year</string>
+    <string name="compare_year_label"><![CDATA[This year's spending is higher than last year's]]></string>
+    <string name="end2">increased</string>
+    <string name="list">List</string>
+    <string name="finan">Ledger</string>
+    <string name="camera">Camera</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="mypage">My Page</string>
+</resources>
