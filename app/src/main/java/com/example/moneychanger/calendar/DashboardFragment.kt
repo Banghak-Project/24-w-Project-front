@@ -1,6 +1,5 @@
 package com.example.moneychanger.calendar
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,13 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.moneychanger.R
-import com.example.moneychanger.databinding.ActivityDashboardBinding
 import com.example.moneychanger.databinding.FragmentDashboardBinding
-import com.example.moneychanger.databinding.FragmentMainBinding
 import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
 import com.example.moneychanger.network.RetrofitClient.apiService
 import com.example.moneychanger.network.currency.CurrencyManager
@@ -210,7 +206,7 @@ class DashboardFragment : Fragment() {
         binding.endMonth.text = end.monthValue.toString().padStart(2, '0')
         binding.endDate.text = end.dayOfMonth.toString().padStart(2, '0')
 
-        val totalWeeklySum = filteredProducts.sumOf { calculateExchangeRate(it.currencyId, userDefaultCurrency, it.originPrice) }
+        val totalWeeklySum = filteredProducts.sumOf { calculateExchangeRate(it.currencyId, userDefaultCurrency, it.originPrice*it.quantity) }
         binding.weeklyTotal.text = floor(totalWeeklySum).toString()
 
     }
@@ -225,7 +221,7 @@ class DashboardFragment : Fragment() {
             return productList.filter {
                 val date = LocalDateTime.parse(it.createdAt, formatter).toLocalDate()
                 !it.deletedYn && date.year == month.year && date.month == month.month
-            }.sumOf { calculateExchangeRate(it.currencyId, userDefaultCurrency, it.originPrice) }
+            }.sumOf { calculateExchangeRate(it.currencyId, userDefaultCurrency, it.originPrice*it.quantity) }
         }
 
         val lastSum = sumForMonth(lastMonth)
@@ -330,7 +326,7 @@ class DashboardFragment : Fragment() {
                     val date = LocalDateTime.parse(it.createdAt, formatter).toLocalDate()
                     !it.deletedYn && date.year == year
                 }
-                .sumOf { calculateExchangeRate(it.currencyId, userDefaultCurrency, it.originPrice) }
+                .sumOf { calculateExchangeRate(it.currencyId, userDefaultCurrency, it.originPrice*it.quantity) }
         }
 
         val lastAvg = yearSumMap[lastYear]

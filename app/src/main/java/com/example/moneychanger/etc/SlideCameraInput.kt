@@ -14,7 +14,6 @@ import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.product.CreateProductRequestDto
 import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.user.ApiResponse
-import androidx.fragment.app.activityViewModels
 import com.example.moneychanger.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -82,12 +81,12 @@ class SlideCameraInput(
 
         binding.buttonAdd.setOnClickListener {
             val inputName = binding.inputName.text.toString().trim()
-
             val inputText = binding.inputPrice.text.toString().replace(",", "")
+            val quantity = binding.countText.text.toString().toInt()
             val price = inputText.toDoubleOrNull() ?: 0.0
 
             if (price > 0) {
-                addProductToList(listId, inputName, price)
+                addProductToList(listId, inputName, quantity, price)
             }
         }
 
@@ -138,8 +137,8 @@ class SlideCameraInput(
         }
     }
 
-    private fun addProductToList(listId: Long, productName: String, price: Double) {
-        val productRequest = CreateProductRequestDto(listId, productName, price)
+    private fun addProductToList(listId: Long, productName: String, quantity:Int, price: Double) {
+        val productRequest = CreateProductRequestDto(listId, productName, quantity, price)
 
         RetrofitClient.apiService.createProduct(productRequest)
             .enqueue(object : Callback<ApiResponse<CreateProductResponseDto>> {

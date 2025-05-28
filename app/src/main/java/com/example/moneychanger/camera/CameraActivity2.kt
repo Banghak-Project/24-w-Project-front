@@ -549,7 +549,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
 
     private fun addProductToList(listId: Long, productName: String, price: String) {
         val cleanPrice = cleanPriceText(price!!).toDouble()
-        val productRequest = CreateProductRequestDto(listId, productName, cleanPrice)
+        val productRequest = CreateProductRequestDto(listId, productName, 1, cleanPrice)
 
         RetrofitClient.apiService.createProduct(productRequest)
             .enqueue(object : Callback<ApiResponse<CreateProductResponseDto>> {

@@ -1,19 +1,14 @@
 package com.example.moneychanger.adapter
 
-import android.os.Bundle
-import android.provider.Settings.Global.getString
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moneychanger.databinding.ListProductBinding
-import com.example.moneychanger.etc.ExchangeRateUtil
 import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
 import com.example.moneychanger.list.ListActivity
-import com.example.moneychanger.network.product.CreateProductResponseDto
 import com.example.moneychanger.network.product.ProductModel
-import com.example.moneychanger.network.product.ProductResponseDto
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,7 +31,8 @@ class ProductAdapter(
 
             Log.i("ProductAdapter",product.originPrice.toString())
             binding.productName.text = product.name
-            binding.originPrice.text = product.originPrice.toString()
+            binding.quantity.text = product.quantity.toString()
+            binding.originPrice.text = (product.originPrice*product.quantity).toString()
             val dateTime = try {
                 LocalDateTime.parse(product.createdAt, DateTimeFormatter.ISO_DATE_TIME)
             } catch (e: Exception) {
@@ -57,7 +53,7 @@ class ProductAdapter(
             binding.currencyTo.text = toSymbol
 
             CoroutineScope(Dispatchers.Main).launch {
-                val converted = calculateExchangeRate(currencyIdFrom, currencyIdTo, product.originPrice ?: 0.0)
+                val converted = calculateExchangeRate(currencyIdFrom, currencyIdTo, (product.originPrice*product.quantity) ?: 0.0)
                 binding.convertedPrice.text = String.format("%.2f", converted)
             }
 

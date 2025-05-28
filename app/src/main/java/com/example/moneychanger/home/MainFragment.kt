@@ -1,39 +1,24 @@
 package com.example.moneychanger.home
 
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.moneychanger.R
 import com.example.moneychanger.adapter.ListAdapter
-import com.example.moneychanger.camera.CameraActivity
-import com.example.moneychanger.calendar.CalendarActivity
-import com.example.moneychanger.calendar.DashboardActivity
 import com.example.moneychanger.databinding.FragmentMainBinding
 import com.example.moneychanger.etc.OnStoreNameUpdatedListener
 import com.example.moneychanger.etc.SlideNewList
 import com.example.moneychanger.list.ListActivity
-import com.example.moneychanger.location.LocationActivity
 import com.example.moneychanger.network.RetrofitClient.apiService
 import com.example.moneychanger.network.currency.CurrencyManager
 import com.example.moneychanger.network.currency.CurrencyModel
@@ -42,7 +27,6 @@ import com.example.moneychanger.network.currency.CurrencyViewModel
 import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.network.list.ListsResponseDto
 import com.example.moneychanger.network.user.ApiResponse
-import com.example.moneychanger.onboarding.find.NewPwActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -221,7 +205,7 @@ class MainFragment : Fragment(), OnStoreNameUpdatedListener {
                         }
 
                         Log.d("MainFragment", "리스트 개수: ${updatedLists.size}")
-                        requireActivity().runOnUiThread {
+                        activity?.runOnUiThread {
                             adapter.updateList(updatedLists)
                         }
                     } else {

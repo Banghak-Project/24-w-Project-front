@@ -45,7 +45,6 @@ import com.example.moneychanger.etc.ExchangeRateUtil.calculateExchangeRate
 import com.example.moneychanger.etc.ExchangeRateUtil.getUserDefaultCurrency
 import com.example.moneychanger.etc.OnProductAddedListener
 import com.example.moneychanger.etc.SlideCameraList
-import com.example.moneychanger.etc.SlideNewList
 import com.example.moneychanger.location.LocationUtil
 import com.example.moneychanger.location.getAddressFromLatLng
 import com.example.moneychanger.network.RetrofitClient.apiService
@@ -429,18 +428,19 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             binding.confirmButton.setOnClickListener {
                 val slideCount = SlideCameraCount()
                 slideCount.productAddListener = object : SlideCameraCount.OnProductAddListener {
-                    override fun onProductAdd() {
+                    override fun onProductAdd(quantity: Int) {
                         val productNameCopy = selectedProductName
                         val productPriceCopy = selectedProductPrice
+                        val quantity = quantity
 
                         if (productNameCopy != null && productPriceCopy != null) {
                             if (latestListId != -1L) {
-                                addProductToList(latestListId, productNameCopy, productPriceCopy)
+                                addProductToList(latestListId, productNameCopy, quantity, productPriceCopy)
                             } else {
                                 checkAndRequestLocationPermission {
                                     getLocation { address ->
                                         location = address
-                                        addNewList(userId, currencyIdFrom, currencyIdTo, location, productNameCopy, productPriceCopy)
+                                        addNewList(userId, currencyIdFrom, currencyIdTo, location, productNameCopy, productPriceCopy, quantity)
                                     }
                                 }
                             }
@@ -678,7 +678,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
         }
     }
 
-    private fun addNewList(userId: Long, currencyIdFrom: Long, currencyIdTo: Long, location: String, productNameCopy: String, productPriceCopy: String) {
+    private fun addNewList(userId: Long, currencyIdFrom: Long, currencyIdTo: Long, location: String, productNameCopy: String, productPriceCopy: String, quantity: Int) {
         val createRequest = CreateListRequestDto(userId, currencyIdFrom, currencyIdTo, location)
         Log.d("CameraActivity", "🚀 리스트 생성 요청 데이터: userId=$userId, currencyIdFrom=$currencyIdFrom, currencyIdTo=$currencyIdTo, location=$location")
 
@@ -711,7 +711,7 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
 
                                     fetchProductsAndShowDialog(listId)
 
-                                    addProductToList(listId, productNameCopy, productPriceCopy)
+                                    addProductToList(listId, productNameCopy, quantity, productPriceCopy)
                                 } else {
                                     Log.e("CameraActivity", "🚨 리스트 ID 오류 발생")
                                 }
@@ -732,9 +732,9 @@ class CameraActivity : AppCompatActivity(), OnProductAddedListener {
             })
     }
 
-    private fun addProductToList(listId: Long, productName: String, price: String) {
+    private fun addProductToList(listId: Long, productName: String, quantity:Int, price: String) {
         val cleanPrice = cleanPriceText(price!!).toDouble()
-        val productRequest = CreateProductRequestDto(listId, productName, cleanPrice)
+        val productRequest = CreateProductRequestDto(listId, productName, quantity, cleanPrice)
 
         apiService.createProduct(productRequest)
             .enqueue(object : Callback<ApiResponse<CreateProductResponseDto>> {

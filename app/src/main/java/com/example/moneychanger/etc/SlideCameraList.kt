@@ -45,6 +45,7 @@ class SlideCameraList : BottomSheetDialogFragment() {
                     productId = it.productId,
                     listId = it.listId,
                     name = it.name,
+                    quantity = it.quantity,
                     originPrice = it.originPrice,
                     createdAt = it.createdAt,
                     deletedYn = it.deletedYn
@@ -159,6 +160,7 @@ class SlideCameraList : BottomSheetDialogFragment() {
                                     productId = it.productId,
                                     listId = it.listId,
                                     name = it.name,
+                                    quantity = it.quantity,
                                     originPrice = it.originPrice,
                                     createdAt = it.createdAt,
                                     deletedYn = it.deletedYn
