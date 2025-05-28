@@ -1,5 +1,6 @@
 package com.example.moneychanger.etc
 
+import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import com.example.moneychanger.R
 import com.example.moneychanger.databinding.SlideProductEditBinding
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.product.ProductModel
@@ -99,6 +102,52 @@ class SlideProductEdit : BottomSheetDialogFragment() {
             val updateRequest = UpdateProductRequestDto(productId, newName, quantity, newPrice)
 
             updateListCurrency(updateRequest)
+        }
+
+        var pieces = 1
+        binding.countText.text = pieces.toString()
+        binding.buttonMinus.setOnClickListener {
+            if (pieces > 1) {
+                pieces -= 1
+                binding.countText.text = pieces.toString()
+            }
+
+            if (pieces > 1) {
+                binding.rectMinus.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.main)
+                )
+                binding.minusSign.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.main)
+                )
+            } else {
+                binding.rectMinus.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.gray_02)
+                )
+                binding.minusSign.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.gray_02)
+                )
+            }
+        }
+
+        binding.buttonPlus.setOnClickListener {
+            pieces += 1
+            binding.countText.text = pieces.toString()
+
+            if (pieces > 1) {
+                binding.rectMinus.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.main)
+                )
+                binding.minusSign.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.main)
+                )
+            }else {
+                binding.rectMinus.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.gray_03)
+                )
+                binding.minusSign.imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.gray_03)
+                )
+            }
         }
 
     }
