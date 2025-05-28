@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_custom_toast"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical"
+        android:elevation="6dp">
+
+    <ImageView
+        android:id="@+id/toast_icon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_combined_toast_icon"
+        android:scaleType="centerCrop"
+        android:background="@drawable/bg_round_icon"
+        android:clipToOutline="true" />
+
+        <TextView
+            android:id="@+id/toast_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="토스트 메시지"
+            android:textColor="#444444"
+            android:textSize="14sp"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
