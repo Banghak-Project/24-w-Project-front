@@ -75,12 +75,14 @@ class SlideProductEdit : BottomSheetDialogFragment() {
         product?.let {
             binding.inputName.setText(it.name)
             binding.inputPrice.setText(it.originPrice.toString())
+            binding.countText.setText(it.quantity.toString())
         }
 
         // 확인 버튼 클릭 시
         binding.buttonAdd.setOnClickListener {
             val newName = binding.inputName.text.toString()
             val newPriceStr = binding.inputPrice.text.toString()
+            val quantity = binding.countText.text.toString().toInt()
 
             if (newName.isBlank() || newPriceStr.isBlank()) {
                 Toast.makeText(requireContext(), "모든 항목을 입력해주세요", Toast.LENGTH_SHORT).show()
@@ -94,7 +96,7 @@ class SlideProductEdit : BottomSheetDialogFragment() {
             }
 
             val productId = product?.productId ?: return@setOnClickListener
-            val updateRequest = UpdateProductRequestDto(productId, newName, newPrice)
+            val updateRequest = UpdateProductRequestDto(productId, newName, quantity, newPrice)
 
             updateListCurrency(updateRequest)
         }
@@ -117,6 +119,7 @@ class SlideProductEdit : BottomSheetDialogFragment() {
                             productId = it.productId,
                             listId = updatedProduct.listId,
                             name = updatedProduct.name,
+                            quantity = updatedProduct.quantity,
                             originPrice = updatedProduct.originPrice,
                             deletedYn = updatedProduct.deletedYn,
                             createdAt = updatedProduct.createdAt

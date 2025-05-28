@@ -105,6 +105,7 @@ class DeleteActivity : AppCompatActivity() {
             productId = dto.productId,
             listId = dto.listId,
             name = dto.name,
+            quantity = dto.quantity,
             originPrice = dto.originPrice,
             createdAt = dto.createdAt,
             deletedYn = dto.deletedYn

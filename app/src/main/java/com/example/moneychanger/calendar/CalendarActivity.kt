@@ -120,7 +120,7 @@ class CalendarActivity : AppCompatActivity() {
             }
 
             val dtoList = resp.body()?.data ?: emptyList<ListWithProductsDto>()
-            allProducts = dtoList.flatMap { it.products }
+            allProducts = dtoList.flatMap { it.products.filter { p -> !p.deletedYn }  }
             allLists    = dtoList.map { dto ->
                 ListModel(
                     listId       = dto.listId,

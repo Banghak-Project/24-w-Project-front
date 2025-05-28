@@ -102,7 +102,7 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         val currencyList = CurrencyManager.getCurrencies()
         Log.i("ListActivity","hi2 $currencyList")
         if (currencyList.isEmpty()) {
-            Toast.makeText(this, "통화를 불러오는데 실패했습니다.여기 확인", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "통화를 불러오는데 실패했습니다.", Toast.LENGTH_LONG).show()
             finish()
             return
         }
@@ -239,6 +239,7 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
                         ProductModel(
                             productId = it.productId,
                             name = it.name,
+                            quantity = it.quantity,
                             originPrice = it.originPrice,
                             listId = it.listId,
                             deletedYn = it.deletedYn,
@@ -406,7 +407,7 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
     }
 
     private fun calculateTotalAmount(): Double {
-        return productList.sumOf { it.originPrice ?: 0.0 }
+        return productList.sumOf { (it.originPrice * it.quantity) ?: 0.0 }
     }
 
     interface OnProductEditListener {

@@ -74,10 +74,11 @@ class AddActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val inputText = s.toString().replace(",", "")  // 쉼표 제거
                 val amount = inputText.toDoubleOrNull() ?: 0.0
+                val quantity = binding.countText.toString().toInt()
 
                 if (amount > 0) {
                     CoroutineScope(Dispatchers.Main).launch {
-                        val convertedAmount = calculateExchangeRate(currencyIdFrom,currencyIdTo,amount)
+                        val convertedAmount = calculateExchangeRate(currencyIdFrom,currencyIdTo,amount*quantity)
                         binding.changedText.text = String.format(Locale.US, "%,.2f", convertedAmount)
                     }
                 } else {
@@ -116,11 +117,12 @@ class AddActivity : AppCompatActivity() {
         binding.buttonAdd.setOnClickListener {
             val inputText = binding.inputField.text.toString().replace(",", "")
             val inputName = binding.inputName.text.toString().trim()
+            val quantity = binding.countText.toString().toInt()
             val amount = inputText.toDoubleOrNull() ?: 0.0
 
             if (amount > 0) {
                 for (i in 0 until pieces) {
-                    addProductToList(listId, inputName, amount)
+                    addProductToList(listId, inputName, quantity, amount)
                 }
             }
         }
@@ -138,8 +140,8 @@ class AddActivity : AppCompatActivity() {
         }
     }
 
-    private fun addProductToList(listId: Long, productName: String, price: Double) {
-        val productRequest = CreateProductRequestDto(listId, productName, price)
+    private fun addProductToList(listId: Long, productName: String, quantity: Int, price: Double) {
+        val productRequest = CreateProductRequestDto(listId, productName, quantity, price)
 
         RetrofitClient.apiService.createProduct(productRequest)
             .enqueue(object : Callback<ApiResponse<CreateProductResponseDto>> {

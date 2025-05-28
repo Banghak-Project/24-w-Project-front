@@ -1,36 +1,20 @@
 package com.example.moneychanger.etc
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.moneychanger.R
-import com.example.moneychanger.adapter.ProductAdapter
 import com.example.moneychanger.databinding.SlideCameraCountBinding
-import com.example.moneychanger.databinding.SlideCameraListBinding
-import com.example.moneychanger.list.ListActivity
-import com.example.moneychanger.network.RetrofitClient
-import com.example.moneychanger.network.product.ProductModel
-import com.example.moneychanger.network.product.ProductResponseDto
-import com.example.moneychanger.network.user.ApiResponse
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 class SlideCameraCount : BottomSheetDialogFragment() {
     private var _binding: SlideCameraCountBinding? = null
     private val binding get() = _binding!!
 
     var productAddListener: OnProductAddListener? = null
-
 
     override fun onStart() {
         super.onStart()
@@ -56,14 +40,13 @@ class SlideCameraCount : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        var pieces = 1
 
         binding.buttonAdd.setOnClickListener {
-            productAddListener?.onProductAdd()
+            productAddListener?.onProductAdd(pieces)
             dismiss()
         }
 
-        var pieces = 1
         binding.countText.text = pieces.toString()
         binding.buttonMinus.setOnClickListener {
             if (pieces > 1) {
@@ -111,7 +94,7 @@ class SlideCameraCount : BottomSheetDialogFragment() {
     }
 
     interface OnProductAddListener {
-        fun onProductAdd()
+        fun onProductAdd(quantity: Int)
     }
 
 

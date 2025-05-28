@@ -5,18 +5,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.moneychanger.R
 import com.example.moneychanger.adapter.CalendarDateAdapter
 import com.example.moneychanger.adapter.HistoryAdapter
-import com.example.moneychanger.databinding.ActivityCalendarBinding
 import com.example.moneychanger.databinding.FragmentCallendarBinding
-import com.example.moneychanger.databinding.FragmentMainBinding
 import com.example.moneychanger.etc.ExchangeRateUtil
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
@@ -144,7 +139,7 @@ class CallendarFragment : Fragment() {
                 )
             }
 
-            val total = allProducts.sumOf { it.originPrice }
+            val total = allProducts.sumOf { it.originPrice*it.quantity }
             binding.totalSpendTextView.text = "%,d".format(total.toInt())
 
             defaultCurrency?.let { targetCur ->
@@ -179,7 +174,7 @@ class CallendarFragment : Fragment() {
 
             val dtoList    = resp.body()?.data ?: emptyList<ListWithProductsDto>()
             val monthTotal = dtoList.flatMap { it.products }
-                .sumOf { it.originPrice }
+                .sumOf { it.originPrice*it.quantity }
             binding.monthTotalTextView.text = "%,d".format(monthTotal.toInt())
 
             defaultCurrency?.let { targetCur ->

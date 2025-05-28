@@ -201,7 +201,7 @@ class DashboardActivity : AppCompatActivity() {
         binding.endMonth.text = end.monthValue.toString().padStart(2, '0')
         binding.endDate.text = end.dayOfMonth.toString().padStart(2, '0')
 
-        val totalWeeklySum = filteredProducts.sumOf { calculateExchangeRate(it.currencyId, userDefaultCurrency, it.originPrice) }
+        val totalWeeklySum = filteredProducts.sumOf { calculateExchangeRate(it.currencyId, userDefaultCurrency, it.originPrice*it.quantity) }
         binding.weeklyTotal.text = floor(totalWeeklySum).toString()
 
     }
@@ -216,7 +216,7 @@ class DashboardActivity : AppCompatActivity() {
             return productList.filter {
                 val date = LocalDateTime.parse(it.createdAt, formatter).toLocalDate()
                 !it.deletedYn && date.year == month.year && date.month == month.month
-            }.sumOf { calculateExchangeRate(it.currencyId, userDefaultCurrency, it.originPrice) }
+            }.sumOf { calculateExchangeRate(it.currencyId, userDefaultCurrency, it.originPrice*it.quantity) }
         }
 
         val lastSum = sumForMonth(lastMonth)
@@ -321,7 +321,7 @@ class DashboardActivity : AppCompatActivity() {
                     val date = LocalDateTime.parse(it.createdAt, formatter).toLocalDate()
                     !it.deletedYn && date.year == year
                 }
-                .sumOf { calculateExchangeRate(it.currencyId, userDefaultCurrency, it.originPrice) }
+                .sumOf { calculateExchangeRate(it.currencyId, userDefaultCurrency, it.originPrice*it.quantity) }
         }
 
         val lastAvg = yearSumMap[lastYear]
