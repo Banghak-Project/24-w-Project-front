@@ -74,11 +74,10 @@ class AddActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val inputText = s.toString().replace(",", "")  // 쉼표 제거
                 val amount = inputText.toDoubleOrNull() ?: 0.0
-                val quantity = binding.countText.toString().toInt()
 
                 if (amount > 0) {
                     CoroutineScope(Dispatchers.Main).launch {
-                        val convertedAmount = calculateExchangeRate(currencyIdFrom,currencyIdTo,amount*quantity)
+                        val convertedAmount = calculateExchangeRate(currencyIdFrom,currencyIdTo,amount)
                         binding.changedText.text = String.format(Locale.US, "%,.2f", convertedAmount)
                     }
                 } else {
@@ -117,13 +116,12 @@ class AddActivity : AppCompatActivity() {
         binding.buttonAdd.setOnClickListener {
             val inputText = binding.inputField.text.toString().replace(",", "")
             val inputName = binding.inputName.text.toString().trim()
-            val quantity = binding.countText.toString().toInt()
+            val quantity = binding.countText.text.toString().toInt()
             val amount = inputText.toDoubleOrNull() ?: 0.0
-
+            Log.d("hi","go")
             if (amount > 0) {
-                for (i in 0 until pieces) {
-                    addProductToList(listId, inputName, quantity, amount)
-                }
+                Log.d("hi","go1")
+                addProductToList(listId, inputName, quantity, amount)
             }
         }
 
