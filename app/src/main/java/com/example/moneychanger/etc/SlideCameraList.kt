@@ -24,7 +24,7 @@ class SlideCameraList : BottomSheetDialogFragment() {
     private val binding get() = _binding!!
 
     private var listener: OnProductAddedListener? = null
-    private lateinit var productAdapter: ProductAdapter  // ✅ 기존 ProductAdapter 사용
+    private lateinit var productAdapter: ProductAdapter  // 기존 ProductAdapter 사용
 
     companion object {
         const val TAG = "SlideCameraList"
@@ -133,7 +133,7 @@ class SlideCameraList : BottomSheetDialogFragment() {
 
         binding.buttonAdd.setOnClickListener {
             val slideCameraInput = SlideCameraInput { newlyAddedProduct ->
-                Log.d("SlideCameraList", "✅ 새 상품 추가됨: ${newlyAddedProduct.name}")
+                Log.d("SlideCameraList", "새 상품 추가됨: ${newlyAddedProduct.name}")
                 fetchProductsAndUpdate(newlyAddedProduct.listId)
             }.apply {
                 arguments = Bundle().apply {
@@ -166,7 +166,7 @@ class SlideCameraList : BottomSheetDialogFragment() {
                                     deletedYn = it.deletedYn
                                 )
                             }
-                            Log.d("SlideCameraList", "✅ 최신 리스트 불러오기 성공, ${updatedProductList.size}개 아이템")
+                            Log.d("SlideCameraList", "최신 리스트 불러오기 성공, ${updatedProductList.size}개 아이템")
                             productAdapter.updateListCamera(updatedProductList.toMutableList())
                             onComplete?.invoke()
                             val result = Bundle().apply {
@@ -174,15 +174,15 @@ class SlideCameraList : BottomSheetDialogFragment() {
                             }
                             parentFragmentManager.setFragmentResult("requestKey", result)
                         } else {
-                            Log.e("SlideCameraList", "🚨 상품 목록 불러오기 실패: ${apiResponse?.message}")
+                            Log.e("SlideCameraList", "상품 목록 불러오기 실패: ${apiResponse?.message}")
                         }
                     } else {
-                        Log.e("SlideCameraList", "🚨 응답 실패: ${response.errorBody()?.string()}")
+                        Log.e("SlideCameraList", "응답 실패: ${response.errorBody()?.string()}")
                     }
                 }
 
                 override fun onFailure(call: Call<ApiResponse<List<ProductResponseDto>>>, t: Throwable) {
-                    Log.e("SlideCameraList", "🚨 상품 목록 서버 요청 실패: ${t.message}")
+                    Log.e("SlideCameraList", "상품 목록 서버 요청 실패: ${t.message}")
                 }
             })
     }

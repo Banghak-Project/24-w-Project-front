@@ -39,6 +39,7 @@ import com.example.moneychanger.R
 import com.example.moneychanger.etc.CustomSpinner
 import com.example.moneychanger.etc.OnProductAddedListener
 import com.example.moneychanger.etc.SlideCameraList
+import com.example.moneychanger.etc.ToastUtil.showDismissibleToast
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.product.CreateProductRequestDto
 import com.example.moneychanger.network.product.CreateProductResponseDto
@@ -132,7 +133,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         val currencyTo = CurrencyManager.getById(currencyIdTo)
 
         if (currencyFrom == null || currencyTo == null) {
-            Log.e("MainActivity", "⚠️ 통화 정보 매핑 실패:")
+            Log.e("MainActivity", "통화 정보 매핑 실패:")
         }else{
             // 리스트에서 전달받은 통화 ID를 기반으로 초기값 설정
             val initialCurrencyFrom = currencyFrom.curUnit
@@ -193,7 +194,8 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         if (listId != -1L) {
             fetchProductsAndShowDialog(listId)
         } else {
-            Toast.makeText(this, "리스트 정보가 없습니다.", Toast.LENGTH_SHORT).show()
+            showDismissibleToast(this, "리스트 정보가 없습니다.")
+            //Toast.makeText(this, "리스트 정보가 없습니다.", Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -233,7 +235,8 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
 
     private fun takePicture() {
         if (currencyIdFrom == -1L || currencyIdTo == -1L) {
-            Toast.makeText(this, "두 통화를 모두 선택해주세요.", Toast.LENGTH_SHORT).show()
+            showDismissibleToast(this, "두 통화를 모두 선택해주세요.")
+            //Toast.makeText(this, "두 통화를 모두 선택해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -318,7 +321,8 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             }
             .addOnFailureListener { e ->
                 Log.e("OCR", "텍스트 인식 실패: ${e.localizedMessage}")
-                Toast.makeText(this, "텍스트 인식 실패", Toast.LENGTH_SHORT).show()
+                showDismissibleToast(this, "텍스트 인식 실패")
+                //Toast.makeText(this, "텍스트 인식 실패", Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -394,11 +398,13 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                     binding.newText.visibility = GONE
                     binding.offButton.visibility = GONE
                 } else {
-                    Toast.makeText(this@CameraActivity2, "상품명과 상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
+                    showDismissibleToast(this, "상품명과 상품 가격을 선택해주세요.")
+                    //Toast.makeText(this@CameraActivity2, "상품명과 상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            Toast.makeText(this@CameraActivity2, "상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
+            showDismissibleToast(this, "상품명을 선택해주세요.")
+            //Toast.makeText(this@CameraActivity2, "상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
 
             binding.offButton.setOnClickListener {
                 binding.textOverlay.removeAllViews()
@@ -439,7 +445,8 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             binding.productOriginPrice.text = "원래 가격"
             binding.productCalcPrice.text = "계산된 가격"
 
-            Toast.makeText(this, "상품명이 선택 해제되었습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
+            showDismissibleToast(this, "상품명이 선택 해제되었습니다. 다시 선택해주세요.")
+            //Toast.makeText(this, "상품명이 선택 해제되었습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -452,13 +459,15 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             binding.productOriginPrice.text = "원래 가격"
             binding.productCalcPrice.text = "계산된 가격"
 
-            Toast.makeText(this, "상품 가격이 선택 해제되었습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
+            showDismissibleToast(this, "상품 가격이 선택 해제되었습니다. 다시 선택해주세요.")
+            //Toast.makeText(this, "상품 가격이 선택 해제되었습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
 
         if (selectedProductName == null) {
             if (!text.any { it.isLetter() }) {
-                Toast.makeText(this, "잘못된 선택입니다. 상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
+                showDismissibleToast(this, "잘못된 선택입니다. 상품명을 선택해주세요.")
+                //Toast.makeText(this, "잘못된 선택입니다. 상품명을 선택해주세요.", Toast.LENGTH_SHORT).show()
                 return
             }
 
@@ -468,12 +477,14 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             isSelectingPrice = true
 
             view.setBackgroundResource(R.drawable.ocr_border_selected)
-            Toast.makeText(this, "상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
+            showDismissibleToast(this, "상품 가격을 선택해주세요.")
+            //Toast.makeText(this, "상품 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
 
         } else {
             val cleanPrice = cleanPriceText(text)
             if (cleanPrice.isEmpty()) {
-                Toast.makeText(this, "잘못된 선택입니다. 숫자로 된 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
+                showDismissibleToast(this, "잘못된 선택입니다. 숫자로 된 가격을 선택해주세요.")
+                //Toast.makeText(this, "잘못된 선택입니다. 숫자로 된 가격을 선택해주세요.", Toast.LENGTH_SHORT).show()
                 return
             }
 
@@ -498,7 +509,8 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             binding.productName.text = selectedProductName
             binding.productOriginPrice.text = cleanPrice.toString()
             binding.productCalcPrice.text = calculateExchangeRate(currencyIdFrom, currencyIdTo, cleanPrice).toString()
-            Toast.makeText(this, "선택 완료: $selectedProductName", Toast.LENGTH_SHORT).show()
+            //showDismissibleToast(this, "선택 완료: $selectedProductName")
+            //Toast.makeText(this, "선택 완료: $selectedProductName", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -506,7 +518,8 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (currencyIdFrom == -1L || currencyIdTo == -1L) {
-            Toast.makeText(this, "두 통화를 모두 선택해주세요.", Toast.LENGTH_SHORT).show()
+            showDismissibleToast(this, "두 통화를 모두 선택해주세요.")
+            //Toast.makeText(this, "두 통화를 모두 선택해주세요.", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -542,7 +555,8 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startCamera()
             } else {
-                Toast.makeText(this, "카메라 권한이 필요합니다.", Toast.LENGTH_LONG).show()
+                showDismissibleToast(this, "카메라 권한이 필요합니다.")
+                //Toast.makeText(this, "카메라 권한이 필요합니다.", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -564,30 +578,31 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                             val productResponse: CreateProductResponseDto? = try {
                                 Gson().fromJson(jsonData, CreateProductResponseDto::class.java)
                             } catch (e: JsonSyntaxException) {
-                                Log.e("CameraActivity", "🚨 JSON 변환 오류: ${e.message}")
+                                Log.e("CameraActivity", "JSON 변환 오류: ${e.message}")
                                 null
                             }
 
                             if (productResponse != null) {
-                                Toast.makeText(this@CameraActivity2, "상품 추가 완료!", Toast.LENGTH_SHORT).show()
-                                Log.d("CameraActivity", "✅ 상품 추가 성공: ${productResponse.name}")
+                                showDismissibleToast(this@CameraActivity2, "상품 추가 완료!")
+                                //Toast.makeText(this@CameraActivity2, "상품 추가 완료!", Toast.LENGTH_SHORT).show()
+                                Log.d("CameraActivity", "상품 추가 성공: ${productResponse.name}")
 
                                 val resultIntent = Intent()
                                 setResult(RESULT_OK, resultIntent)
                                 fetchProductsAndShowDialog(listId)
                             } else {
-                                Log.e("CameraActivity", "🚨 상품 응답 데이터 변환 실패")
+                                Log.e("CameraActivity", "상품 응답 데이터 변환 실패")
                             }
                         } else {
-                            Log.e("CameraActivity", "🚨 상품 추가 실패: ${apiResponse?.message ?: "알 수 없는 오류"}")
+                            Log.e("CameraActivity", "상품 추가 실패: ${apiResponse?.message ?: "알 수 없는 오류"}")
                         }
                     } else {
-                        Log.e("CameraActivity", "🚨 응답 실패: ${response.errorBody()?.string()}")
+                        Log.e("CameraActivity", "응답 실패: ${response.errorBody()?.string()}")
                     }
                 }
 
                 override fun onFailure(call: Call<ApiResponse<CreateProductResponseDto>>, t: Throwable) {
-                    Log.e("CameraActivity", "🚨 서버 요청 실패: ${t.message}")
+                    Log.e("CameraActivity", "서버 요청 실패: ${t.message}")
                 }
             })
     }
@@ -596,7 +611,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         val fromCurrency = CurrencyManager.getById(fromId)
         val toCurrency = CurrencyManager.getById(toId)
         if (fromCurrency == null || toCurrency == null) {
-            Log.e("MainActivity", "⚠️ 통화 정보 매핑 실패:")
+            Log.e("MainActivity", "통화 정보 매핑 실패:")
             return 0.0
         }
         val rateFrom = fromCurrency.dealBasR
@@ -615,7 +630,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
 
         val exchangedAmount = (amount * adjustedRateFrom) / adjustedRateTo
 
-        Log.d("ExchangeRate", "✅ ${fromCurrency.curUnit} -> ${toCurrency.curUnit} 환율 적용: $amount -> $exchangedAmount")
+        Log.d("ExchangeRate", "${fromCurrency.curUnit} -> ${toCurrency.curUnit} 환율 적용: $amount -> $exchangedAmount")
         return exchangedAmount
     }
 
@@ -631,25 +646,22 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                         if (apiResponse != null && apiResponse.status == "success") {
                             val productListDto = apiResponse.data ?: emptyList()
                             if (productListDto.isEmpty()) {
-                                Toast.makeText(
-                                    this@CameraActivity2,
-                                    "상품이 없습니다.",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                showDismissibleToast(this@CameraActivity2, "상품이 없습니다.")
                             } else {
                                 productList = productListDto.toMutableList()
                             }
                         } else {
-                            Toast.makeText(
+                            showDismissibleToast(
                                 this@CameraActivity2,
-                                "상품 목록을 불러오지 못했습니다.",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                                "상품 목록을 불러오지 못했습니다."
+                            )
                         }
                     } else {
-                        Log.e("CameraActivity2", "🚨 상품 목록 응답 실패: ${response.errorBody()?.string()}")
-                        Toast.makeText(this@CameraActivity2, "상품 목록 불러오기 실패", Toast.LENGTH_SHORT)
-                            .show()
+                        Log.e("CameraActivity2", "상품 목록 응답 실패: ${response.errorBody()?.string()}")
+                        showDismissibleToast(
+                            this@CameraActivity2,
+                            "상품 목록을 불러오지 못했습니다."
+                        )
                     }
                 }
 
@@ -657,8 +669,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                     call: Call<ApiResponse<List<ProductResponseDto>>>,
                     t: Throwable
                 ) {
-                    Log.e("CameraActivity2", "🚨 상품 목록 서버 요청 실패: ${t.message}")
-                    Toast.makeText(this@CameraActivity2, "서버 연결 실패", Toast.LENGTH_SHORT).show()
+                    Log.e("CameraActivity2", "상품 목록 서버 요청 실패: ${t.message}")
                 }
             })
     }
@@ -679,18 +690,17 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
                     response: Response<ApiResponse<UpdateResponseDto>>
                 ) {
                     if (response.isSuccessful && response.body()?.status == "success") {
-                        Log.i("ListActivity", "✅ 서버에 리스트 업데이트 완료")
+                        Log.i("ListActivity", "서버에 리스트 업데이트 완료")
                         val resultIntent = Intent()
                         setResult(RESULT_OK, resultIntent)
                     } else {
-                        Log.e("ListActivity", "❌ 서버 응답 실패: ${response.errorBody()?.string()}")
-                        Toast.makeText(this@CameraActivity2, "리스트 업데이트 실패", Toast.LENGTH_SHORT).show()
+                        Log.e("ListActivity", "서버 응답 실패: ${response.errorBody()?.string()}")
+                        showDismissibleToast(this@CameraActivity2, "리스트 업데이트에 실패했습니다.")
                     }
                 }
 
                 override fun onFailure(call: Call<ApiResponse<UpdateResponseDto>>, t: Throwable) {
-                    Log.e("ListActivity", "❌ 서버 업데이트 실패", t)
-                    Toast.makeText(this@CameraActivity2, "서버 통신 오류", Toast.LENGTH_SHORT).show()
+                    Log.e("ListActivity", "서버 업데이트 실패", t)
                 }
             })
     }
