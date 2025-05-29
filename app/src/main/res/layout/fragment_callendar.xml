@@ -292,7 +292,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"/>
                         <TextView
-                            android:id="@+id/total_spend_text_view"
+                            android:id="@+id/convertedTotalTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="00,000,000"
@@ -318,7 +318,7 @@
                             android:layout_weight="1"/>
 
                         <TextView
-                            android:id="@+id/convertedTotalTextView"
+                            android:id="@+id/total_spend_text_view"
                             style="@style/TextHeadingL"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
