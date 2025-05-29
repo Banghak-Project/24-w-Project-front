@@ -15,6 +15,8 @@ object TokenManager {
     private const val KEY_USER_INFO = "user_info"
     private const val KEY_USER_ID = "user_id"
     private const val KEY_IS_KAKAO_USER = "isKakaoUser"
+    private const val KEY_IS_GOOGLE_USER = "isGoogleUser"
+
 
 
     private lateinit var prefs: SharedPreferences
@@ -34,21 +36,8 @@ object TokenManager {
         return prefs.getString(KEY_ACCESS_TOKEN, null)
     }
 
-    fun getAccessTokenWithBearer(): String? {
-        val token = getAccessToken()
-        return if (token != null && !token.startsWith("Bearer ")) {
-            "Bearer $token"
-        } else {
-            token
-        }
-    }
-
     fun saveRefreshToken(token: String) {
         prefs.edit().putString(KEY_REFRESH_TOKEN, token).apply()
-    }
-
-    fun getRefreshToken(): String? {
-        return prefs.getString(KEY_REFRESH_TOKEN, null)
     }
 
     fun saveSignInInfo(signInResponse: SignInResponse) {
@@ -56,16 +45,17 @@ object TokenManager {
         prefs.edit().putString(KEY_SIGN_IN_INFO, json).apply()
     }
 
-    // ✅ 기존 함수 기반으로 수정 + isKakaoUser도 저장
     fun saveUserInfo(userInfo: UserInfoResponse?) {
         if (userInfo != null) {
             val json = Gson().toJson(userInfo)
-            prefs.edit().putString(KEY_USER_INFO, json).apply()
-
-            // ✅ 카카오 유저 여부 저장
-            prefs.edit().putBoolean(KEY_IS_KAKAO_USER, userInfo.isKakaoUser ?: false).apply()
+            prefs.edit()
+                .putString(KEY_USER_INFO, json)
+                .putBoolean(KEY_IS_KAKAO_USER, userInfo.isKakaoUser ?: false)
+                .putBoolean(KEY_IS_GOOGLE_USER, userInfo.isGoogleUser ?: false)
+                .apply()
         }
     }
+
 
 
     fun getUserInfo(): UserInfoResponse? {
@@ -84,29 +74,9 @@ object TokenManager {
     fun clearTokens() {
         prefs.edit().clear().apply()
     }
-
-    fun updateUserName(newName: String) {
-        val userInfo = getUserInfo()
-        if (userInfo != null) {
-            val updatedUser = userInfo.copy(userName = newName)
-            saveUserInfo(updatedUser)
-        }
+    fun isGoogleUser(): Boolean {
+        return prefs.getBoolean(KEY_IS_GOOGLE_USER, false)
     }
-
-    fun updateUserBirth(newBirth: String?) {
-        val userInfo = getUserInfo()
-        if (userInfo != null) {
-            val updatedBirth = newBirth ?: userInfo.userDateOfBirth
-            val updatedUser = userInfo.copy(userDateOfBirth = updatedBirth)
-            saveUserInfo(updatedUser)
-        }
-    }
-
-    fun updateUserInfo(newInfo: UserInfoResponse?) {
-        saveUserInfo(newInfo)
-    }
-
-    // ✅ 저장된 isKakaoUser 여부 확인 (null 방지)
     fun isKakaoUser(): Boolean {
         return prefs.getBoolean(KEY_IS_KAKAO_USER, false)
     }

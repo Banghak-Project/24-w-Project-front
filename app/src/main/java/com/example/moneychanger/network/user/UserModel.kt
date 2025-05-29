@@ -39,7 +39,7 @@ data class UserInfoResponse(
     @SerializedName("userEmail") val userEmail: String,
     @SerializedName("userDateOfBirth") val userDateOfBirth: String?,
     @SerializedName("kakaoUser") val isKakaoUser: Boolean,
-    @SerializedName("GoogleUser") val isGoogleUser: Boolean,
+    @SerializedName("googleUser") val isGoogleUser: Boolean,
     @SerializedName("defaultCurrencyId") val defaultCurrencyId: Long
 )
 data class UpdateUserInfoRequest(

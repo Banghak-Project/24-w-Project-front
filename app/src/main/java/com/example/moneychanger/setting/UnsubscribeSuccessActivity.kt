@@ -8,6 +8,7 @@ import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityUnsubscribeSuccessBinding
 import com.example.moneychanger.home.MainActivity
 import com.example.moneychanger.home.NaviContainerActivity
+import com.example.moneychanger.onboarding.LoginSelectActivity
 
 class UnsubscribeSuccessActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUnsubscribeSuccessBinding
@@ -28,7 +29,7 @@ class UnsubscribeSuccessActivity : AppCompatActivity() {
 
         // 처음으로 (메인)
         binding.buttonToStart.setOnClickListener{
-            val intent = Intent(this, NaviContainerActivity::class.java)
+            val intent = Intent(this, LoginSelectActivity::class.java)
             startActivity(intent)
         }
     }
