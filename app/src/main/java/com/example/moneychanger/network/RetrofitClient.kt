@@ -11,10 +11,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-//    private const val BASE_URL = "http://172.16.214.142"
-    private const val BASE_URL = "http://10.0.2.2:8080/"
-    // 애뮬레이터에서 실행하는 거면 이거 사용
-    //실제 기기에서 돌릴때는 PC의 로컬 IP 주소 사용해야한다고 함.
+//    private const val BASE_URL = "http://3.34.157.74:8080/"
+        private const val BASE_URL = "http://10.0.2.2:8080/"
+
     private val client = OkHttpClient.Builder()
         .addInterceptor(AuthInterceptor())
         .addInterceptor(HttpLoggingInterceptor().apply {

@@ -43,7 +43,7 @@ class SettingFragment : Fragment() {
         TokenManager.init(requireContext().applicationContext)
 
         val accessToken = TokenManager.getAccessToken()
-        Log.d("SettingActivity", "✅ accessToken = $accessToken")
+        Log.d("SettingActivity", "accessToken = $accessToken")
 
         fetchUserInfo()
 
@@ -68,17 +68,16 @@ class SettingFragment : Fragment() {
             startActivity(intent)
         }
 
-        binding.buttonUnsubscribe.setOnClickListener {
-            val isKakao = TokenManager.isKakaoUser()
-
-            if (isKakao) {
-                showUnsubscribePopup()
-            } else {
-                showUnsubscribePopup()
-//                val intent = Intent(requireContext(), UnsubscribeActivity::class.java)
-//                startActivity(intent)
-            }
-        }
+//        binding.buttonUnsubscribe.setOnClickListener {
+//            val isKakao = TokenManager.isKakaoUser()
+//
+//            if (isKakao) {
+//                showUnsubscribePopup()
+//            } else {
+//                showUnsubscribePopup()
+//            }
+//        }
+        setupUnsubscribeButton()
     }
 
     private fun fetchUserInfo() {
@@ -112,18 +111,17 @@ class SettingFragment : Fragment() {
 
     private fun setupUnsubscribeButton() {
         binding.buttonUnsubscribe.setOnClickListener {
-            val isKakao = TokenManager.isKakaoUser()
-            Log.d("SettingActivity", "👤 isKakaoUser: $isKakao")
+            val isKakao  = TokenManager.isKakaoUser()
+            val isGoogle = TokenManager.isGoogleUser()
+            Log.d("SettingFragment", "isKakao=$isKakao, isGoogle=$isGoogle")
 
-            if (isKakao) {
-                showKakaoUnsubscribeDialog()
-            } else {
-                val intent = Intent(requireContext(), UnsubscribeActivity::class.java)
-                startActivity(intent)
+            when {
+                isKakao  -> showKakaoUnsubscribeDialog()
+                isGoogle -> showGoogleUnsubscribeDialog()
+                else     -> showUnsubscribePopup()
             }
         }
     }
-
 
     private fun updateUserInfo() {
         val userInfo = TokenManager.getUserInfo()
@@ -187,6 +185,23 @@ class SettingFragment : Fragment() {
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
     }
+    private fun showGoogleUnsubscribeDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.unsubscribe_popup, null)
+        AlertDialog.Builder(requireContext(), R.style.PopupDialogTheme)
+            .setView(dialogView)
+            .create().apply {
+                dialogView.findViewById<TextView>(R.id.button_yes).setOnClickListener {
+                    performGoogleWithdrawal()
+                    dismiss()
+                }
+                dialogView.findViewById<TextView>(R.id.button_no).setOnClickListener { dismiss() }
+                show()
+                window?.setLayout(
+                    (resources.displayMetrics.widthPixels * 0.8).toInt(),
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            }
+    }
 
     private fun performKakaoWithdrawal() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -211,6 +226,19 @@ class SettingFragment : Fragment() {
             }
         }
     }
-
+    private fun performGoogleWithdrawal() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = RetrofitClient.apiService.googleWithdrawal()
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful && response.body()?.status=="success") {
+                    TokenManager.clearTokens()
+                    Toast.makeText(requireContext(), "구글 탈퇴 완료", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(requireContext(), UnsubscribeSuccessActivity::class.java))
+                } else {
+                    Toast.makeText(requireContext(), "탈퇴 실패", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
 }
