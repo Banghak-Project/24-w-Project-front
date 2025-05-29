@@ -83,6 +83,9 @@ class SettingActivity : BaseActivity() {
                 val response = RetrofitClient.apiService.getUserInfo()
 
                 withContext(Dispatchers.Main) {
+                    if (response.code() == 401) {
+                        return@withContext
+                    }
                     if (response.isSuccessful && response.body()?.status == "success") {
                         val userInfo = response.body()?.data
                         if (userInfo != null) {
@@ -90,18 +93,24 @@ class SettingActivity : BaseActivity() {
                             updateUserInfo()
 
                             setupUnsubscribeButton()
+                            }
+                        } else {
+                            Toast.makeText(
+                                this@SettingActivity,
+                                "회원 정보를 불러올 수 없습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                    } else {
-                        Toast.makeText(this@SettingActivity, "회원 정보를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
                     }
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@SettingActivity, "네트워크 오류 발생", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(this@SettingActivity, "네트워크 오류 발생", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             }
         }
-    }
+
 
     private fun setupUnsubscribeButton() {
         binding.buttonUnsubscribe.setOnClickListener {

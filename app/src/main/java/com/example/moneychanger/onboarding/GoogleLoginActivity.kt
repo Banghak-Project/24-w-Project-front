@@ -28,11 +28,9 @@ class GoogleLoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_select)
 
-        // 서버 측에서 교환해 줄 auth code 요청으로 변경
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .requestProfile()
-            // 이전의 requestIdToken(...) 대신 server auth code 요청
             .requestServerAuthCode(getString(R.string.default_web_client_id), true)
             .build()
 
@@ -88,11 +86,13 @@ class GoogleLoginActivity : AppCompatActivity() {
                                 "구글 로그인 성공",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            Toast.makeText(
-                                this@GoogleLoginActivity,
-                                "소셜 계정 최초 로그인입니다. 설정 메뉴에서 기본 통화를 지정해주세요.",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            if (it.firstSocialLogin == true && it.socialProvider == "google") {
+                                Toast.makeText(
+                                    this@GoogleLoginActivity,
+                                    "소셜 계정 최초 로그인입니다. 설정 메뉴에서 기본 통화를 지정해주세요.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
                             startActivity(
                                 Intent(
                                     this@GoogleLoginActivity,

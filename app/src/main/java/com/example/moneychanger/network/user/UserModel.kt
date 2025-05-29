@@ -31,7 +31,10 @@ data class SignInResponse(  @SerializedName("userId") val userId: Long,
                             @SerializedName("msg") val msg: String? = null,
                             @SerializedName("accessToken") val accessToken: String? = null,
                             @SerializedName("refreshToken") val refreshToken: String? = null,
-                            @SerializedName("kakaoAccessToken") val kakaoAccessToken: String? = null)
+                            @SerializedName("kakaoAccessToken") val kakaoAccessToken: String? = null,
+                            @SerializedName("firstSocialLogin") val firstSocialLogin: Boolean? = null,
+                            @SerializedName("socialProvider") val socialProvider: String? = null
+    )
 
 data class UserInfoResponse(
     @SerializedName("userId") val userId: Long,
