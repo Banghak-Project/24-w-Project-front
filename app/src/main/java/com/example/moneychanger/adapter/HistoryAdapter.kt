@@ -37,27 +37,27 @@ class HistoryAdapter(
             binding.productPrice.text = String.format("%,d", product.originPrice.toInt())
 
             val ctx = binding.root.context
-            val toKey   = list.currencyTo.curUnit.replace(Regex("\\(.*\\)"), "").trim()
             val fromKey = list.currencyFrom.curUnit.replace(Regex("\\(.*\\)"), "").trim()
+            val toKey   = list.currencyTo.curUnit.replace(Regex("\\(.*\\)"), "").trim()
 
             val toResId   = ctx.resources.getIdentifier(toKey,   "string", ctx.packageName)
             val fromResId = ctx.resources.getIdentifier(fromKey, "string", ctx.packageName)
 
-            val toSymbol   = if (toResId   != 0) ctx.getString(toResId)   else toKey
             val fromSymbol = if (fromResId != 0) ctx.getString(fromResId) else fromKey
+            val toSymbol   = if (toResId   != 0) ctx.getString(toResId)   else toKey
 
-            binding.currencyTo.text   = toSymbol
             binding.currencyFrom.text = fromSymbol
+            binding.currencyTo.text   = toSymbol
 
             CoroutineScope(Dispatchers.Main).launch {
                 Log.d("HistConv",
-                    "from=${list.currencyTo.currencyId}($toSymbol) " +
-                            "to=${list.currencyFrom.currencyId}($fromSymbol) " +
+                    "from=${list.currencyFrom.currencyId}($toSymbol) " +
+                            "to=${list.currencyTo.currencyId}($fromSymbol) " +
                             "amount=${product.originPrice}"
                 )
                 val converted = ExchangeRateUtil.calculateExchangeRate(
-                    list.currencyTo.currencyId,    // from: 원래 금액 통화
-                    list.currencyFrom.currencyId,  // to: 변환할 통화
+                    list.currencyFrom.currencyId,    // from: 원래 금액 통화
+                    list.currencyTo.currencyId,  // to: 변환할 통화
                     product.originPrice.toDouble()
                 )
                 Log.d("HistConv", "converted=$converted")
