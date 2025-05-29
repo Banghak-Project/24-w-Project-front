@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityLoginBinding
-import com.example.moneychanger.home.MainActivity
 import com.example.moneychanger.home.NaviContainerActivity
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
@@ -147,7 +146,7 @@ class LoginActivity : AppCompatActivity() {
         if (accessToken.isNotEmpty()) {
             TokenManager.saveAccessToken(accessToken)
             TokenManager.saveRefreshToken(refreshToken)
-            TokenManager.saveSignInInfo(signInResponse) //  사용자 정보 저장
+            TokenManager.saveSignInInfo(signInResponse)
 
             val userId = signInResponse.userId
             TokenManager.saveUserId(userId)

@@ -16,7 +16,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
 
         TokenManager.init(this) // SharedPreferences 초기화
-        validateTokenOnStart() // 👈 여기가 핵심!
+        validateTokenOnStart()
 
         Handler(Looper.getMainLooper()).postDelayed({
             val nextActivity = if (TokenManager.getAccessToken().isNullOrBlank()) {

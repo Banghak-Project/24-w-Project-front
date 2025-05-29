@@ -18,7 +18,6 @@ object TokenManager {
     private const val KEY_IS_GOOGLE_USER = "isGoogleUser"
 
 
-
     private lateinit var prefs: SharedPreferences
 
     fun init(context: Context) {
@@ -39,6 +38,8 @@ object TokenManager {
     fun saveRefreshToken(token: String) {
         prefs.edit().putString(KEY_REFRESH_TOKEN, token).apply()
     }
+    fun getRefreshToken(): String? =
+        prefs.getString(KEY_REFRESH_TOKEN, null)
 
     fun saveSignInInfo(signInResponse: SignInResponse) {
         val json = Gson().toJson(signInResponse)
@@ -55,7 +56,6 @@ object TokenManager {
                 .apply()
         }
     }
-
 
 
     fun getUserInfo(): UserInfoResponse? {
