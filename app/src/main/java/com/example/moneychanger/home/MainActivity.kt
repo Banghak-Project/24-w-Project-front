@@ -92,25 +92,6 @@ class MainActivity : BaseActivity(), OnStoreNameUpdatedListener {
             fetchListsFromApi()
         }
 
-        // 임시 버튼 연결 - 임시
-        binding.b1.setOnClickListener {
-            // 로그인 선택 페이지로 연결
-            val intent = Intent(this, CalendarActivity::class.java)
-            startActivity(intent)
-        }
-        binding.b2.setOnClickListener{
-            val intent = Intent(this, NewPwActivity::class.java)
-            startActivity(intent)
-        }
-        binding.b3.setOnClickListener{
-            val intent = Intent(this, LocationActivity::class.java)
-            startActivity(intent)
-        }
-        binding.b4.setOnClickListener{
-            val intent = Intent(this, DashboardActivity::class.java)
-            startActivity(intent)
-        }
-
         // 직접 리스트 추가 후 갱신
         supportFragmentManager.setFragmentResultListener("requestKey", this) { _, bundle ->
             val listAdded = bundle.getBoolean("listAdded")
