@@ -132,7 +132,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         val currencyTo = CurrencyManager.getById(currencyIdTo)
 
         if (currencyFrom == null || currencyTo == null) {
-            Log.e("MainActivity", "⚠️ 통화 정보 매핑 실패:")
+            Log.e("MainFragment", "⚠️ 통화 정보 매핑 실패:")
         }else{
             // 리스트에서 전달받은 통화 ID를 기반으로 초기값 설정
             val initialCurrencyFrom = currencyFrom.curUnit
@@ -596,7 +596,7 @@ class CameraActivity2 : AppCompatActivity(), OnProductAddedListener {
         val fromCurrency = CurrencyManager.getById(fromId)
         val toCurrency = CurrencyManager.getById(toId)
         if (fromCurrency == null || toCurrency == null) {
-            Log.e("MainActivity", "⚠️ 통화 정보 매핑 실패:")
+            Log.e("MainFragment", "⚠️ 통화 정보 매핑 실패:")
             return 0.0
         }
         val rateFrom = fromCurrency.dealBasR

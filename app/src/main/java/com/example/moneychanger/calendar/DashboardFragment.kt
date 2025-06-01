@@ -406,7 +406,6 @@ class DashboardFragment : Fragment() {
                 call: Call<ApiResponse<List<ProductWithCurrencyDto>>>,
                 response: Response<ApiResponse<List<ProductWithCurrencyDto>>>
             ) {
-                Log.d("DashboardActivity", "API 응답 성공: ${response.body()}")
                 if (response.isSuccessful) {
                     val productList = response.body()?.data?: emptyList()
                     onFinished(productList)

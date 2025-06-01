@@ -7,7 +7,6 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.moneychanger.R
-import com.example.moneychanger.home.MainActivity
 import com.example.moneychanger.home.NaviContainerActivity
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager

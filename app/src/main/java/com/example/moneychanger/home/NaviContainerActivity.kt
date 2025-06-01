@@ -6,11 +6,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityNaviContainerBinding
-import com.example.moneychanger.calendar.CallendarFragment
+import com.example.moneychanger.calendar.CalendarFragment
 import com.example.moneychanger.calendar.DashboardFragment
 import com.example.moneychanger.camera.CameraActivity
 import com.example.moneychanger.etc.OnStoreNameUpdatedListener
@@ -53,7 +52,7 @@ class NaviContainerActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
         binding.navFinan.setOnClickListener {
             updateNavSelection(binding.navFinan)
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, CallendarFragment())
+                .replace(R.id.container, CalendarFragment())
                 .commit()
         }
         binding.navDashboard.setOnClickListener {

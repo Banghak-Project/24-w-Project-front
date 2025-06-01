@@ -1,7 +1,6 @@
 package com.example.moneychanger.calendar
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +25,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
-class CallendarFragment : Fragment() {
+class CalendarFragment : Fragment() {
     private var _binding: FragmentCallendarBinding? = null
     private val binding get() = _binding!!
     private lateinit var historyAdapter: HistoryAdapter
@@ -118,7 +117,6 @@ class CallendarFragment : Fragment() {
         lifecycleScope.launch {
             val resp = RetrofitClient.apiService.getListsBySingleDate(d)
             if (!resp.isSuccessful) {
-                Log.e("CalendarActivity", "API error ${resp.code()}")
                 return@launch
             }
 
@@ -168,7 +166,6 @@ class CallendarFragment : Fragment() {
         lifecycleScope.launch {
             val resp = RetrofitClient.apiService.getListsByDate(start, end)
             if (!resp.isSuccessful) {
-                Log.e("CalendarActivity", "월별 API error ${resp.code()}")
                 return@launch
             }
 
