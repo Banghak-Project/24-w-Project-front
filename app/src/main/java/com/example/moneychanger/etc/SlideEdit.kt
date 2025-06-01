@@ -56,6 +56,8 @@ class SlideEdit : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.textStoreName.setText(selectedList.name)
+
         binding.buttonUpdate.setOnClickListener {
             val storeName = binding.textStoreName.text.toString()
 
