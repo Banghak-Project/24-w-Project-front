@@ -180,9 +180,6 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
 
         fetchListByIdFromApi(selectedListId) { list ->
             list?.let {
-                Toast.makeText(this, "$selectedListId", Toast.LENGTH_SHORT).show()
-                Log.d("ListDebug", "Fetched List: $it")
-
                 selectedList = it // selectedList 초기화
                 updateUI(it) // UI 업데이트
                 fetchProductsByListId(selectedListId)
@@ -200,9 +197,6 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             if (result.resultCode == RESULT_OK) {
                 fetchListByIdFromApi(selectedListId) { list ->
                     list?.let {
-                        Toast.makeText(this, "$selectedListId", Toast.LENGTH_SHORT).show()
-                        Log.d("ListDebug", "Fetched List: $it")
-
                         selectedList = it // selectedList 초기화
                         updateUI(it) // UI 업데이트
                         currencyIdFrom = it.currencyFrom.currencyId
