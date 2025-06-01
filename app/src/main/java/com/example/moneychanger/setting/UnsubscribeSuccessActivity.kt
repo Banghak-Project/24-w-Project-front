@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.widget.ImageView
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityUnsubscribeSuccessBinding
-import com.example.moneychanger.home.MainActivity
 import com.example.moneychanger.home.NaviContainerActivity
 import com.example.moneychanger.onboarding.LoginSelectActivity
 

@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import com.example.moneychanger.R
 import com.example.moneychanger.databinding.ActivityEditInfoBinding
 import com.example.moneychanger.etc.CustomSpinner
+import com.example.moneychanger.home.NaviContainerActivity
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
 import com.example.moneychanger.network.currency.CurrencyManager
@@ -184,7 +185,7 @@ class EditInfoActivity : AppCompatActivity() {
                             TokenManager.saveUserInfo(updated)
                             Toast.makeText(this@EditInfoActivity, "정보가 수정되었습니다.", Toast.LENGTH_SHORT).show()
                             startActivity(
-                                Intent(this@EditInfoActivity, SettingActivity::class.java)
+                                Intent(this@EditInfoActivity, NaviContainerActivity::class.java)
                                     .apply {
                                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                     }
