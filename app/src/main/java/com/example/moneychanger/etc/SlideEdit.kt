@@ -70,10 +70,10 @@ class SlideEdit : BottomSheetDialogFragment() {
 
     private fun updateListName(storeName: String) {
         val updateRequest = UpdateRequestDto(
-            listId = selectedList!!.listId,
-            currencyIdFrom = selectedList!!.currencyFrom.currencyId,
-            currencyIdTo = selectedList!!.currencyTo.currencyId,
-            location = selectedList!!.location,
+            listId = selectedList.listId,
+            currencyIdFrom = selectedList.currencyFrom.currencyId,
+            currencyIdTo = selectedList.currencyTo.currencyId,
+            location = selectedList.location,
             name = storeName
         )
 
