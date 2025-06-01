@@ -86,10 +86,13 @@ class KakaoLoginActivity : AppCompatActivity() {
                             Log.d("KakaoLoginActivity", "✅ 저장된 accessToken 확인용: ${TokenManager.getAccessToken()}")
 
                             Toast.makeText(this@KakaoLoginActivity, "로그인 성공", Toast.LENGTH_SHORT).show()
-                            Toast.makeText(this@KakaoLoginActivity,
-                                "소셜 계정 최초 로그인입니다. 설정 메뉴에서 기본 통화를 지정해주세요.",
-                                Toast.LENGTH_LONG).show()
-
+                            if (data.firstSocialLogin == true && data.socialProvider == "kakao") {
+                                Toast.makeText(
+                                    this@KakaoLoginActivity,
+                                    "소셜 계정 최초 로그인입니다. 설정 메뉴에서 기본 통화를 지정해주세요.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
                             startActivity(Intent(this@KakaoLoginActivity, NaviContainerActivity::class.java))
                             finish()
                         } else {

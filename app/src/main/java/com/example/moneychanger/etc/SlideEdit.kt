@@ -56,6 +56,8 @@ class SlideEdit : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.textStoreName.setText(selectedList.name)
+
         binding.buttonUpdate.setOnClickListener {
             val storeName = binding.textStoreName.text.toString()
 
@@ -68,10 +70,10 @@ class SlideEdit : BottomSheetDialogFragment() {
 
     private fun updateListName(storeName: String) {
         val updateRequest = UpdateRequestDto(
-            listId = selectedList!!.listId,
-            currencyIdFrom = selectedList!!.currencyFrom.currencyId,
-            currencyIdTo = selectedList!!.currencyTo.currencyId,
-            location = selectedList!!.location,
+            listId = selectedList.listId,
+            currencyIdFrom = selectedList.currencyFrom.currencyId,
+            currencyIdTo = selectedList.currencyTo.currencyId,
+            location = selectedList.location,
             name = storeName
         )
 

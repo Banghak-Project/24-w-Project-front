@@ -24,6 +24,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONException
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.HttpException
@@ -174,7 +176,6 @@ class PersonalInfoActivity : AppCompatActivity() {
     }
 
 
-    //     회원가입 요청
     private fun sendSignUpRequest() {
         val name = binding.inputName.text.toString().trim()
         val password = binding.inputPassword.text.toString().trim()
@@ -193,7 +194,7 @@ class PersonalInfoActivity : AppCompatActivity() {
             userName = name,
             userDateOfBirth = dateOfBirthMillis,
             userGender = selectedGender ?: false,
-            userEmail = email, // ✅ 소문자로 변환된 이메일 사용
+            userEmail = email,
             userPassword = password,
             otp = otp,
             agreedTerms = agreedTerms,
@@ -209,24 +210,58 @@ class PersonalInfoActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
                         val signUpResponse = response.body()
-                        Log.d("PersonalInfoActivity", "✅ 회원가입 응답 데이터: ${Gson().toJson(signUpResponse)}")
+                        Log.d(
+                            "PersonalInfoActivity",
+                            "회원가입 응답 데이터: ${Gson().toJson(signUpResponse)}"
+                        )
 
                         var signUpData: SignUpResponse? = null
 
                         if (signUpResponse?.message == "회원가입 성공") {
-                            val userName = signUpResponse?.data?.userName ;
-                            Toast.makeText(this@PersonalInfoActivity, "${signUpResponse.message} ($userName 님)", Toast.LENGTH_SHORT).show()
-                            startActivity(Intent(this@PersonalInfoActivity, LoginActivity::class.java))
+                            val userName = signUpResponse?.data?.userName;
+                            Toast.makeText(
+                                this@PersonalInfoActivity,
+                                "${signUpResponse.message} ($userName 님)",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            startActivity(
+                                Intent(
+                                    this@PersonalInfoActivity,
+                                    LoginActivity::class.java
+                                )
+                            )
                             finish()
                         } else {
-                            Toast.makeText(this@PersonalInfoActivity, signUpResponse?.message ?: "회원가입 실패", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@PersonalInfoActivity,
+                                signUpResponse?.message ?: "회원가입 실패",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     } else {
                         val errorBody = response.errorBody()?.string()
-                        Log.e("PersonalInfoActivity", "🚨 회원가입 실패 - HTTP ${response.code()}: $errorBody")
+
+                        // JSON 형태로 넘어오는 경우 message 필드만 꺼내고 싶으면
+                        val errorMsg = errorBody
+                            ?.let { JSONObject(it).optString("message", it) }
+                            ?: "알 수 없는 오류가 발생했습니다."
+
+                        // Toast 를 보여줄 때는 Context 를 넘기고, 반드시 show() 까지 호출해야 합니다.
+                        Toast
+                            .makeText(
+                                this@PersonalInfoActivity,   // ← 반드시 Activity 또는 Application 의 Context
+                                errorMsg,                     // ← 보여줄 문자열
+                                Toast.LENGTH_SHORT            // ← duration
+                            )
+                            .show()
+
+                        Log.e(
+                            "PersonalInfoActivity",
+                            "🚨 회원가입 실패 - HTTP ${response.code()}: $errorBody"
+                        )
                     }
                 }
-            } catch (e: Exception) {
+                } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Log.e("PersonalInfoActivity", "⚠️ 예외 발생: ${e.message}")
                 }

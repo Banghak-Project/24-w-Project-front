@@ -179,7 +179,8 @@ interface ApiService {
 
     @POST("/api/auth/google/signin")
     suspend fun googleSignIn(@Body request: Map<String, String>): Response<ApiResponse<SignInResponse>>
-
+    @POST("/api/auth/google/withdrawal")
+    suspend fun googleWithdrawal(): Response<ApiResponse<String>>
     @GET("/api/lists/date")
     suspend fun getListsByDate(
         @Query("startDate") startDate: String,

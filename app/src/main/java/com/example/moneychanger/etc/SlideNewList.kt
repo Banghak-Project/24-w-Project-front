@@ -60,7 +60,7 @@ class SlideNewList : BottomSheetDialogFragment() {
 
         if (currencyList.isEmpty()) {
             context?.let {
-                Toast.makeText(it, "로그인 후 이용해주세요.1", Toast.LENGTH_LONG).show()
+                Toast.makeText(it, "로그인 후 이용해주세요.", Toast.LENGTH_LONG).show()
             }
             return
         }

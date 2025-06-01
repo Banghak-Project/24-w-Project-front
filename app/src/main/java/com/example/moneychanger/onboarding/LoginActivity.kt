@@ -146,7 +146,7 @@ class LoginActivity : AppCompatActivity() {
         if (accessToken.isNotEmpty()) {
             TokenManager.saveAccessToken(accessToken)
             TokenManager.saveRefreshToken(refreshToken)
-            TokenManager.saveSignInInfo(signInResponse) //  사용자 정보 저장
+            TokenManager.saveSignInInfo(signInResponse)
 
             val userId = signInResponse.userId
             TokenManager.saveUserId(userId)

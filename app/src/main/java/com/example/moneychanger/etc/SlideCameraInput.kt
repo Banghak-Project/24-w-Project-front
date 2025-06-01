@@ -94,9 +94,25 @@ class SlideCameraInput(
             val quantity = binding.countText.text.toString().toInt()
             val price = inputText.toDoubleOrNull() ?: 0.0
 
-            if (price > 0) {
-                addProductToList(listId, inputName, quantity, price)
+            if (price > 0 && inputName.isNotEmpty()) {
+                if (listId != -1L){
+                    addProductToList(listId, inputName, quantity, price)
+                } else {
+                    context?.let {
+                        Toast.makeText(it, "리스트를 생성해주세요.", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
+//            if (listId != -1L) {
+//                addProductToList(latestListId, productNameCopy, quantity, productPriceCopy)
+//            } else {
+//                checkAndRequestLocationPermission {
+//                    getLocation { address ->
+//                        location = address
+//                        addNewList(userId, currencyIdFrom, currencyIdTo, location, productNameCopy, productPriceCopy, quantity)
+//                    }
+//                }
+//            }
         }
 
         var pieces = 1
@@ -198,7 +214,7 @@ class SlideCameraInput(
                         Log.d("SlideCameraInput", "추가된 상품: $addedProduct")
 
                         if (addedProduct != null) {
-                            Log.d("SlideCameraInput", "✅ 추가된 상품 콜백 전달")
+                            Log.d("SlideCameraInput", "추가된 상품 콜백 전달")
                             onProductAddedListener?.invoke(addedProduct)  // ★ 콜백 호출
                             dismiss()
                         }

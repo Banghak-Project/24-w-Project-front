@@ -14,6 +14,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONException
+import org.json.JSONObject
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
@@ -63,13 +65,14 @@ class LoginAuthActivity : AppCompatActivity() {
                         startActivity(intent)
                     } else {
                         val errorBody = response.errorBody()?.string()
+                        // 실제로 보여줄 메시지
                         val errorMessage = try {
-                            val apiError = com.google.gson.Gson().fromJson(errorBody, com.example.moneychanger.network.user.ApiResponse::class.java)
-                            apiError?.message ?: "OTP 전송 실패"
-                        } catch (e: Exception) {
-                            "OTP 전송 실패: 응답 해석 오류"
+                            // 서버가 보낸 JSON에서 "message" 필드만 파싱
+                            JSONObject(errorBody).optString("message", "OTP 전송 실패")
+                        } catch (e: JSONException) {
+                            // JSON 파싱조차 안 될 때는 raw body 또는 기본 메시지
+                            errorBody ?: "OTP 전송 실패"
                         }
-
                         Log.e("LoginAuthActivity", "OTP 전송 실패: $errorBody")
                         Toast.makeText(this@LoginAuthActivity, errorMessage, Toast.LENGTH_SHORT).show()
                     }
