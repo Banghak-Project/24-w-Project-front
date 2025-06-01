@@ -28,7 +28,6 @@ import com.example.moneychanger.network.currency.CurrencyManager
 import com.example.moneychanger.network.currency.CurrencyViewModel
 import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.network.list.ListsResponseDto
-import com.example.moneychanger.network.TokenManager
 import com.example.moneychanger.network.list.UpdateRequestDto
 import com.example.moneychanger.network.list.UpdateResponseDto
 import com.example.moneychanger.network.product.ProductModel
