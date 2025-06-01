@@ -138,6 +138,9 @@ class SlideCameraList : BottomSheetDialogFragment() {
             }.apply {
                 arguments = Bundle().apply {
                     putString("currency_from_unit", currencyFromUnit)
+                    putString("currency_to_unit", currencyToUnit)
+                    putLong("currency_id_from", currencyIdFrom)
+                    putLong("currency_id_to", currencyIdTo)
                     putLong("list_id", listId)
                 }
             }

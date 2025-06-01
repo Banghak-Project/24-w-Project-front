@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.widget.doAfterTextChanged
+import androidx.lifecycle.lifecycleScope
 import com.example.moneychanger.databinding.SlideCameraInputBinding
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.product.CreateProductRequestDto
@@ -17,6 +19,7 @@ import com.example.moneychanger.network.user.ApiResponse
 import com.example.moneychanger.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -71,13 +74,19 @@ class SlideCameraInput(
 
         val listId = arguments?.getLong("list_id") ?: -1L
         val fromUnit = arguments?.getString("currency_from_unit") ?: ""
+        val toUnit = arguments?.getString("currency_to_unit") ?: ""
         val fromKey = fromUnit.replace(Regex("\\(.*\\)"), "").trim()
+        val toKey = toUnit.replace(Regex("\\(.*\\)"), "").trim()
         val fromResId = resources.getIdentifier(fromKey, "string", requireContext().packageName)
+        val toResId = resources.getIdentifier(toKey, "string", requireContext().packageName)
         val fromSymbol = if (fromResId != 0) getString(fromResId) else fromKey
+        val toSymbol = if (toResId != 0) getString(toResId) else toKey
 
         // 🟢 통화 기호 바인딩
         binding.currencyText.text = fromUnit
         binding.currencySymbol.text = fromSymbol
+        binding.currencyText2.text = toUnit
+        binding.currencySymbol2.text = toSymbol
 
         binding.buttonAdd.setOnClickListener {
             val inputName = binding.inputName.text.toString().trim()
@@ -113,6 +122,7 @@ class SlideCameraInput(
                     ContextCompat.getColor(requireContext(), R.color.gray_02)
                 )
             }
+            updateChangedText()
         }
 
         binding.buttonPlus.setOnClickListener {
@@ -134,8 +144,41 @@ class SlideCameraInput(
                     ContextCompat.getColor(requireContext(), R.color.gray_03)
                 )
             }
+            updateChangedText()
+        }
+
+        binding.inputPrice.doAfterTextChanged {
+            updateChangedText()
         }
     }
+
+    fun updateChangedText() {
+        val inputText = binding.inputPrice.text.toString().replace(",", "")
+        val price = inputText.toDoubleOrNull() ?: 0.0
+        val quantity = binding.countText.text.toString().toIntOrNull() ?: 1
+
+        val currencyIdFrom = arguments?.getLong("currency_id_from") ?: -1L
+        val currencyIdTo = arguments?.getLong("currency_id_to") ?: -1L
+
+
+        Log.d("SlideCameraInput", "✅ 환율 요청: $currencyIdFrom → $currencyIdTo")
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val exchangeRate = ExchangeRateUtil.getExchangeRate(currencyIdFrom, currencyIdTo)
+                Log.d("SlideCameraInput", "📈 환율 응답: $exchangeRate")
+
+                val changedAmount = price * quantity * exchangeRate
+                val formatted = String.format("%.2f", changedAmount)
+
+                binding.changedText.text = formatted
+            } catch (e: Exception) {
+                Log.e("SlideCameraInput", "❌ 환율 계산 실패: ${e.message}")
+            }
+        }
+    }
+
+
 
     private fun addProductToList(listId: Long, productName: String, quantity:Int, price: Double) {
         val productRequest = CreateProductRequestDto(listId, productName, quantity, price)
