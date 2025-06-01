@@ -28,7 +28,6 @@ import com.example.moneychanger.network.currency.CurrencyManager
 import com.example.moneychanger.network.currency.CurrencyViewModel
 import com.example.moneychanger.network.list.ListModel
 import com.example.moneychanger.network.list.ListsResponseDto
-import com.example.moneychanger.network.TokenManager
 import com.example.moneychanger.network.list.UpdateRequestDto
 import com.example.moneychanger.network.list.UpdateResponseDto
 import com.example.moneychanger.network.product.ProductModel
@@ -180,9 +179,6 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
 
         fetchListByIdFromApi(selectedListId) { list ->
             list?.let {
-                Toast.makeText(this, "$selectedListId", Toast.LENGTH_SHORT).show()
-                Log.d("ListDebug", "Fetched List: $it")
-
                 selectedList = it // selectedList 초기화
                 updateUI(it) // UI 업데이트
                 fetchProductsByListId(selectedListId)
@@ -200,9 +196,6 @@ class ListActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
             if (result.resultCode == RESULT_OK) {
                 fetchListByIdFromApi(selectedListId) { list ->
                     list?.let {
-                        Toast.makeText(this, "$selectedListId", Toast.LENGTH_SHORT).show()
-                        Log.d("ListDebug", "Fetched List: $it")
-
                         selectedList = it // selectedList 초기화
                         updateUI(it) // UI 업데이트
                         currencyIdFrom = it.currencyFrom.currencyId
