@@ -132,7 +132,6 @@
                     android:text="@string/ex_email"/>
             </LinearLayout>
 
-            <!-- 비밀번호 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -143,30 +142,55 @@
                     android:layout_height="20dp"
                     android:layout_marginBottom="4dp"
                     android:text="@string/pw_kor"
-                    style="@style/TextBodyS"/>
+                style="@style/TextBodyS"/>
                 <EditText
                     android:id="@+id/input_password"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:paddingHorizontal="24dp"
                     android:hint="@string/pw_eng"
-                    android:inputType="textPassword"
-                    android:imeOptions="actionDone"
-                    android:maxLines="1"
-                    android:background="@drawable/round_background"
-                    style="@style/TextBodyL"/>
+                android:inputType="textPassword"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                android:background="@drawable/round_background"
+                style="@style/TextBodyL"/>
+            </LinearLayout>
+
+            <!-- **추가**: 새 비밀번호 입력란 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="8dp" >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="새 비밀번호"
+                style="@style/TextBodyS"/>
+                <EditText
+                    android:id="@+id/input_new_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:paddingHorizontal="24dp"
+                    android:hint="새 비밀번호 입력"
+                android:inputType="textPassword"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                android:background="@drawable/round_background"
+                style="@style/TextBodyL"/>
             </LinearLayout>
         </LinearLayout>
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
-        <Button
-            android:id="@+id/button_edit"
-            android:layout_marginBottom="24dp"
-            android:text="@string/edit_long"
-            style="@style/NextButtonStyle" />
-    </LinearLayout>
+            <Button
+                android:id="@+id/button_edit"
+                android:layout_marginBottom="24dp"
+                android:text="@string/edit_long"
+                style="@style/NextButtonStyle" />
+        </LinearLayout>
 </LinearLayout>
