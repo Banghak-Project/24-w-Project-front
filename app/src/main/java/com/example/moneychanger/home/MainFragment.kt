@@ -47,6 +47,12 @@ class MainFragment : Fragment(), OnStoreNameUpdatedListener {
     private lateinit var addListLauncher: ActivityResultLauncher<Intent>
     private lateinit var editListLauncher: ActivityResultLauncher<Intent>
 
+    override fun onResume() {
+        super.onResume()
+        fetchListsFromApi()
+    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -168,7 +174,7 @@ class MainFragment : Fragment(), OnStoreNameUpdatedListener {
         return LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString()
     }
 
-    private fun fetchListsFromApi() {
+    fun fetchListsFromApi() {
         apiService.getAllLists().enqueue(object : Callback<ApiResponse<List<ListsResponseDto>>> {
             override fun onResponse(
                 call: Call<ApiResponse<List<ListsResponseDto>>>,

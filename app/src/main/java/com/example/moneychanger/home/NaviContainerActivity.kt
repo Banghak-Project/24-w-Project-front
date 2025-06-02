@@ -21,6 +21,14 @@ class NaviContainerActivity : BaseActivity(), OnStoreNameUpdatedListener {
     private lateinit var binding: ActivityNaviContainerBinding
     private lateinit var addListLauncher: ActivityResultLauncher<Intent>
 
+    override fun onResume() {
+        super.onResume()
+        val fragment = supportFragmentManager.findFragmentById(R.id.container)
+        if (fragment is MainFragment) {
+            fragment.fetchListsFromApi()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityNaviContainerBinding.inflate(layoutInflater)
