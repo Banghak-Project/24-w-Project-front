@@ -81,7 +81,7 @@ class AddActivity : AppCompatActivity() {
                         binding.changedText.text = String.format(Locale.US, "%,.2f", convertedAmount)
                     }
                 } else {
-                    binding.changedText.text = "0.00"
+                    binding.changedText.setText("0.00")
                 }
             }
 
@@ -94,6 +94,7 @@ class AddActivity : AppCompatActivity() {
             if (pieces > 1) {
                 pieces -= 1
                 binding.countText.text = pieces.toString()
+                appearTotal(currencyIdFrom, currencyIdTo, pieces)
             }
 
             if (pieces > 1) {
@@ -103,6 +104,7 @@ class AddActivity : AppCompatActivity() {
                 binding.minusSign.imageTintList = ColorStateList.valueOf(
                     ContextCompat.getColor(this, R.color.main)
                 )
+                appearTotal(currencyIdFrom, currencyIdTo, pieces)
             } else {
                 binding.rectMinus.imageTintList = ColorStateList.valueOf(
                     ContextCompat.getColor(this, R.color.gray_03)
@@ -128,6 +130,7 @@ class AddActivity : AppCompatActivity() {
         binding.buttonPlus.setOnClickListener {
             pieces += 1
             binding.countText.text = pieces.toString()
+            appearTotal(currencyIdFrom, currencyIdTo, pieces)
 
             binding.rectMinus.imageTintList = ColorStateList.valueOf(
                 ContextCompat.getColor(this, R.color.main)
@@ -136,6 +139,14 @@ class AddActivity : AppCompatActivity() {
                 ContextCompat.getColor(this, R.color.main)
             )
         }
+    }
+
+    private fun appearTotal(currencyIdFrom: Long, currencyIdTo: Long, pieces: Int) {
+        val amount = binding.inputField.text.toString().toDouble()
+        val convertedAmount = calculateExchangeRate(
+            currencyIdFrom, currencyIdTo, amount * pieces
+        )
+        binding.changedText.text = String.format(Locale.US, "%,.2f", convertedAmount)
     }
 
     private fun addProductToList(listId: Long, productName: String, quantity: Int, price: Double) {
