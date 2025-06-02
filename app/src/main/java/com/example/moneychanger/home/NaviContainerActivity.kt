@@ -12,10 +12,11 @@ import com.example.moneychanger.databinding.ActivityNaviContainerBinding
 import com.example.moneychanger.calendar.CalendarFragment
 import com.example.moneychanger.calendar.DashboardFragment
 import com.example.moneychanger.camera.CameraActivity
+import com.example.moneychanger.etc.BaseActivity
 import com.example.moneychanger.etc.OnStoreNameUpdatedListener
 import com.example.moneychanger.setting.SettingFragment
 
-class NaviContainerActivity : AppCompatActivity(), OnStoreNameUpdatedListener {
+class NaviContainerActivity : BaseActivity(), OnStoreNameUpdatedListener {
 
     private lateinit var binding: ActivityNaviContainerBinding
     private lateinit var addListLauncher: ActivityResultLauncher<Intent>
