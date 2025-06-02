@@ -85,9 +85,6 @@
             android:name=".list.ListActivity"
             android:exported="false" />
         <activity
-            android:name=".SampleActivity"
-            android:exported="false" />
-        <activity
             android:name=".onboarding.LoginAuthActivity2"
             android:exported="false" />
         <activity
