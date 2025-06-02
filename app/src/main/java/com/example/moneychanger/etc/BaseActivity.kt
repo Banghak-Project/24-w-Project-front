@@ -23,7 +23,8 @@ open class BaseActivity : AppCompatActivity() {
                 }
 
                 doubleBackToExitPressedOnce = true
-                Toast.makeText(this@BaseActivity, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this@BaseActivity, "한 번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
+                ToastUtil.showDismissibleToast(this@BaseActivity, "한 번 더 누르면 종료됩니다.")
 
                 Handler(Looper.getMainLooper()).postDelayed({
                     doubleBackToExitPressedOnce = false

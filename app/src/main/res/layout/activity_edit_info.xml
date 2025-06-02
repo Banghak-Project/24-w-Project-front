@@ -12,9 +12,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="24dp">
 
         <!-- 타이틀 -->
         <LinearLayout
@@ -35,162 +35,160 @@
             <Space
                 android:layout_width="wrap_content"
                 android:layout_height="28dp"/>
-
-            <!-- 생년월일 -->
-            <LinearLayout
+        </LinearLayout>
+        <!-- 생년월일 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="8dp" >
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="8dp" >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/birth_kor"
-                    style="@style/TextBodyS"/>
-                <EditText
-                    android:id="@+id/date_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:paddingHorizontal="24dp"
-                    android:hint="@string/birth_eng"
-                    android:background="@drawable/round_background"
-                    style="@style/TextBodyL"
-                    android:focusable="false"
-                    android:clickable="true" />
-            </LinearLayout>
-
-            <!-- 이름 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="8dp" >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/name"
-                    style="@style/TextBodyS"/>
-                <EditText
-                    android:id="@+id/editUserName"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:paddingHorizontal="24dp"
-                    android:hint="@string/name"
-                    android:background="@drawable/round_background"
-                    android:imeOptions="actionDone"
-                    android:maxLines="1"
-                    style="@style/TextBodyL"/>
-            </LinearLayout>
-
-            <!-- 기본 통화 선택 (추가됨) -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="8dp" >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/currency1"
-                    style="@style/TextBodyS"/>
-                <EditText
-                    android:id="@+id/input_currency"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:paddingHorizontal="24dp"
-                    android:hint="@string/currency2"
-                    android:background="@drawable/round_background"
-                    style="@style/TextBodyL"
-                    android:focusable="false"
-                    android:clickable="true" />
-            </LinearLayout>
-
-            <!-- 이메일 (읽기 전용) -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="8dp" >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/email"
-                    style="@style/TextBodyS"/>
-                <TextView
-                    android:id="@+id/textUserEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:gravity="center_vertical"
-                    android:background="@drawable/round_background"
-                    android:backgroundTint="@color/gray_01"
-                    android:textColor="@color/gray_06"
-                    android:padding="10dp"
-                    android:text="@string/ex_email"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="8dp" >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/pw_kor"
+                android:layout_height="20dp"
+                android:layout_marginBottom="4dp"
+                android:text="@string/birth_kor"
                 style="@style/TextBodyS"/>
-                <EditText
-                    android:id="@+id/input_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:paddingHorizontal="24dp"
-                    android:hint="@string/pw_eng"
+            <EditText
+                android:id="@+id/date_text"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:paddingHorizontal="24dp"
+                android:hint="@string/birth_eng"
+                android:background="@drawable/round_background"
+                style="@style/TextBodyL"
+                android:focusable="false"
+                android:clickable="true" />
+        </LinearLayout>
+
+        <!-- 이름 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="8dp" >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginBottom="4dp"
+                android:text="@string/name"
+                style="@style/TextBodyS"/>
+            <EditText
+                android:id="@+id/editUserName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:paddingHorizontal="24dp"
+                android:hint="@string/name"
+                android:background="@drawable/round_background"
+                android:imeOptions="actionDone"
+                android:maxLines="1"
+                style="@style/TextBodyL"/>
+        </LinearLayout>
+
+        <!-- 기본 통화 선택 (추가됨) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="8dp" >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginBottom="4dp"
+                android:text="@string/currency1"
+                style="@style/TextBodyS"/>
+            <EditText
+                android:id="@+id/input_currency"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:paddingHorizontal="24dp"
+                android:hint="@string/currency2"
+                android:background="@drawable/round_background"
+                style="@style/TextBodyL"
+                android:focusable="false"
+                android:clickable="true" />
+        </LinearLayout>
+
+        <!-- 이메일 (읽기 전용) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="8dp" >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginBottom="4dp"
+                android:text="@string/email"
+                style="@style/TextBodyS"/>
+            <TextView
+                android:id="@+id/textUserEmail"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:background="@drawable/round_background"
+                android:backgroundTint="@color/gray_01"
+                android:textColor="@color/gray_06"
+                android:padding="10dp"
+                android:text="@string/ex_email"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="8dp" >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginBottom="4dp"
+                android:text="@string/pw_kor"
+                style="@style/TextBodyS"/>
+            <EditText
+                android:id="@+id/input_password"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:paddingHorizontal="24dp"
+                android:hint="@string/pw_eng"
                 android:inputType="textPassword"
                 android:imeOptions="actionDone"
                 android:maxLines="1"
                 android:background="@drawable/round_background"
                 style="@style/TextBodyL"/>
-            </LinearLayout>
+        </LinearLayout>
 
-            <!-- **추가**: 새 비밀번호 입력란 -->
-            <LinearLayout
+        <!-- **추가**: 새 비밀번호 입력란 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="8dp" >
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="8dp" >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_marginBottom="4dp"
-                    android:text="새 비밀번호"
+                android:layout_height="20dp"
+                android:layout_marginBottom="4dp"
+                android:text="@string/new_pw"
                 style="@style/TextBodyS"/>
-                <EditText
-                    android:id="@+id/input_new_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:paddingHorizontal="24dp"
-                    android:hint="새 비밀번호 입력"
+            <EditText
+                android:id="@+id/input_new_password"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:paddingHorizontal="24dp"
+                android:hint="@string/new_pw"
                 android:inputType="textPassword"
                 android:imeOptions="actionDone"
                 android:maxLines="1"
                 android:background="@drawable/round_background"
                 style="@style/TextBodyL"/>
-            </LinearLayout>
         </LinearLayout>
+    </LinearLayout>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <Button
-                android:id="@+id/button_edit"
-                android:layout_marginBottom="24dp"
-                android:text="@string/edit_long"
-                style="@style/NextButtonStyle" />
-        </LinearLayout>
+    <Button
+        android:id="@+id/button_edit"
+        android:layout_marginBottom="24dp"
+        android:text="@string/edit_long"
+        style="@style/NextButtonStyle" />
 </LinearLayout>
