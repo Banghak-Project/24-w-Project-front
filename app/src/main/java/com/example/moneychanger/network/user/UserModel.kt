@@ -46,10 +46,11 @@ data class UserInfoResponse(
     @SerializedName("defaultCurrencyId") val defaultCurrencyId: Long
 )
 data class UpdateUserInfoRequest(
-    @SerializedName("userEmail") val userEmail: String,
-    @SerializedName("userDateOfBirth") val userDateOfBirth: String?,
-    @SerializedName("userName") val userName: String?,
-    @SerializedName("userPassword") val userPassword: String?,
+    @SerializedName("userEmail")        val userEmail: String,
+    @SerializedName("userName")         val userName: String?,
+    @SerializedName("userDateOfBirth")  val userDateOfBirth: String?,
+    @SerializedName("currentPassword")  val currentPassword: String?, // 추가
+    @SerializedName("newPassword")      val newPassword: String?,     // 추가
     @SerializedName("defaultCurrencyId") val defaultCurrencyId: Long
 )
 
