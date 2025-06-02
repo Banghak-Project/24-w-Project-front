@@ -8,8 +8,9 @@
     android:padding="16dp"
     android:layout_marginBottom="8dp">
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:orientation="vertical">
         <LinearLayout
             android:contentDescription="갯수"
@@ -42,15 +43,13 @@
             android:layout_height="6dp"/>
         <TextView
             android:id="@+id/product_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="24dp"
             android:text="상품1"
-            style="@style/TextHeadingXL"/>
+            style="@style/TextHeadingXL"
+            android:singleLine="true"
+            android:ellipsize="marquee"/>
     </LinearLayout>
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"/>
 
     <CheckBox
         android:id="@+id/checkbox"

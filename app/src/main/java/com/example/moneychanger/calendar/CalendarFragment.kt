@@ -9,9 +9,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.moneychanger.adapter.CalendarDateAdapter
+import com.example.moneychanger.adapter.CurrencyBreakdown
+import com.example.moneychanger.adapter.FromCurrencyAdapter
 import com.example.moneychanger.adapter.HistoryAdapter
 import com.example.moneychanger.databinding.FragmentCallendarBinding
 import com.example.moneychanger.etc.ExchangeRateUtil
+import com.example.moneychanger.home.MainFragment
 import com.example.moneychanger.network.RetrofitClient
 import com.example.moneychanger.network.TokenManager
 import com.example.moneychanger.network.currency.CurrencyManager
@@ -29,6 +32,7 @@ class CalendarFragment : Fragment() {
     private var _binding: FragmentCallendarBinding? = null
     private val binding get() = _binding!!
     private lateinit var historyAdapter: HistoryAdapter
+    private lateinit var fromCurrencyAdapter: FromCurrencyAdapter
 
     // (일별) 클릭한 날짜의 리스트/상품 정보
     private var allProducts = emptyList<ProductResponseDto>()
@@ -43,6 +47,13 @@ class CalendarFragment : Fragment() {
 
     // 지금 선택되어 있는 날짜 (디폴트는 today)
     private var selectedDate: LocalDate = LocalDate.now()
+
+    override fun onResume() {
+        super.onResume()
+        setCalendar()
+        fetchByDate(selectedDate)
+        fetchMonthlyTotal()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,7 +74,7 @@ class CalendarFragment : Fragment() {
         // 2) RecyclerView(히스토리 목록) 어댑터 준비
         historyAdapter = HistoryAdapter(allProducts, allLists)
         binding.historyList.layoutManager = LinearLayoutManager(requireContext())
-        binding.historyList.adapter        = historyAdapter
+        binding.historyList.adapter = historyAdapter
 
         // 3) 좌/우 화살표 클릭 → 이전/다음 달
         binding.leftArrow .setOnClickListener { prevMonth() }
@@ -111,11 +122,6 @@ class CalendarFragment : Fragment() {
         fetchByDate(selectedDate)
     }
 
-    /**
-     * * “달력(그 달 전체)”을 화면에 그립니다.
-     *   - 먼저, “해당 연/월 전체”의 소비 내역을 가져와서 날짜별 소비 개수 맵(배지용)을 만듭니다.
-     *   - 그 뒤에 RecyclerView에 CalendarDateAdapter를 붙여 줍니다.
-     */
     private fun setCalendar() {
         // 1) 해당 연/월의 첫째날, 말일 문자열 생성
         val startOfMonth = LocalDate.of(currentYear, currentMonth, 1).toString()
@@ -145,10 +151,6 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    /**
-     * 실제로 RecyclerView에 GridLayoutManager와 어댑터를 붙여 주고,
-     * 상단 연/월 텍스트도 갱신합니다.
-     */
     private fun drawCalendarWithMap(recordCountMap: Map<LocalDate, Int>) {
         val dateList = DateUtils.generateDateList(currentYear, currentMonth)
 
@@ -170,14 +172,6 @@ class CalendarFragment : Fragment() {
         binding.calendarMonthText.text = currentMonth.toString().padStart(2, '0')
     }
 
-    /**
-     * * “선택된 날짜(date)”에 해당하는 모든 리스트+상품을 가져와서
-     *   → 히스토리 목록(하단 RecyclerView)에 그려 주고,
-     *   → 그 날의 총합(원화)과 환산액을 계산하여 텍스트뷰에 표시합니다.
-     *
-     * 만약 해당 날짜에 아무 내역이 없으면, 어댑터에 빈 리스트를 넘겨서
-     * 목록을 빈 상태로 갱신해 줍니다. 또한, 환산액은 0으로 초기화합니다.
-     */
     private fun fetchByDate(date: LocalDate) {
         val uid = TokenManager.getUserId().takeIf { it != -1L } ?: return
         val d   = date.toString() // "2025-05-21"
@@ -192,6 +186,7 @@ class CalendarFragment : Fragment() {
                 val dtoList = resp.body()?.data ?: emptyList()
                 // 1) allProducts: 실제 상품 DTO들
                 allProducts = dtoList.flatMap { it.products }
+                    .filter { !it.deletedYn }
 
                 // 2) allLists: ListModel 형태로 바꿔 줌
                 allLists = dtoList.map { dto ->
@@ -212,7 +207,7 @@ class CalendarFragment : Fragment() {
 
             // 3) “선택된 하루”의 총합 계산 → totalSpendTextView
             val total = allProducts.sumOf { it.originPrice * it.quantity }
-            binding.totalSpendTextView.text = "%,d".format(total.toInt())
+            //binding.totalSpendTextView.text = "%,d".format(total.toInt())
 
             // 4) “환산통화”가 있으면 → 환산액 갱신
             if (defaultCurrency != null) {
@@ -240,13 +235,26 @@ class CalendarFragment : Fragment() {
 
             // 6) 어댑터에 무조건 updateList(빈 리스트도 넘겨줘야 “히스토리 없음” 상태로 갱신됨)
             historyAdapter.updateList(allProducts, allLists)
+
+            val productCurrencyMap = allLists.associateBy { it.listId }
+
+            val grouped = allProducts
+                .filter { !it.deletedYn }
+                .groupBy { product -> productCurrencyMap[product.listId]?.currencyFrom?.currencyId }
+                .filterKeys { it != null } // currencyId가 null이 아닌 경우만
+
+            val breakdownList = grouped.map { (currencyId, products) ->
+                val sum = products.sumOf { it.originPrice * it.quantity }
+                val unit = CurrencyManager.getById(currencyId!!)!!.curUnit
+                CurrencyBreakdown(unit, sum)
+            }
+            fromCurrencyAdapter = FromCurrencyAdapter(breakdownList)
+            binding.fromCurrencyList.layoutManager = LinearLayoutManager(requireContext())
+            binding.fromCurrencyList.adapter = fromCurrencyAdapter
+
         }
     }
 
-    /**
-     * * “화면에 보이는 달(currentYear-currentMonth)” 전체를 조회해서
-     *   → 월간 총합(원화)과 환산액을 계산하여 표시합니다.
-     */
     private fun fetchMonthlyTotal() {
         val uid = TokenManager.getUserId().takeIf { it != -1L } ?: return
         val start = LocalDate.of(currentYear, currentMonth, 1).toString()
@@ -263,6 +271,7 @@ class CalendarFragment : Fragment() {
 
             val dtoList    = resp.body()?.data ?: emptyList()
             val monthTotal = dtoList.flatMap { it.products }
+                .filter { !it.deletedYn }
                 .sumOf { it.originPrice * it.quantity }
 
             // 1) 원화 표시

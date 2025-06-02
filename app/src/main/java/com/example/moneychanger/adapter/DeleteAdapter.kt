@@ -72,9 +72,18 @@ class DeleteAdapter(
                 response: retrofit2.Response<ApiResponse<List<ProductResponseDto>>>
             ) {
                 if (response.isSuccessful) {
-                    productList.removeAll(selectedItems)
+                    val iterator = productList.iterator()
+                    while (iterator.hasNext()) {
+                        if (iterator.next().productId in selectedIds) {
+                            iterator.remove()
+                        }
+                    }
+
                     selectedItems.clear()
                     notifyDataSetChanged()
+                    Log.d("DeleteAdapter", "삭제완료")
+                    Log.d("DeleteAdapter", "${productList.size}")
+
                 } else {
                     // 실패 처리
                     println("삭제 실패: ${response.errorBody()?.string()}")

@@ -45,6 +45,30 @@ class DashboardFragment : Fragment() {
     private var currentYear = 0
     private var currentMonth = 0
 
+    override fun onResume() {
+        super.onResume()
+
+        getUserDefaultCurrency { defaultCurrency ->
+            if (defaultCurrency != 0.toLong() && defaultCurrency != null) {
+                userDefaultCurrency = defaultCurrency
+
+                getProductList { result ->
+                    productList = result
+
+                    val today = LocalDate.now()
+                    val initialWeek = DateUtils.getWeekOfMonth(today)
+                    currentYear = today.year
+                    currentMonth = today.monthValue
+
+                    updateWeeklyChart(initialWeek)
+                    updateMonthlyChart()
+                    updateYearlyChart()
+                }
+            }
+        }
+    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -181,6 +205,7 @@ class DashboardFragment : Fragment() {
         val dataSet = BarDataSet(entries, "")
         binding.weekChart.legend.isEnabled = false
         dataSet.color = ContextCompat.getColor(requireContext(), R.color.main)
+        dataSet.valueTextSize = 12f
         val barData = BarData(dataSet)
 
         val xAxis = binding.weekChart.xAxis
@@ -365,11 +390,13 @@ class DashboardFragment : Fragment() {
         val setLast = BarDataSet(listOf(entryLastYear), "").apply {
             color = ContextCompat.getColor(requireContext(), R.color.gray_03)
             valueTextColor = ContextCompat.getColor(requireContext(), R.color.gray_07)
+            valueTextSize = 12f
         }
 
         val setThis = BarDataSet(listOf(entryThisYear), "").apply {
             color = ContextCompat.getColor(requireContext(), R.color.main)
             valueTextColor = ContextCompat.getColor(requireContext(), R.color.white)
+            valueTextSize = 12f
         }
 
         val barData = BarData(setLast, setThis)

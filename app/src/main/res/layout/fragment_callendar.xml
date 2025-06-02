@@ -307,30 +307,11 @@
                             style="@style/TextHeadingXL"
                             android:textColor="@color/gray_07"/>
                     </LinearLayout>
-                    <LinearLayout
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/from_currency_list"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <Space
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"/>
-
-                        <TextView
-                            android:id="@+id/total_spend_text_view"
-                            style="@style/TextHeadingL"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="8dp"
-                            android:text="0000.00" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="$"
-                            style="@style/TextLabelM"
-                            android:textColor="@color/gray_06"/>
-                    </LinearLayout>
+                        android:layout_height="match_parent"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
                 </LinearLayout>
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/history_list"
