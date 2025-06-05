@@ -91,9 +91,6 @@
             android:name=".onboarding.PersonalInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".onboarding.KakaoLoginActivity"
-            android:exported="true" />
-        <activity
             android:name=".onboarding.LoginSelectActivity"
             android:exported="true" />
         <activity android:name=".onboarding.LoginActivity" />
@@ -103,9 +100,6 @@
         <activity
             android:name=".onboarding.LoginAuthActivity"
             android:exported="false" />
-        <activity android:name=".onboarding.GoogleLoginActivity"
-            android:exported="true"/>
-
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_native_app_key" />
