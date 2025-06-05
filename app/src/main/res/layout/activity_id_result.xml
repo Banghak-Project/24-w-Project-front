@@ -57,10 +57,6 @@
                 android:layout_marginVertical="48dp"
                 android:orientation="vertical">
 
-                <!--레이아웃 확인 용 임시-->
-                <include
-                    layout="@layout/list_id" />
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/list_container"
                     android:layout_width="match_parent"

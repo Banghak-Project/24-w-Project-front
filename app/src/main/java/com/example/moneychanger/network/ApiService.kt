@@ -127,14 +127,12 @@ interface ApiService {
     @GET("/api/currency")
     fun findAll(): Call<ApiResponse<List<CurrencyResponseDto>>>
 
-    // ID 찾기 API
     @GET("/api/auth/find-id")
     suspend fun findId(
         @Query("userName") userName: String,
         @Query("userDateOfBirth") userDateOfBirth: String
-    ): Response<ApiResponse<String>>
+    ): Response<ApiResponse<List<String>>>
 
-    // 비밀번호 찾기 API (임시 비밀번호 발급)
     @POST("/api/auth/find-password")
     suspend fun findPassword(@Body request: FindPasswordRequest): Response<ApiResponse<String>>
 

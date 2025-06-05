@@ -57,7 +57,7 @@
     <string name="find_pw_title2">get a temporary password</string>
     <string name="submit_button_id">Find ID</string>
     <string name="submit_button_pw">Request Password Reset Email</string>
-    <string name="id_result_title1">Your ID is</string>
+    <string name="id_result_title1"> \'s ID is</string>
     <string name="id_result_title2">.</string>
     <string name="button_to_login">Go to Login Screen</string>
     <string name="pw_result_title1">Password has been sent to</string>
