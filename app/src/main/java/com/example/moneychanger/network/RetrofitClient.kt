@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
 //    const val BASE_URL = "http://3.34.157.74:8080/"
-    const val BASE_URL = "http://10.0.2.2:8080/"
+    const val BASE_URL = "http://3.39.162.64:8080/"
 
     private val client = OkHttpClient.Builder()
         .addInterceptor(AuthInterceptor())
